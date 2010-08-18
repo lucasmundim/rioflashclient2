@@ -19,7 +19,7 @@ package
 		private function onCreationComplete():void
 		{
 			var testRunner:FlexUnitTestRunnerUIAS=new FlexUnitTestRunnerUIAS();
-			this.addChild(testRunner);
+			this.addChild(testRunner); 
 			testRunner.runWithFlexUnit4Runner(currentRunTestSuite(), "rioflashclient2");
 		}
 		

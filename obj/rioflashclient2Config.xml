@@ -29,7 +29,7 @@
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>P:\edad\rioflashclient2\test\FlexUnitApplication.as</path-element>
+    <path-element>P:\edad\rioflashclient2\src\FlexUnitApplication.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>

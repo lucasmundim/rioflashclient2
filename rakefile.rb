@@ -43,7 +43,7 @@ end
 
 desc 'Compile run the test harness'
 unit :test do |t|
-  t.input                                 = 'test/FlexUnitApplication.as'
+  t.input                                 = 'src/FlexUnitApplication.as'
   t.library_path                          << 'lib/FlexUnitTestRunner_rb.swc'
   t.library_path                          << 'lib/flexunitextendedAS.swc'
   t.default_size                          = '530 340'
