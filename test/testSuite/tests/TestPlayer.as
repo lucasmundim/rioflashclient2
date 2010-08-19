@@ -29,5 +29,11 @@ package testSuite.tests
 		{
 			//Assert.fail("Test method Not yet implemented");
 		}
+		
+		[Test]
+		public function testFailing():void
+		{
+			Assert.fail("Test method Not yet implemented");
+		}
 	}
 }

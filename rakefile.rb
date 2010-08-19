@@ -43,9 +43,11 @@ end
 
 desc 'Compile run the test harness'
 unit :test do |t|
-  t.input                                 = 'src/FlexUnitApplication.as'
-  t.library_path                          << 'lib/FlexUnitTestRunner_rb.swc'
-  t.library_path                          << 'lib/flexunitextendedAS.swc'
+  t.input                                 = 'src/TestRunner.as'
+  t.library_path                          << 'lib/flexunit-aircilistener-4.1.0.swc'
+  t.library_path                          << 'lib/flexunit-cilistener-4.1.0.swc'
+  t.library_path                          << 'lib/flexunit-core-flex-4.1.0.swc'
+  t.library_path                          << 'lib/flexunit-uilistener-4.1.0.swc'
   t.default_size                          = '530 340'
   t.static_link_runtime_shared_libraries  = true
 end
