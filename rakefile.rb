@@ -34,6 +34,7 @@ end
 
 desc 'Compile and debug the application'
 debug :debug do |t|
+  t.debug                                 = true
   t.input                                 = 'src/Main.as'
   t.strict                                = false
   t.define_conditional                    << "CONFIG::LOGGING,false"
