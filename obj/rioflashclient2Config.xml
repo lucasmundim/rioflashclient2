@@ -14,22 +14,22 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'18/8/2010'</value>
+      <value>'20/8/2010'</value>
     </define>
     <source-path append="true">
-      <path-element>P:\edad\rioflashclient2\src</path-element>
-      <path-element>P:\edad\rioflashclient2\test</path-element>
-      <path-element>P:\edad\rioflashclient2\assets</path-element>
+      <path-element>C:\Documents and Settings\Lucas\My Documents\Projects\rioflashclient2\src</path-element>
+      <path-element>C:\Documents and Settings\Lucas\My Documents\Projects\rioflashclient2\test</path-element>
+      <path-element>C:\Documents and Settings\Lucas\My Documents\Projects\rioflashclient2\assets</path-element>
+      <path-element>C:\Documents and Settings\Lucas\My Documents\Projects\rioflashclient2\lib\bulkloader-rev-282</path-element>
       <path-element>C:\Program Files\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
     <library-path append="true">
-      <path-element>P:\edad\rioflashclient2\lib\flexunit-core-as3-4.1.0-beta1.60-sdk3.4.0.9271.swc</path-element>
-      <path-element>P:\edad\rioflashclient2\lib\flexunitextendedAS.swc</path-element>
-      <path-element>P:\edad\rioflashclient2\lib\FlexUnitTestRunner_rb.swc</path-element>
+      <path-element>C:\Documents and Settings\Lucas\My Documents\Projects\rioflashclient2\lib\flexunit-core-flex-4.1.0.swc</path-element>
+      <path-element>C:\Documents and Settings\Lucas\My Documents\Projects\rioflashclient2\lib\flexunit-cilistener-4.1.0.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
-    <path-element>P:\edad\rioflashclient2\src\FlexUnitApplication.as</path-element>
+    <path-element>C:\Documents and Settings\Lucas\My Documents\Projects\rioflashclient2\src\TestRunner.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>

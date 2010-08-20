@@ -16,6 +16,7 @@
     <class path="src" />
     <class path="test" />
     <class path="assets" />
+    <class path="lib\bulkloader-rev-282" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -48,9 +49,10 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <element path="lib\flexunit-core-as3-4.1.0-beta1.60-sdk3.4.0.9271.swc" />
     <element path="lib\flexunitextendedAS.swc" />
     <element path="lib\FlexUnitTestRunner_rb.swc" />
+    <element path="lib\flexunit-core-flex-4.1.0.swc" />
+    <element path="lib\flexunit-cilistener-4.1.0.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
@@ -70,7 +72,7 @@
   </library>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <compile path="src\FlexUnitApplication.as" />
+    <compile path="src\TestRunner.as" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
