@@ -10,6 +10,7 @@ project_model :model do |m|
   m.language                = 'as3'
   m.libraries               << :flexunit4as
   m.compiler_gem_name       = 'sprout-flex4sdk-tool'
+  m.source_path           << "#{m.lib_dir}/bulkloader-rev-282"
   # m.background_color      = '#FFFFFF'
   # m.width                 = 500
   # m.height                = 344
