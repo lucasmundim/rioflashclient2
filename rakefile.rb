@@ -8,9 +8,11 @@ sprout 'as3'
 project_model :model do |m|
   m.project_name            = 'rioflashclient2'
   m.language                = 'as3'
-  m.libraries               << :flexunit4as
   m.compiler_gem_name       = 'sprout-flex4sdk-tool'
-  m.source_path           << "#{m.lib_dir}/bulkloader-rev-282"
+  m.source_path             << "#{m.lib_dir}/bulkloader-rev-282"
+  m.library_path            << 'lib/OSMF.swc'
+  m.library_path            << 'lib/tweener_v1.33.74.swc'
+  m.library_path            << 'lib/corelib.swc'
   # m.background_color      = '#FFFFFF'
   # m.width                 = 500
   # m.height                = 344
