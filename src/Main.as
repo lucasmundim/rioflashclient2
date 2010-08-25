@@ -1,24 +1,31 @@
 ﻿package {
+	import rioflashclient2.configuration.Configuration;
+	import rioflashclient2.event.EventBus;
+  import rioflashclient2.event.LoggerEvent;
+	import rioflashclient2.logging.EventfulLogger;
+  import rioflashclient2.logging.EventfulLoggerFactory;
+  import rioflashclient2.model.LessonLoader;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.display.LoaderInfo;
-	
-	import br.com.stimuli.loading.BulkLoader;
-  import br.com.stimuli.loading.BulkProgressEvent;
-
 	import flash.events.*;
   import flash.display.*;
   import flash.media.*;
   import flash.net.*;
 	
-	import rioflashclient2.configuration.Configuration;
+	import org.osmf.logging.Log;
+  import org.osmf.logging.Logger;
 		
+	[SWF(backgroundColor="0x000000", frameRate="30", width="640", height="400")]
 	public class Main extends Sprite {
-		
+		private var logger:Logger;
+		private var rawParameters:Object;
 		private var configuration:Configuration;
-		public var loader:BulkLoader;
 		
 		public function Main():void {
+			this.rawParameters = LoaderInfo(root.loaderInfo).parameters;
+			
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
@@ -26,48 +33,39 @@
 		private function init(e:Event = null):void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
-			trace('App initialized.');
+			setupLogger();
+			setupStage();
+      
+      logger.info('Starting Application...');
+
 			setupConfiguration();
+			
+			EventBus.addListener(ErrorEvent.ERROR, function(e:ErrorEvent):void { logger.error('An error occurred: ' + e.text); });
 			loadLesson();
 		}
 		
-		public function loadLesson():void {
-			// creates a BulkLoader instance with a name of "main-site", that can be used to retrieve items without having a reference to this instance
-			loader = new BulkLoader("main-site");
-			// set level to verbose, for debugging only
-			loader.logLevel = BulkLoader.LOG_INFO;
-			// now add items to load
-			loader.add(configuration.lessonXmlUrl, {priority:20, id:"config-xml"});
-			
-			// dispatched when ALL the items have been loaded:
-      loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
-      
-      // dispatched when any item has progress:
-      loader.addEventListener(BulkLoader.PROGRESS, onAllItemsProgress);
-      
-      // now start the loading
-      loader.start();
-		}
-		
-		public function onAllItemsLoaded(evt : Event) : void {
-			trace("every thing is loaded!");
-			// get an xml file!
-      //var theXML:XML = loader.getXML("config-xml");
-			var theXML:String = loader.getText("config-xml");
-      trace(theXML);
-		}
-		
-		// this evt is a "super" progress event, it has all the information you need to 
-    // display progress by many criterias (bytes, items loaded, weight)
-    public function onAllItemsProgress(evt:BulkProgressEvent) : void {
-      trace(evt.loadingStatus());
+		public function setupLogger():void {
+      Log.loggerFactory = new EventfulLoggerFactory(this.rawParameters.logLevel);
+      logger = Log.getLogger('Main');
     }
-		
-		private function setupConfiguration():void // init -> 2 de 5
-		{	
-			trace('Loading Configuration...');
-			configuration = Configuration.getInstance();
-			configuration.load(LoaderInfo(root.loaderInfo).parameters);
+
+		private function setupStage():void {
+      logger.info('Adjusting stage scale mode and alignment...');
+      
+      stage.scaleMode = StageScaleMode.NO_SCALE;
+      stage.align = StageAlign.TOP_LEFT;
+    }
+
+		private function setupConfiguration():void {
+			// Comment for production
+			this.rawParameters.environment = 'development';
+
+      Configuration.getInstance().readParameters(this.rawParameters);
+    }
+
+		private function loadLesson():void {
+		  lessonLoader = new LessonLoader(Configuration.getInstance().lessonXML);
+		  lessonLoader.load();
 		}
 	}	
 }
