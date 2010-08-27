@@ -1,5 +1,6 @@
 ﻿package {
 	import rioflashclient2.configuration.Configuration;
+	import rioflashclient2.player.Player;
 	import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LoggerEvent;
 	import rioflashclient2.logging.EventfulLogger;
@@ -39,6 +40,7 @@
       logger.info('Starting Application...');
 
 			setupConfiguration();
+			setupPlayer();
 			
 			EventBus.addListener(ErrorEvent.ERROR, function(e:ErrorEvent):void { logger.error('An error occurred: ' + e.text); });
 			loadLesson();
@@ -61,6 +63,11 @@
 			this.rawParameters.environment = 'development';
 
       Configuration.getInstance().readParameters(this.rawParameters);
+    }
+
+		private function setupPlayer():void {
+      player = new Player();
+      addChild(player);
     }
 
 		private function loadLesson():void {
