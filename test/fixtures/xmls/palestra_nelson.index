@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE index SYSTEM "index.dtd">
+<index>
+    <!-- Nome da disciplina -->
+    <main_title> Demonstração do Servidor Multimídia RIO  </main_title>
+    <class>
+        <number> 1 </number>
+        <sub_title> Palestra sobre Taxa de Mortalidade </sub_title>
+    </class>
+
+    <ind_item>
+        <time> 1 </time>
+        <text> Mortalidade por faixa de idade  </text>
+    </ind_item>
+
+    <ind_item>
+        <time> 64 </time>
+        <text> Taxa de mortalidade por doença cardiovascular  </text>
+    </ind_item>
+
+    <ind_item>
+        <time> 141 </time>
+        <text> Taxa de mortalidade por doença cerebrovascular  </text>
+    </ind_item>
+
+    <ind_item>
+        <time> 165 </time>
+        <text> A Prevalência dos Fatores de Risco "Clássicos" </text>
+    </ind_item>
+
+    <ind_item>
+        <time> 229 </time>
+        <text> Resultados: Prevalência dos Fatores de Risco  </text>
+    </ind_item>
+
+    <ind_item>
+        <time> 268 </time>
+        <text> Outras transparências  </text>
+    </ind_item>
+
+</index>

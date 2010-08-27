@@ -1,0 +1,8 @@
+<!ELEMENT index (main_title,class,ind_item+) >
+    <!ELEMENT main_title (#PCDATA) >
+    <!ELEMENT class (number,sub_title) >
+        <!ELEMENT number (#PCDATA) >
+        <!ELEMENT sub_title (#PCDATA) >
+    <!ELEMENT ind_item (time,text,ind_item*) >
+        <!ELEMENT time (#PCDATA) >
+        <!ELEMENT text (#PCDATA) >

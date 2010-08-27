@@ -1,0 +1,20 @@
+<!ELEMENT rio_object
+(obj_filename,obj_filesize,obj_title,obj_type,professor,course,coursecode,grad_program,source,bitrate,duration,resolution,related_media) >
+    <!ELEMENT obj_filename (#PCDATA) >
+    <!ELEMENT obj_filesize (#PCDATA) >
+    <!ELEMENT obj_title (#PCDATA) >
+    <!ELEMENT obj_type (#PCDATA) >
+    <!ELEMENT professor (#PCDATA) >
+    <!ELEMENT course (#PCDATA) >
+    <!ELEMENT coursecode (#PCDATA) >
+    <!ELEMENT grad_program (#PCDATA) >
+    <!ELEMENT source (#PCDATA) >
+    <!ELEMENT bitrate (#PCDATA) >
+    <!ELEMENT duration (#PCDATA) >
+    <!ELEMENT resolution (r_x,r_y) >
+        <!ELEMENT r_x (#PCDATA) >
+        <!ELEMENT r_y (#PCDATA) >
+    <!ELEMENT related_media (rm_item*) >
+        <!ELEMENT rm_item (rm_filename,rm_type) >
+            <!ELEMENT rm_filename (#PCDATA) >
+            <!ELEMENT rm_type (#PCDATA) >

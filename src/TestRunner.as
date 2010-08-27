@@ -16,8 +16,7 @@ package
 	
 	//import org.flexunit.runner.notification.async.XMLListener;
 	
-	import testSuite.TestSuite;
-	import testSuite.tests.TestPlayer;
+	import rioflashclient2.TestSuite;
 	
 	public class TestRunner extends Sprite
 	{
@@ -40,7 +39,7 @@ package
 			/**If you don't need graphical test results, comment out the line below and the MXML declaring
 			the TestRunnerBase. **/
 			//core.addListener(new UIListener(uiListener));
-			core.addListener(new CIListener());
+			//core.addListener(new CIListener());
 			
 			//Leaving this one in allows you to see the results in Flash Builder as well if it is open
       //Else, it will just fail and go on. The name in the quotes below is your project name
@@ -57,7 +56,7 @@ package
 		{
 			var testsToRun:Array = new Array();
 			//testsToRun.push(testSuite.tests.TestPlayer);
-			testsToRun.push(testSuite.TestSuite);
+			testsToRun.push(rioflashclient2.TestSuite);
 			return testsToRun;
 		}
 	}
