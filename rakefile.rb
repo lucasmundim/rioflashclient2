@@ -47,6 +47,7 @@ end
 
 desc 'Compile run the test harness'
 unit :test do |t|
+  t.debug                                 = true
   t.input                                 = 'src/TestRunner.as'
   t.library_path                          << 'lib/flexunit-aircilistener-4.1.0.swc'
   t.library_path                          << 'lib/flexunit-cilistener-4.1.0.swc'
