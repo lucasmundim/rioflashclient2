@@ -1,6 +1,6 @@
 package rioflashclient2.model {
   import rioflashclient2.event.EventBus;
-  import rioflashclient2.event.VideoPlayerEvent;
+  import rioflashclient2.event.PlayerEvent;
 	import rioflashclient2.configuration.Configuration;
 
 	import flash.events.Event;
@@ -22,7 +22,8 @@ package rioflashclient2.model {
 		public var source:String;
 		public var bitrate:String;
 		public var duration:String;
-		public var resolution:String;
+		public var resolution_x:String;
+		public var resolution_y:String;
 		public var index:String;
 		public var sync:String;
 		public var video:String;
@@ -120,6 +121,12 @@ package rioflashclient2.model {
 				trace(item.time);
 	      trace(item.text);
       });
+
+			EventBus.dispatch(new PlayerEvent(PlayerEvent.READY_TO_PLAY));
+		}
+		
+		public function videoURL():String {
+			return Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + this.video
 		}
   }
 }
