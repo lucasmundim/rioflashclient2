@@ -9,6 +9,7 @@
   import rioflashclient2.logging.EventfulLogger;
   import rioflashclient2.logging.EventfulLoggerFactory;
   import rioflashclient2.model.LessonLoader;
+  import rioflashclient2.user.VolumeSettings;
   
   import flash.display.LoaderInfo;
   import flash.display.Sprite;
@@ -54,6 +55,8 @@
       setupControlBar();
       
       EventBus.addListener(ErrorEvent.ERROR, function(e:ErrorEvent):void { logger.error('An error occurred: ' + e.text); });
+
+      loadUserSettings();
       loadLesson();
     }
     
@@ -110,6 +113,11 @@
       } else {
         logger.info('Control bar will not be displayed.');
       }
+    }
+
+    private function loadUserSettings():void {
+      volumeSettings = new VolumeSettings();
+      volumeSettings.restore();
     }
 
     private function loadLesson():void {
