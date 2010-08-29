@@ -56,11 +56,65 @@ package rioflashclient2.configuration {
      * Whether the player should begin playing right away or wait for user input.
      */
     public var autoPlay:Boolean;
+
+		/**
+     * Whether the control bar should be displayed or not.
+     * 
+     * @default true
+     */
+    public var displayControlBar:Boolean;
+
+		/**
+     * The buttons to be displayed in the control bar.
+     * 
+     * The given value should be a '|' separated list with the buttons to be
+     * displayed. Notice that the order in which each button appears affects
+     * the order in which they will be layed out.
+     * 
+     * Also notice that right aligned buttons should be ordered in the reverse
+     * order in which they will actually appear. For example, using this:
+     * 
+     *   playPauseButton|volume|progressInformationLabel|fullScreenButton
+     * 
+     * Would render buttons as this:
+     * 
+     *   playPauseButton   -----------------------  fullScreenButton  |  progressInformationLabel  |  volume
+     * 
+     * While this:
+     * 
+     *   playPauseButton|fullScreenButton|volume|progressInformationLabel
+     * 
+     * Would render as:
+     * 
+     *   playPauseButton   -----------------------  progressInformationLabel  | volume  |  fullScreenButton
+     * 
+     * Only the order between buttons that have the same alignment will affect
+     * rendering. You could do this:
+     * 
+     *   fullScreenButton|volume|playPauseButton|progressInformationLabel
+     * 
+     * And it would still render correctly:
+     * 
+     *   playPauseButton   -----------------------  progressInformationLabel  | volume  |  fullScreenButton
+     * 
+     * You may skip any button if you don't want it to be displayed:
+     * 
+     *   playPauseButton|fullScreenButton
+     * 
+     * Would render:
+     * 
+     *   playPauseButton   -----------------------  fullScreenButton
+     * 
+     * @default playPauseButton|fullScreenButton|volume|progressInformationLabel
+     */
+    public var controlBarButtons:Array;
     
     /**
      * The number of seconds to buffer before start playing the video.
      */
     public var bufferTime:Number;
+
+		private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
     
     private var rawParameters:Object;
     private var logger:Logger = Log.getLogger('Configuration');
@@ -88,6 +142,7 @@ package rioflashclient2.configuration {
       loadEnvironment();
 
       setupAutoPlay();
+			setupControlBar();
       setupBufferTime();
       setupLessonXML();
       
@@ -114,7 +169,13 @@ package rioflashclient2.configuration {
     }
     
     private function setupAutoPlay():void {
-      autoPlay = new Boolean(rawParameters.autoPlay) || false;
+			autoPlay = booleanValueOf(rawParameters.autoPlay, false);
+    }
+
+		private function setupControlBar():void {
+      displayControlBar = booleanValueOf(rawParameters.displayControlBar, true);
+      
+      controlBarButtons = (rawParameters.controlBarButtons || DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT).split('|');
     }
     
     private function setupBufferTime():void {
@@ -123,6 +184,16 @@ package rioflashclient2.configuration {
 
     private function setupLessonXML():void {
       lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml'
+    }
+
+		private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
+      if (value == 'true') {
+        return true;
+      } else if (value == 'false') {
+        return false;
+      } else {
+        return defaultValue;
+      }
     }
   }
 }

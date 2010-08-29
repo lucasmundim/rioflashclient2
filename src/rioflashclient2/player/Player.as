@@ -86,6 +86,7 @@ package rioflashclient2.player {
     private function onReadyToPlay(e:PlayerEvent):void {
       load();
       play();
+			EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY));
     }
     
     private function onPlay(e:PlayerEvent):void {
