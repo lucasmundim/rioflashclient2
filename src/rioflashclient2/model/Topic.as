@@ -13,9 +13,9 @@ package rioflashclient2.model {
       return topic;
     }
 
-		public function valid():Boolean {
-			return true;
-		}
+    public function valid():Boolean {
+      return true;
+    }
     
     public function url():String {
       return "http://"

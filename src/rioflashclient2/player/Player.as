@@ -6,7 +6,7 @@ package rioflashclient2.player {
   import rioflashclient2.event.LessonEvent;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.model.Lesson;
-	import rioflashclient2.net.RioServerNetLoader;
+  import rioflashclient2.net.RioServerNetLoader;
   
   import flash.events.Event;
   
@@ -17,13 +17,13 @@ package rioflashclient2.player {
   import org.osmf.logging.Logger;
   import org.osmf.media.MediaPlayerSprite;
   import org.osmf.media.URLResource;
-	import org.osmf.elements.VideoElement;
+  import org.osmf.elements.VideoElement;
   
   public class Player extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('Player');
     
     public var lesson:Lesson;
-		public var videoElement:VideoElement;
+    public var videoElement:VideoElement;
     
     public function Player() {
       this.name = 'Player';
@@ -43,12 +43,12 @@ package rioflashclient2.player {
     }
     
     public function load():void {
-			var urlResouce:URLResource = new URLResource(lesson.videoURL());
-			logger.info('Loading video from url: ' + urlResouce.url);
-			
-			videoElement = new VideoElement(urlResouce, new RioServerNetLoader());
+      var urlResouce:URLResource = new URLResource(lesson.videoURL());
+      logger.info('Loading video from url: ' + urlResouce.url);
+      
+      videoElement = new VideoElement(urlResouce, new RioServerNetLoader());
       this.media = videoElement
-			
+      
       resize();
     }
     

@@ -19,21 +19,21 @@ package rioflashclient2.configuration {
     
     /**
      * Defines the default configurations per environments.
-		 *
-		 * "http://edad.rnp.br/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml";
+     *
+     * "http://edad.rnp.br/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml";
      */
     public var defaultConfigsPerEnvironments:Object = {
       development: {
-				lessonHost: 'http://edad.rnp.br',
-				lessonBaseURI: '/redirect.rio'
+        lessonHost: 'http://edad.rnp.br',
+        lessonBaseURI: '/redirect.rio'
       },
       staging: {
         lessonHost: 'http://edad.rnp.br',
-				lessonBaseURI: '/redirect.rio'
+        lessonBaseURI: '/redirect.rio'
       },
       production: {
         lessonHost: 'http://edad.rnp.br',
-				lessonBaseURI: '/redirect.rio'
+        lessonBaseURI: '/redirect.rio'
       }
     }
     
@@ -47,7 +47,7 @@ package rioflashclient2.configuration {
     */
     public var lessonBaseURI:String;
 
-		/**
+    /**
     * The lesson XML file
     */
     public var lessonXML:String;
@@ -89,7 +89,7 @@ package rioflashclient2.configuration {
 
       setupAutoPlay();
       setupBufferTime();
-			setupLessonXML();
+      setupLessonXML();
       
       logger.info("Configurations loaded.");
     }
@@ -110,7 +110,7 @@ package rioflashclient2.configuration {
     
     private function setupHosts():void {
       lessonHost = environmentConfig('lessonHost');
-			lessonBaseURI = environmentConfig('lessonBaseURI');
+      lessonBaseURI = environmentConfig('lessonBaseURI');
     }
     
     private function setupAutoPlay():void {
@@ -121,9 +121,9 @@ package rioflashclient2.configuration {
       bufferTime = new Number(rawParameters.bufferTime) || 3;
     }
 
-		private function setupLessonXML():void {
-			lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml'
-		}
+    private function setupLessonXML():void {
+      lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml'
+    }
   }
 }
 

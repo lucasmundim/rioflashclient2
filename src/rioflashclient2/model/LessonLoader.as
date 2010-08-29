@@ -16,16 +16,16 @@ package rioflashclient2.model {
   import org.osmf.logging.Logger;
 
   public class LessonLoader extends GenericLoader {
-		private var lessonXML:String;
+    private var lessonXML:String;
 
     public function LessonLoader(lessonXML:String) {
-			this.lessonXML = lessonXML;
+      this.lessonXML = lessonXML;
     }
 
     protected override function loaded(data:*):void {
       var lesson:Lesson = new Lesson();
       lesson.parse(new XML(data));
-			lesson.loadTopicsAndSlides();
+      lesson.loadTopicsAndSlides();
       
       if (lesson.valid()) {
         EventBus.dispatch(new LessonEvent(LessonEvent.LOADED, lesson));
