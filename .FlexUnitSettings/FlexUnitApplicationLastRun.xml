@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testrun name="" >
-<testsuite  name="Default Test Suite" project="rioflashclient2">
-<testsuite name="testSuite:TestSuite" type="testcaseclass"/>
-</testsuite>
-</testrun>
