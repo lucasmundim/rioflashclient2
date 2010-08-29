@@ -1,5 +1,6 @@
 ﻿package {
   import rioflashclient2.chrome.controlbar.ControlBar;
+  import rioflashclient2.chrome.screen.DebugConsole;
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.player.Player;
   import rioflashclient2.event.EventBus;
@@ -25,7 +26,8 @@
     private var logger:Logger;
     
     private var rawParameters:Object;
-    
+
+    private var debugConsole:DebugConsole;
     private var player:Player;
     private var controlbar:ControlBar;
     private var lessonLoader:LessonLoader;
@@ -41,12 +43,13 @@
       removeEventListener(Event.ADDED_TO_STAGE, init);
       // entry point
       setupLogger();
+      setupDebugConsole();
       setupStage();
       
       logger.info('Starting Application...');
 
       setupConfiguration();
-			setupFullScreenHandlers();
+      setupFullScreenHandlers();
       setupPlayer();
       setupControlBar();
       
@@ -57,6 +60,14 @@
     public function setupLogger():void {
       Log.loggerFactory = new EventfulLoggerFactory(this.rawParameters.logLevel);
       logger = Log.getLogger('Main');
+    }
+
+    private function setupDebugConsole():void {
+      debugConsole = new DebugConsole();
+      EventfulLogger.root().addEventListener(LoggerEvent.LOGGER_EVENT, debugConsole.onLogMessage);
+      addChild(debugConsole);
+      
+      logger.info('Logger and Debug Console initialized.');
     }
 
     private function setupStage():void {
@@ -73,12 +84,12 @@
       Configuration.getInstance().readParameters(this.rawParameters);
     }
 
-		private function setupFullScreenHandlers():void {
+    private function setupFullScreenHandlers():void {
       EventBus.addListener(PlayerEvent.ENTER_FULL_SCREEN, enterFullScreen);
       EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, exitFullScreen);
     }
 
-		private function enterFullScreen(e:PlayerEvent):void {
+    private function enterFullScreen(e:PlayerEvent):void {
       stage.displayState = StageDisplayState.FULL_SCREEN;
     }
     
