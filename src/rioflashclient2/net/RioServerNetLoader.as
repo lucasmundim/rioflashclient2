@@ -70,14 +70,14 @@ package rioflashclient2.net
 			}
 			if (url.protocol == "")
 			{
-				return extensionPattern.test(url);
+				return extensionPattern.test(url.rawUrl);
 			}
 			if (url.protocol.search(/file$|http$|https$/i) != -1)
 			{
 				return (url.path == null ||
 						url.path.length <= 0 ||
 						url.path.indexOf(".") == -1 ||
-						extensionPattern.test(url));
+						extensionPattern.test(url.rawUrl));
 			}
 			
 			return false;
