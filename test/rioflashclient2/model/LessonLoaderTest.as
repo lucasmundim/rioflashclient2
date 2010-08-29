@@ -1,7 +1,3 @@
-/*
-*    Copyright (c) 2010, Globo Comunicações e Participações S.A. All Rights Reserved.
-*/
-
 package rioflashclient2.model {
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
