@@ -21,8 +21,11 @@
 	[SWF(backgroundColor="0x000000", frameRate="30", width="640", height="400")]
 	public class Main extends Sprite {
 		private var logger:Logger;
+		
 		private var rawParameters:Object;
-		private var configuration:Configuration;
+		
+		private var player:Player;
+		private var lessonLoader:LessonLoader;
 		
 		public function Main():void {
 			this.rawParameters = LoaderInfo(root.loaderInfo).parameters;
