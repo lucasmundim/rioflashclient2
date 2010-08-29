@@ -23,7 +23,6 @@ package rioflashclient2.model {
     }
 
     protected override function loaded(data:*):void {
-      logger.debug('Raw lesson data: ' + data);
       var lesson:Lesson = new Lesson();
       lesson.parse(new XML(data));
 			lesson.loadTopicsAndSlides();

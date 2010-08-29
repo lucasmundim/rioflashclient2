@@ -67,27 +67,10 @@ package rioflashclient2.model {
 			index = xml.related_media.rm_item.(rm_type == 'index').rm_filename;
 			sync = xml.related_media.rm_item.(rm_type == 'sync').rm_filename;
 			video = xml.related_media.rm_item.(rm_type == 'video').rm_filename;
-			trace('filename: ' + filename);
-			trace('filesize: ' + filesize);
-			trace('title: ' + title);
-			trace('type: ' + type);
-			trace('professor: ' + professor);
-			trace('course: ' + course);
-			trace('coursecode: ' + coursecode);
-			trace('grad_program: ' + grad_program);
-			trace('source: ' + source);
-			trace('bitrate: ' + bitrate);
-			trace('duration: ' + duration);
-			trace('resolution_x: ' + resolution_x);
-			trace('resolution_y: ' + resolution_y);
-			trace('index: ' + index);
-			trace('sync: ' + sync);
-			trace('video: ' + video);
     }
 
 		public function loadTopicsAndSlides():void {
 			loader = new BulkLoader('index-sync-load');
-			loader.logLevel = BulkLoader.LOG_INFO;
 			
 		  loader.add(Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + this.sync, { id: "sync-xml" });
 			loader.add(Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + this.index, { id: "index-xml" });
@@ -98,11 +81,8 @@ package rioflashclient2.model {
 		}
 		
 		public function onAllItemsLoaded(evt : Event) : void {
-			trace("Every thing is loaded!");
 			var syncXML:XML = new XML(loader.getText("sync-xml"));
 			var indexXML:XML = new XML(loader.getText("index-xml"));
-			trace(syncXML.toString());
-			trace(indexXML.toString());
 
 			for each (var slide:XML in syncXML.slide) {
 				slides.push(Slide.createFromRaw(slide));
@@ -111,16 +91,6 @@ package rioflashclient2.model {
 			for each (var topic:XML in indexXML.ind_item) {
 				topics.push(Topic.createFromRaw(topic));
 			}
-			
-			slides.forEach(function(item:*, index:int, array:Array):void {
-	      trace(item.time);
-				trace(item.relative_path);
-      });
-
-			topics.forEach(function(item:*, index:int, array:Array):void {
-				trace(item.time);
-	      trace(item.text);
-      });
 
 			EventBus.dispatch(new PlayerEvent(PlayerEvent.READY_TO_PLAY));
 		}
