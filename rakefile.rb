@@ -28,6 +28,7 @@ project_model :model do |m|
   # m.libraries             << :corelib
   
   m.source_path             << "#{m.lib_dir}/bulkloader-rev-282"
+  m.library_path            << 'assets/player_assets.swc'
   m.library_path            << 'lib/OSMF.swc'
   m.library_path            << 'lib/tweener_v1.33.74.swc'
   m.library_path            << 'lib/corelib.swc'
