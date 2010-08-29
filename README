@@ -1,0 +1,53 @@
+= Rio Flash Client 2
+
+Cliente Universal do Rio Server
+
+== Configuração de Ambiente de Desenvolvimento
+
+É recomendado utilizar o FlashBuilder 4 como IDE para desenvolver a aplicação,
+no entanto, é possível desenvolver em qualquer editor de texto e utilizar as
+ferramentas presentes no Flex SDK para compilar.
+
+Para facilitar a compilação pode-se usar ainda o Sprouts (http://projectsprouts.org).
+O Sprouts irá baixar todas as bibliotecas necessárias para compilar e rodar a
+aplicação (Flex SDK, Flash Player Debugger, por exemplo).
+
+== Rake Tasks
+
+Algumas rake tasks foram criadas para facilitar o desenvolvimento. Segue alguns
+exemplos de uso dessas tasks:
+
+  // Compila a aplicação em versão debug, gerando HTML e estáticos apontando para
+  // esse SWF e roda a aplicação em um flash player debugger:
+  rake debug
+  
+  // Compila a aplicação em versão release, gerando HTML e estáticos apontando para
+  // esse SWF.
+  rake deploy
+  
+  // Compila a aplicação em versão release, gerando HTML e estáticos apontando para
+  // esse SWF, configurando as flashvars para utilizar o environment staging e
+  // ainda conter tudo que for especificado em FLASH_VARS (no caso, as flashvars
+  // resultantes seriam 'environment=staging&autoPlay=true').
+  PLAYER_ENV=staging FLASH_VARS="autoPlay=true" rake deploy
+  
+  // Roda os testes
+  rake test
+  
+  // Roda os testes utilizando o FDB, útil para servidores de CI.
+  rake cruise
+  
+  // Gera o index.html a partir do template em html-template/index.template.html
+  // apontando para a versão release. Essa task é que utiliza os valores das
+  // variáveis de ambiente PLAYER_ENV e FLASH_VARS. A task deploy apenas
+  // depende desta.
+  rake generate_html
+  
+  // Gera o index.html a partir do template em html-template/index.template.html
+  // apontando para a versão debug. Essa task é que utiliza os valores das
+  // variáveis de ambiente PLAYER_ENV e FLASH_VARS. A task debug apenas
+  // depende desta.
+  rake generate_html_debug
+  
+  // Copia os assets (javascripts, stylesheets e images) para a pasta bin.
+  rake copy_assets
