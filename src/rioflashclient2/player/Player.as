@@ -44,6 +44,8 @@ package rioflashclient2.player {
     
     public function load():void {
       var urlResouce:URLResource = new URLResource(lesson.videoURL());
+      //var urlResouce:URLResource = new URLResource("http://vegas.local:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv");
+      //var urlResouce:URLResource = new URLResource("http://edad.rnp.br/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv");
       logger.info('Loading video from url: ' + urlResouce.url);
       
       videoElement = new VideoElement(urlResouce, new RioServerNetLoader());
@@ -86,7 +88,7 @@ package rioflashclient2.player {
     private function onReadyToPlay(e:PlayerEvent):void {
       load();
       play();
-			EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY));
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY));
     }
     
     private function onPlay(e:PlayerEvent):void {
