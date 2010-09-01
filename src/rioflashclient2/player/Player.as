@@ -7,6 +7,7 @@ package rioflashclient2.player {
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.model.Lesson;
   import rioflashclient2.net.RioServerNetLoader;
+  import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
   
   import flash.events.Event;
   
@@ -24,6 +25,9 @@ package rioflashclient2.player {
     
     public var lesson:Lesson;
     public var videoElement:VideoElement;
+    private var seekDataStore:DefaultSeekDataStore;
+    private var originalVideoURL:String;
+    private var duration:Number = 0;
     
     public function Player() {
       this.name = 'Player';
@@ -43,17 +47,39 @@ package rioflashclient2.player {
     }
     
     public function load():void {
-      var urlResouce:URLResource = new URLResource(lesson.videoURL());
-      //var urlResouce:URLResource = new URLResource("http://vegas.local:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv");
-      //var urlResouce:URLResource = new URLResource("http://roxo.no-ip.com:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv");
-      //var urlResouce:URLResource = new URLResource("http://edad.rnp.br/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv");
-      //var urlResouce:URLResource = new URLResource("http://edad.rnp.br/transfer.rio?start=29217776&file=/ufrj/exemplos/transp_flash/Aula_002.flv");
-      logger.info('Loading video from url: ' + urlResouce.url);
+      var url:String;
+      //url = lesson.videoURL();
+      //url = "http://vegas.local:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      //url = "http://roxo.no-ip.com:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      url = "http://roxo.no-ip.com:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      //url = "http://edad.rnp.br/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      //url = "http://edad.rnp.br/transfer.rio?start=29217776&file=/ufrj/exemplos/transp_flash/Aula_002.flv";
+  
+      loadMedia(url);
+      videoElement.client.addHandler("onMetaData", onMetadata);
+      resize();
+    }
+
+    public function loadMedia(url:String=""):void {
+      if (!originalVideoURL) {
+        originalVideoURL = url;
+        logger.info('Loading video from url: ' + url);
+      } else {
+        logger.info('Seeking from url: ' + url);
+      }
+      
+      var urlResouce:URLResource = new URLResource(url);
+      
       
       videoElement = new VideoElement(urlResouce, new RioServerNetLoader());
-      this.media = videoElement
-      
-      resize();
+      this.media = videoElement;
+    }
+
+    public function onMetadata(info:Object):void
+    {
+      logger.info('Loading video metadata...');
+      seekDataStore = DefaultSeekDataStore.create(info);
+      seekDataStore.reset();
     }
     
     public function play():void {
@@ -89,7 +115,6 @@ package rioflashclient2.player {
     
     private function onReadyToPlay(e:PlayerEvent):void {
       load();
-      play();
       EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY));
     }
     
@@ -130,14 +155,28 @@ package rioflashclient2.player {
     }
     
     private function onSeek(e:PlayerEvent):void {
-      if (mediaPlayer.canSeek) {
-        var seekPercentage:Number = (e.data as Number);
-        var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
-        
-        logger.debug('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
-        
-        this.mediaPlayer.seek(seekPosition);
-      }
+      var seekPercentage:Number = (e.data as Number);
+      var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
+      
+      logger.debug('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+      
+      this.mediaPlayer.seek(seekPosition);
+    }
+
+    private function onServerSeek(e:PlayerEvent):void {
+      var seekPercentage:Number = (e.data as Number);
+      var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
+      
+      logger.debug('Server Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+
+      loadMedia(appendQueryString(originalVideoURL, seekPosition));
+      play();
+    }
+
+    private function onDurationChange(e:TimeEvent):void {
+      if (e.time && e.time != '0') {
+        videoElement.defaultDuration = e.time;
+      }     
     }
     
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
@@ -145,7 +184,7 @@ package rioflashclient2.player {
     }
     
     public function hasVideoLoaded():Boolean {
-      return this.resource != null;
+      return this.media != null;
     }
     
     public function isStopped():Boolean {
@@ -206,16 +245,28 @@ package rioflashclient2.player {
       EventBus.addListener(PlayerEvent.READY_TO_PLAY, onReadyToPlay);
       
       EventBus.addListener(TimeEvent.COMPLETE, onVideoEnded);
+      EventBus.addListener(TimeEvent.DURATION_CHANGE, onDurationChange);
       
       EventBus.addListener(PlayerEvent.VOLUME_CHANGE, onVolumeChange);
       EventBus.addListener(PlayerEvent.MUTE, onMute);
       EventBus.addListener(PlayerEvent.UNMUTE, onUnmute);
       
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.SERVER_SEEK, onServerSeek);
     }
     
     private function setupEventListeners():void {
       stage.addEventListener(Event.RESIZE, resize);
+    }
+
+    private function appendQueryString(url:String, start:Number):String {
+        logger.debug("seek requested to: " + start);
+
+        if (start == 0) return url;
+
+        logger.debug("seeking to: " + seekDataStore.getQueryStringStartValue(start));
+        return url + (url.indexOf("?") >= 0 ? "&" : "?") + 
+               "start=${start}".replace("${start}", seekDataStore.getQueryStringStartValue(start));
     }
   }
 }

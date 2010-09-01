@@ -149,6 +149,7 @@
       EventBus.addListener(PlayerEvent.STOP, onStop);
       
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.SERVER_SEEK, onSeek);
       
       EventBus.addListener(PlayerEvent.MUTE, onMute);
       EventBus.addListener(PlayerEvent.UNMUTE, onUnmute);
@@ -181,6 +182,7 @@
       }
       
       progressBar.addEventListener(PlayerEvent.SEEK, EventBus.dispatch);
+      progressBar.addEventListener(PlayerEvent.SERVER_SEEK, EventBus.dispatch);
       progressBar.addEventListener(PlayerEvent.PLAY, EventBus.dispatch);
       progressBar.addEventListener(PlayerEvent.PAUSE, EventBus.dispatch);
     }
@@ -298,7 +300,7 @@
     }
     
     private function onPlay(e:PlayerEvent):void {
-			logger.debug('onPlay');
+      logger.debug('onPlay');
       enable();
       setPlayState();
     }

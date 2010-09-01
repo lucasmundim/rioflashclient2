@@ -18,7 +18,7 @@
       setupEventListeners();
       progressiveMode(); //OnDemand
       
-      background.visible = false; // escondido por enquanto, verificar se deverá continuar existindo
+      background.visible = true;
       
       reset();
     }
@@ -51,13 +51,10 @@
       downloadProgress.visible = true;
     }
     
-    public function seekTo(seekPercentage:Number):void {
-      currentProgressPercentage = seekPercentage;
-    }
-    
     private function setupEventListeners():void {
       stage.addEventListener(Event.RESIZE, resize);
       
+      background.addEventListener(MouseEvent.CLICK, onSeek);
       addEventListener(MouseEvent.CLICK, onSeek);
       addEventListener(MouseEvent.MOUSE_DOWN, onStartDrag);
     }
@@ -65,9 +62,12 @@
     private function onSeek(e:MouseEvent):void {
       var seekPercentage:Number = calculatedSeekPercentageGivenX(e.currentTarget.mouseX);
       
+      currentProgress.width = e.currentTarget.mouseX;
+
       if (seekPercentage <= downloadProgressPercentage) {
-        currentProgress.width = e.currentTarget.mouseX;
         dispatchEvent(new PlayerEvent(PlayerEvent.SEEK, seekPercentage));
+      } else {
+        dispatchEvent(new PlayerEvent(PlayerEvent.SERVER_SEEK, seekPercentage));
       }
     }
     
