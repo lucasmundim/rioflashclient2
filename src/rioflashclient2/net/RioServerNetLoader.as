@@ -62,7 +62,7 @@ package rioflashclient2.net
        * We assume being unable to handle the resource for conditions not mentioned above
        */
       var res:URLResource = resource as URLResource;
-      var extensionPattern:RegExp = new RegExp("\.flv$|\.f4v$|\.mov$|\.mp4$|\.mp4v$|\.m4v$|\.3gp$|\.3gpp2$|\.3g2$", "i");
+      var extensionPattern:RegExp = new RegExp("\.flv", "i");
       var url:URL = res != null ? new URL(res.url) : null;
       if (url == null || url.rawUrl == null || url.rawUrl.length <= 0)
       {
@@ -86,14 +86,7 @@ package rioflashclient2.net
     private static const MEDIA_TYPES_SUPPORTED:Vector.<String> = Vector.<String>([MediaType.VIDEO]);
     private static const MIME_TYPES_SUPPORTED:Vector.<String> = Vector.<String>
     ([
-      "video/x-flv", 
-      "video/x-f4v", 
-      "video/mp4", 
-      "video/mp4v-es", 
-      "video/x-m4v", 
-      "video/3gpp", 
-      "video/3gpp2", 
-      "video/quicktime", 
+      "video/x-flv",
     ]);
   }
 }
