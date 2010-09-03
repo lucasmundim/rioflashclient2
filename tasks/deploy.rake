@@ -56,8 +56,14 @@ task :copy_assets do
   #FileUtils.cp_r source_dirs, destination_dir
 end
 
+esc 'Copies templates assets and generates HTML file for debug'
+task :assets_debug => [:copy_assets, :generate_html_debug]
+
+desc 'Copies templates assets and generates HTML file for debug'
+task :assets => [:copy_assets, :generate_html]
+
 desc 'Compiles Player SWF and generate necessary assets for development environment'
-task :debug => [:generate_html_debug, :copy_assets, :compile_and_debug]
+task :debug => [:clean_bin, :clean_bin, :assets_debug, :compile_and_debug]
 
 desc 'Compiles Player SWF and generate necessary assets for production environment'
-task :deploy => [:clean_bin, :generate_html, :copy_assets, :compile]
+task :deploy => [:clean_bin, :assets, :compile]
