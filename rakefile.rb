@@ -11,7 +11,7 @@ project_model :model do |m|
   m.compiler_gem_name       = 'sprout-flex4sdk-tool'
   m.background_color        = '#FFFFFF'
   m.width                   = 640
-  m.height                  = 400
+  m.height                  = 360
   # m.use_fdb               = true
   # m.use_fcsh              = true
   # m.preprocessor          = 'cpp -D__DEBUG=false -P - - | tail -c +3'

@@ -22,7 +22,7 @@
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
     
-  [SWF(backgroundColor="0x000000", frameRate="30", width="640", height="400")]
+  [SWF(backgroundColor="0x000000", frameRate="30", width="640", height="360")]
   public class Main extends Sprite {
     private var logger:Logger;
     
