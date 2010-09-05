@@ -49,9 +49,9 @@ package rioflashclient2.player {
     public function load():void {
       var url:String;
       //url = lesson.videoURL();
-      //url = "http://vegas.local:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      url = "http://vegas.local:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://roxo.no-ip.com:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
-      url = "http://roxo.no-ip.com:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      //url = "http://roxo.no-ip.com:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://edad.rnp.br/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://edad.rnp.br/transfer.rio?start=29217776&file=/ufrj/exemplos/transp_flash/Aula_002.flv";
   
