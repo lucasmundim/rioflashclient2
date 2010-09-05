@@ -56,7 +56,7 @@ task :copy_assets do
   #FileUtils.cp_r source_dirs, destination_dir
 end
 
-esc 'Copies templates assets and generates HTML file for debug'
+desc 'Copies templates assets and generates HTML file for debug'
 task :assets_debug => [:copy_assets, :generate_html_debug]
 
 desc 'Copies templates assets and generates HTML file for debug'
