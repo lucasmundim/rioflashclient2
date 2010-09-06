@@ -55,8 +55,8 @@ package rioflashclient2.player {
 
       var url:String;
       //url = lesson.videoURL();
-      //url = video.url();
-      url = "http://vegas.local:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      url = video.url();
+      //url = "http://vegas.local:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://roxo.no-ip.com:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://roxo.no-ip.com:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://edad.rnp.br/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
@@ -153,13 +153,17 @@ package rioflashclient2.player {
     }
 
     private function onServerSeek(e:PlayerEvent):void {
-      var seekPercentage:Number = (e.data as Number);
-      var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
+      if (seekDataStore.allowRandomSeek()) {
+        var seekPercentage:Number = (e.data as Number);
+        var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
       
-      logger.debug('Server Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+        logger.debug('Server Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
 
-      loadMedia(appendQueryString(originalVideoURL, seekPosition));
-      play();
+        loadMedia(appendQueryString(originalVideoURL, seekPosition));
+        play();
+      } else {
+        logger.debug('RandomSeek not supported by media element');
+      }
     }
 
     private function onDurationChange(e:TimeEvent):void {

@@ -34,16 +34,16 @@ public class DefaultSeekDataStore {
         return store;
     }
 
+    public function allowRandomSeek():Boolean {
+        return _keyFrameTimes != null && _keyFrameTimes.length > 0;
+    }
+
     protected function extractKeyFrameFilePositions(metadata:Object):Array {
         return null;
     }
 
     protected function extractKeyFrameTimes(metadata:Object):Array {
         return null;
-    }
-
-    internal function allowRandomSeek():Boolean {
-        return _keyFrameTimes != null && _keyFrameTimes.length > 0;        
     }
 
     internal function get dataAvailable():Boolean {
