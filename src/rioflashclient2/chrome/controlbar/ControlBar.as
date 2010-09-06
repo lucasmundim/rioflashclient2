@@ -14,13 +14,13 @@
   import rioflashclient2.event.PlayerEvent;
   
   import flash.display.MovieClip;
+  import flash.events.ErrorEvent;
   import flash.events.Event;
   import flash.events.FullScreenEvent;
   import flash.events.MouseEvent;
   import flash.events.TimerEvent;
   import flash.utils.Timer;
-  
-  import org.osmf.events.LoadEvent;
+
   import org.osmf.events.TimeEvent;
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
@@ -140,6 +140,7 @@
       EventBus.addListener(PlayerEvent.STOP, onStop);
 
       EventBus.addListener(TimeEvent.COMPLETE, onVideoEnded);
+      EventBus.addListener(ErrorEvent.ERROR, onError);
     }
     
     private function resizeAndPosition(e:Event=null):void {
@@ -257,6 +258,10 @@
     }
 
     private function onVideoEnded(e:TimeEvent):void {
+      disable();
+    }
+
+    private function onError(e:ErrorEvent):void {
       disable();
     }
     

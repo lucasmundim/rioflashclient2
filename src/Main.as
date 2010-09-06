@@ -1,10 +1,10 @@
 ﻿package {
   import rioflashclient2.chrome.controlbar.ControlBar;
   import rioflashclient2.chrome.screen.DebugConsole;
+  import rioflashclient2.chrome.screen.ErrorScreen;
   import rioflashclient2.chrome.screen.FullScreenManager;
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.player.Player;
-  import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LoggerEvent;
   import rioflashclient2.logging.EventfulLogger;
   import rioflashclient2.logging.EventfulLoggerFactory;
@@ -15,7 +15,6 @@
   import flash.display.Sprite;
   import flash.display.StageAlign;
   import flash.display.StageScaleMode;
-  import flash.events.ErrorEvent;
   import flash.events.Event;
   
   import org.osmf.logging.Log;
@@ -31,6 +30,7 @@
     private var fullScreenManager:FullScreenManager;
     private var player:Player;
     private var controlbar:ControlBar;
+    private var errorScreen:ErrorScreen;
     private var lessonLoader:LessonLoader;
     
     public function Main():void {
@@ -50,14 +50,18 @@
       logger.info('Starting Application...');
 
       setupConfiguration();
+      setupErrorScreen();
       setupFullScreenManager();
       setupPlayer();
       setupControlBar();
-      
-      EventBus.addListener(ErrorEvent.ERROR, function(e:ErrorEvent):void { logger.error('An error occurred: ' + e.text); });
 
       loadUserSettings();
       loadLesson();
+    }
+
+    private function setupErrorScreen():void{
+      errorScreen = new ErrorScreen();
+      addChild(errorScreen);
     }
     
     public function setupLogger():void {

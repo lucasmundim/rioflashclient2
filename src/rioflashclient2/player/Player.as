@@ -3,13 +3,13 @@ package rioflashclient2.player {
   
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
-  import rioflashclient2.event.LessonEvent;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.model.Lesson;
   import rioflashclient2.model.Video;
   import rioflashclient2.net.RioServerNetLoader;
   import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
   
+  import flash.events.ErrorEvent;
   import flash.events.Event;
   
   import org.osmf.events.LoadEvent;
@@ -168,6 +168,10 @@ package rioflashclient2.player {
         videoElement.defaultDuration = e.time;
       }     
     }
+
+    private function onError(e:ErrorEvent):void {
+      fadeOut();
+    }
     
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
       return seekPercentage * this.mediaPlayer.duration;
@@ -235,6 +239,8 @@ package rioflashclient2.player {
       
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.SERVER_SEEK, onServerSeek);
+
+      EventBus.addListener(ErrorEvent.ERROR, onError);
     }
     
     private function setupEventListeners():void {
