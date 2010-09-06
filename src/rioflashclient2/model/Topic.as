@@ -13,6 +13,12 @@ package rioflashclient2.model {
       return topic;
     }
 
+    public static function toXML(topics:Array):String {
+      for each (var topic:Topic in topics) {
+        trace(topic.text);
+      }
+    }
+
     public function valid():Boolean {
       return true;
     }

@@ -129,6 +129,7 @@ package rioflashclient2.model {
       for each (var topic:XML in indexXML.ind_item) {
         topics.push(Topic.createFromRaw(topic));
       }
+      Topic.toXML(topics);
     }
     
     public function resourceURL(resource:String):String {
