@@ -24,7 +24,7 @@ package rioflashclient2.configuration {
      */
     public var defaultConfigsPerEnvironments:Object = {
       development: {
-        lessonHost: 'http://edad.rnp.br',
+        lessonHost: 'http://vegas.local:3001',
         lessonBaseURI: '/redirect.rio'
       },
       staging: {
