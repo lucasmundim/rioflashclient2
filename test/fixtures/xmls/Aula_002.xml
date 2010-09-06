@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rio_object SYSTEM "object.dtd">
+<rio_object>
+    <obj_filename>Aula_002.mpg</obj_filename>
+    <obj_filesize>420992504</obj_filesize>
+    <obj_title>Recursividade</obj_title>
+    <obj_type>MPEG1 VIDEO</obj_type>
+    <professor>Jayme Luiz Szwarcfiter</professor>
+    <course>Estrutura de dados</course>
+    <coursecode>ead05007</coursecode>
+    <grad_program>Tecnologia em sistemas de computação</grad_program>
+    <source>CEDERJ</source>
+    <bitrate>1100.0</bitrate>
+    <duration>00:51:01</duration>
+    <resolution>
+        <r_x>320</r_x>
+        <r_y>240</r_y>
+    </resolution>
+    <related_media>
+        <rm_item>
+            <rm_filename>Aula_002.index</rm_filename>
+            <rm_type>index</rm_type>
+        </rm_item>
+        <rm_item>
+            <rm_filename>Aula_002.flv</rm_filename>
+            <rm_type>video</rm_type>
+        </rm_item>
+        <rm_item>
+            <rm_filename>Aula_002.sync</rm_filename>
+            <rm_type>sync</rm_type>
+        </rm_item>
+    </related_media>
+</rio_object>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE index SYSTEM "index.dtd">
+<index>
+    <!-- Nome da disciplina -->
+    <main_title> Estrutura de Dados </main_title>
+    <class>
+        <number> 1 </number>
+        <!-- Nome da aula -->
+        <sub_title> Recursividade </sub_title>
+    </class>
+
+    <ind_item>
+        <time> 1 </time>
+        <text> Conteúdo </text>
+    </ind_item>
+
+    <ind_item>
+        <time> 32 </time>
+        <text> Recursividade </text>
+        <ind_item>
+            <time> 254 </time>
+            <text> Recursão x Iteração </text>
+        </ind_item>
+    </ind_item>
+
+    <ind_item>
+        <time> 367 </time>
+        <text> Cálculo de fatorial </text>
+        <ind_item>
+            <time> 623 </time>
+            <text> Recursividade passo a passo </text>
+        </ind_item>
+        <ind_item>
+            <time> 702 </time>
+            <text> Cálculo iterativo de fatorial </text>
+            <ind_item>
+                <time> 879 </time>
+                <text> Iteração passo a passo </text>
+            </ind_item>
+            <ind_item>
+                <time> 916 </time>
+                <text> Exercício </text>
+                <ind_item>
+                    <time> 969 </time>
+                    <text> Solução </text>
+                </ind_item>
+            </ind_item>
+        </ind_item>
+    </ind_item>
+
+    <ind_item>
+        <time> 1038 </time>
+        <text> Problema da torre de Hanói </text>
+        <ind_item>
+            <time> 1220 </time>
+            <text> Problema com 4 discos </text>
+        </ind_item>
+        <ind_item>
+            <time> 1317 </time>
+            <text> Problema com 2 discos </text>
+            <ind_item>
+                <time> 1428 </time>
+                <text> Animação </text>
+            </ind_item>
+        </ind_item>
+        <ind_item>
+            <time> 1456 </time>
+            <text> Exercício </text>
+            <ind_item>
+                <time> 1503 </time>
+                <text> Solução </text>
+            </ind_item>
+            <ind_item>
+                <time> 1634 </time>
+                <text> Animação </text>
+            </ind_item>
+        </ind_item>
+        <ind_item>
+            <time> 1686 </time>
+            <text> Solução do problema geral </text>
+            <ind_item>
+                <time> 2128 </time>
+                <text> Esquema da solução </text>
+            </ind_item>
+            <ind_item>
+                <time> 2199 </time>
+                <text> Ilustração da solução </text>
+            </ind_item>
+            <ind_item>
+                <time> 2313 </time>
+                <text> Algoritmo </text>
+            </ind_item>
+        </ind_item>
+        <ind_item>
+            <time> 2557 </time>
+            <text> Exercícios finais </text>
+        </ind_item>
+    </ind_item>
+
+</index>
