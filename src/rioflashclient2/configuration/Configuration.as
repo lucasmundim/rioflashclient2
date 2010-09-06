@@ -57,14 +57,14 @@ package rioflashclient2.configuration {
      */
     public var autoPlay:Boolean;
 
-		/**
+    /**
      * Whether the control bar should be displayed or not.
      * 
      * @default true
      */
     public var displayControlBar:Boolean;
 
-		/**
+    /**
      * The buttons to be displayed in the control bar.
      * 
      * The given value should be a '|' separated list with the buttons to be
@@ -114,7 +114,7 @@ package rioflashclient2.configuration {
      */
     public var bufferTime:Number;
 
-		private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
+    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
     
     private var rawParameters:Object;
     private var logger:Logger = Log.getLogger('Configuration');
@@ -142,7 +142,7 @@ package rioflashclient2.configuration {
       loadEnvironment();
 
       setupAutoPlay();
-			setupControlBar();
+      setupControlBar();
       setupBufferTime();
       setupLessonXML();
       
@@ -169,10 +169,10 @@ package rioflashclient2.configuration {
     }
     
     private function setupAutoPlay():void {
-			autoPlay = booleanValueOf(rawParameters.autoPlay, false);
+      autoPlay = booleanValueOf(rawParameters.autoPlay, false);
     }
 
-		private function setupControlBar():void {
+    private function setupControlBar():void {
       displayControlBar = booleanValueOf(rawParameters.displayControlBar, true);
       
       controlBarButtons = (rawParameters.controlBarButtons || DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT).split('|');
@@ -186,7 +186,7 @@ package rioflashclient2.configuration {
       lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml'
     }
 
-		private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
+    private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
       if (value == 'true') {
         return true;
       } else if (value == 'false') {

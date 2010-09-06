@@ -6,7 +6,7 @@ import org.osmf.logging.Log;
 import org.osmf.logging.Logger;
 
 public class DefaultSeekDataStore {
-		protected var log:Logger = Log.getLogger(this);
+    protected var log:Logger = Log.getLogger(this);
     protected var _keyFrameTimes:Array;
     protected var _keyFrameFilePositions:Array;
     private var _prevSeekTime:Number = 0;
@@ -19,15 +19,15 @@ public class DefaultSeekDataStore {
             _keyFrameFilePositions = extractKeyFrameFilePositions(metaData);
         } catch (e:Error) {
             log.error("error getting keyframes " + e.message);
-						EventBus.dispatch(new ErrorEvent(ErrorEvent.ERROR, false, false, e.message));
+            EventBus.dispatch(new ErrorEvent(ErrorEvent.ERROR, false, false, e.message));
         }
-				// Debug
+        // Debug
         log.info("_keyFrameTimes array lenth is " + (_keyFrameTimes ? _keyFrameTimes.length+"" : "null array"));
         log.info("_keyFrameFilePositions array lenth is " + (_keyFrameFilePositions ? _keyFrameFilePositions.length+"" : "null array"));
     }
 
     public static function create(metaData:Object):DefaultSeekDataStore {
-				var log:Logger = Log.getLogger('DefaultSeekDataStore');
+        var log:Logger = Log.getLogger('DefaultSeekDataStore');
         log.debug("extracting keyframe times and filepositions");
         var store:DefaultSeekDataStore = new FLVSeekDataStore();
         store.init(metaData);
@@ -83,5 +83,5 @@ public class DefaultSeekDataStore {
     public function currentPlayheadTime(time:Number, start:Number):Number {
         return time - start + _prevSeekTime;
     }
-	}
+  }
 }

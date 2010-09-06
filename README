@@ -52,6 +52,6 @@ exemplos de uso dessas tasks:
   // Copia os assets (javascripts, stylesheets e images) para a pasta bin.
   rake copy_assets
 
-	// Para gerar o index.html e copiar os assets:
-	rake assets
-	rake assets_debug // para debug
+  // Para gerar o index.html e copiar os assets:
+  rake assets
+  rake assets_debug // para debug

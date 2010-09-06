@@ -45,5 +45,5 @@ public class FLVSeekDataStore extends DefaultSeekDataStore {
     override public function currentPlayheadTime(time:Number, start:Number):Number {
         return time - start;
     }
-	}
+  }
 }
