@@ -4,9 +4,9 @@ package rioflashclient2.player {
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
+  import rioflashclient2.media.PlayerMediaFactory;
   import rioflashclient2.model.Lesson;
   import rioflashclient2.model.Video;
-  import rioflashclient2.net.RioServerNetLoader;
   import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
   
   import flash.events.ErrorEvent;
@@ -19,19 +19,20 @@ package rioflashclient2.player {
   import org.osmf.logging.Logger;
   import org.osmf.media.MediaPlayerSprite;
   import org.osmf.media.URLResource;
-  import org.osmf.elements.VideoElement;
   
   public class Player extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('Player');
     
     public var lesson:Lesson;
-    public var videoElement:VideoElement;
+    public var video:Video;
     private var seekDataStore:DefaultSeekDataStore;
     private var originalVideoURL:String;
     private var duration:Number = 0;
     
     public function Player() {
       this.name = 'Player';
+
+      super(null, null, new PlayerMediaFactory());
       
       if (!!stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -49,18 +50,20 @@ package rioflashclient2.player {
     
     public function load(video:Video):void {
       logger.info('Loading video from url: ' + video.url());
-      
+
+      this.video = video;
+
       var url:String;
       //url = lesson.videoURL();
       //url = video.url();
-      url = "http://vegas.local:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
+      url = "http://vegas.local:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://roxo.no-ip.com:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://roxo.no-ip.com:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://edad.rnp.br/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://edad.rnp.br/transfer.rio?start=29217776&file=/ufrj/exemplos/transp_flash/Aula_002.flv";
   
       loadMedia(url);
-      videoElement.client.addHandler("onMetaData", onMetadata);
+      this.media.client.addHandler("onMetaData", onMetadata);
       resize();
     }
 
@@ -71,12 +74,8 @@ package rioflashclient2.player {
       } else {
         logger.info('Seeking from url: ' + url);
       }
-      
-      var urlResouce:URLResource = new URLResource(url);
-      
-      
-      videoElement = new VideoElement(urlResouce, new RioServerNetLoader());
-      this.media = videoElement;
+
+      this.resource = new URLResource(url);
     }
 
     public function onMetadata(info:Object):void
@@ -140,7 +139,7 @@ package rioflashclient2.player {
     private function onVideoEnded(e:TimeEvent):void {
       logger.debug('Video ended.');
 
-      EventBus.dispatch(new PlayerEvent(PlayerEvent.ENDED, { video: currentVideo }));
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.ENDED, { video: video }));
       stop();
     }
     
@@ -165,7 +164,7 @@ package rioflashclient2.player {
 
     private function onDurationChange(e:TimeEvent):void {
       if (e.time && e.time != '0') {
-        videoElement.defaultDuration = e.time;
+        this.media.defaultDuration = e.time;
       }     
     }
 
