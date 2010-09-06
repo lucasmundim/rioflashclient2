@@ -1,7 +1,8 @@
 package rioflashclient2.chrome.screen {
   import rioflashclient2.assets.MessageScreen;
   import rioflashclient2.event.EventBus;
-  
+
+  import flash.display.DisplayObject;
   import flash.display.Sprite;
   import flash.events.ErrorEvent;
   import flash.events.Event;
@@ -13,15 +14,15 @@ package rioflashclient2.chrome.screen {
   public class ErrorScreen extends MessageScreen {
     private var logger:Logger = Log.getLogger('ErrorScreen');
     
-    private static const SIDE_PADDING:Number = 50;
+    private static const SIDE_PADDING_PERCENTAGE:Number = 0.125;
 
-    private static const HEADER_HEIGHT:Number = 40;
-    private static const TITLE_HEIGHT:Number = 100;
-    private static const TEXT_HEIGHT:Number = 140;
+    private static const HEADER_HEIGHT:Number = 42;
+    private static const TITLE_HEIGHT:Number = 80;
+    private static const TEXT_HEIGHT:Number = 160;
 
     private static const DEFAULT_HEADER:String = "OOPS!"
     private static const DEFAULT_TITLE:String = "Vídeo indisponível no momento";
-    private static const DEFAULT_TEXT:String = "O vídeo que você está tentando assistir não foi encontrado ou está temporariamente indisponível. Por favor, tente acessa-lo mais tarde.";
+    private static const DEFAULT_DESCRIPTION:String = "O vídeo que você está tentando assistir não foi encontrado ou está temporariamente indisponível. Por favor, tente acessá-lo mais tarde.";
     
     public function ErrorScreen() {
       if (!!stage) init();
@@ -59,23 +60,27 @@ package rioflashclient2.chrome.screen {
     }
     
     private function setupInterface():void {
-      this.header.defaultTextFormat = new TextFormat("Arial", 35, 0x333333, true);
-      this.title.defaultTextFormat = new TextFormat("Arial", 20, 0x333333, true);
-      this.description.defaultTextFormat = new TextFormat("Arial", 13, 0x666666, true);
+      this.header.defaultTextFormat = new TextFormat(new VAG42().fontName, 42, 0xFFFFFF);
+      this.title.defaultTextFormat = new TextFormat(new VAG20().fontName, 20, 0xFFFFFF);
+      this.description.defaultTextFormat = new TextFormat(new Arial15().fontName, 15, 0xA1A1A1);
+
+      this.header.embedFonts = true;
+      this.title.embedFonts = true;
+      this.description.embedFonts = true;
 
       resizeAndPosition();
     }
     
-    public function showErrorScreen(header:String=null, title:String=null, text:String=null):void {
+    public function showErrorScreen(header:String=null, title:String=null, description:String=null):void {
       this.header.text = header;
       this.title.text = title;
-      this.description.text = text;
+      this.description.text = description;
       
       show();
     }    
     
     public function showError(e:Event):void {
-      showErrorScreen(DEFAULT_HEADER , DEFAULT_TITLE.toUpperCase(), DEFAULT_TEXT.toLowerCase());
+      showErrorScreen(DEFAULT_HEADER , DEFAULT_TITLE.toUpperCase(), DEFAULT_DESCRIPTION.toLowerCase());
     }
     
     private function resizeAndPosition(e:Event=null):void {
@@ -88,12 +93,16 @@ package rioflashclient2.chrome.screen {
     }
     
     private function position():void {
-      this.header.x = SIDE_PADDING;
-      this.header.y = HEADER_HEIGHT;
-      this.title.x = SIDE_PADDING;
-      this.title.y = TITLE_HEIGHT;
-      this.description.x = SIDE_PADDING;
-      this.description.y = TEXT_HEIGHT;
+      resizeAndCenterWidgetHorizontally(this.header);
+      resizeAndCenterWidgetHorizontally(this.title);
+      resizeAndCenterWidgetHorizontally(this.description);
+      resizeAndCenterWidgetHorizontally(this.separatorLine);
+    }
+
+    private function resizeAndCenterWidgetHorizontally(widget:DisplayObject):void {
+      var padding:Number = stage.stageWidth*SIDE_PADDING_PERCENTAGE;
+      widget.x = padding;
+      widget.width = stage.stageWidth - 2*padding;
     }
   
     public function show():void {
