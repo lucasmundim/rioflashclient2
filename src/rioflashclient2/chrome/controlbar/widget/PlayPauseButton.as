@@ -2,6 +2,7 @@
   import caurina.transitions.Tweener;
   
   import rioflashclient2.assets.PlayPauseButtonAsset;
+  import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
   
   import flash.events.Event;
@@ -14,11 +15,8 @@
   public class PlayPauseButton extends PlayPauseButtonAsset implements ILayoutWidget {
     private var currentState:String;
     
-    private var onState:String = 'playing';
-    private var offState:String = 'pause';
-    
-    private var onEvent:Event = new PlayerEvent(PlayerEvent.PLAY);
-    private var offEvent:Event = new PlayerEvent(PlayerEvent.PAUSE);
+    private var playingState:String = 'playing';
+    private var pausedState:String = 'pause';
     
     public function PlayPauseButton() {
       if (!!stage) init();
@@ -27,14 +25,20 @@
     
     private function init(e:Event=null):void {
       setupEventListeners();
+      setupBusListeners();
       setupInterface();
-      setOffState();
+      setPausedState();
     }
     
     private function setupEventListeners():void {
-      addEventListener(MouseEvent.ROLL_OVER, hover);
-      addEventListener(MouseEvent.ROLL_OUT, out);
-      addEventListener(MouseEvent.CLICK, click);
+      addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+      addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
+      addEventListener(MouseEvent.CLICK, onClick);
+    }
+
+    private function setupBusListeners():void {
+      EventBus.addListener(PlayerEvent.PLAY, onPlay);
+      EventBus.addListener(PlayerEvent.PAUSE, onPause);
     }
     
     private function setupInterface():void {
@@ -42,32 +46,38 @@
       background.alpha = 0;
     }
     
-    public function setOnState():void {
-      currentState = onState;
+    public function setPlayingState():void {
+      currentState = playingState;
       gotoAndStop(currentState);
     }
     
-    public function setOffState():void {
-      currentState = offState;
+    public function setPausedState():void {
+      currentState = pausedState;
       gotoAndStop(currentState);
     }
     
-    private function hover(e:MouseEvent):void {
+    private function onMouseOver(e:MouseEvent):void {
       Tweener.addTween(background, { time: 0.5, alpha: 1 });
     }
     
-    private function out(e:MouseEvent):void {
+    private function onMouseOut(e:MouseEvent):void {
       Tweener.addTween(background, { time: 0.5, alpha: 0 });
     }
     
-    private function click(e:MouseEvent=null):void {
-      if (currentState == onState) {
-        setOffState();
-        dispatchEvent(offEvent);
+    private function onClick(e:MouseEvent=null):void {
+      if (currentState == playingState) {
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.PAUSE), EventBus.INPUT);
       } else {
-        setOnState();
-        dispatchEvent(onEvent);
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY), EventBus.INPUT);
       }
+    }
+
+    private function onPlay(e:PlayerEvent):void {
+      setPlayingState();
+    }
+
+    private function onPause(e:PlayerEvent):void {
+      setPausedState();
     }
     
     public function get offsetLeft():Number {

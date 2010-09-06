@@ -1,13 +1,20 @@
 ﻿package rioflashclient2.chrome.controlbar.widget {
   import rioflashclient2.assets.ProgressBarAsset;
+  import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
   
   import flash.events.Event;
   import flash.events.MouseEvent;
+
+  import org.osmf.events.LoadEvent;
+  import org.osmf.events.TimeEvent;
   
   public class ProgressBar extends ProgressBarAsset {
     private var _currentProgressPercentage:Number;
     private var _downloadProgressPercentage:Number;
+
+    private var duration:Number = 0;
+    private var bytesTotal:Number = 0;
     
     public function ProgressBar() {
       if (!!stage) init();
@@ -16,6 +23,7 @@
     
     private function init(e:Event=null):void {
       setupEventListeners();
+      setupBusListeners();
       progressiveMode(); //OnDemand
       
       background.visible = true;
@@ -59,16 +67,57 @@
       addEventListener(MouseEvent.MOUSE_DOWN, onStartDrag);
     }
     
+    private function setupBusListeners():void {
+      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
+      EventBus.addListener(TimeEvent.DURATION_CHANGE, onDurationChange);
+
+      EventBus.addListener(LoadEvent.BYTES_LOADED_CHANGE, onBytesLoadedChange);
+      EventBus.addListener(LoadEvent.BYTES_TOTAL_CHANGE, onBytesTotalChange);
+    }
+
+    private function onCurrentTimeChange(e:TimeEvent):void {
+      updateCurrentProgress(e.time);
+    }
+
+    private function onDurationChange(e:TimeEvent):void {
+      duration = e.time;
+    }
+
+    private function updateCurrentProgress(currentTime:Number):void {
+      if (duration > 0) {
+        currentProgressPercentage = currentTime / duration;
+      } else {
+        currentProgressPercentage = 0;
+      }
+    }
+
+    private function onBytesLoadedChange(e:LoadEvent):void {
+      updateDownloadProgress(e.bytes);
+    }
+
+    private function onBytesTotalChange(e:LoadEvent):void {
+      bytesTotal = e.bytes;
+    }
+
+    private function updateDownloadProgress(bytesLoaded:Number):void {
+      if (bytesTotal > 0) {
+        downloadProgressPercentage = bytesLoaded / bytesTotal;
+      } else {
+        downloadProgressPercentage = 0;
+      }
+    }
+    
     private function onSeek(e:MouseEvent):void {
       var seekPercentage:Number = calculatedSeekPercentageGivenX(e.currentTarget.mouseX);
       
       currentProgress.width = e.currentTarget.mouseX;
 
       if (seekPercentage <= downloadProgressPercentage) {
-        dispatchEvent(new PlayerEvent(PlayerEvent.SEEK, seekPercentage));
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
       } else {
-        dispatchEvent(new PlayerEvent(PlayerEvent.SERVER_SEEK, seekPercentage));
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.SERVER_SEEK, seekPercentage), EventBus.INPUT);
       }
+      EventBus.dispatch(new TimeEvent(TimeEvent.CURRENT_TIME_CHANGE, false, false, seekPercentage * duration), EventBus.INPUT)
     }
     
     private function calculatedSeekPercentageGivenX(x:Number):Number {
@@ -78,15 +127,15 @@
     private function onStartDrag(e:MouseEvent):void {
       stage.addEventListener(MouseEvent.MOUSE_MOVE, onSeek);
       stage.addEventListener(MouseEvent.MOUSE_UP, onStopDrag);
-      
-      dispatchEvent(new PlayerEvent(PlayerEvent.PAUSE));
+
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.PAUSE), EventBus.INPUT);
     }
     
     private function onStopDrag(e:MouseEvent):void {
       stage.removeEventListener(MouseEvent.MOUSE_MOVE, onSeek);
       stage.removeEventListener(MouseEvent.MOUSE_UP, onStopDrag);
-      
-      dispatchEvent(new PlayerEvent(PlayerEvent.PLAY));
+
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY), EventBus.INPUT);
     }
     
     private function reset():void {

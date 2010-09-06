@@ -6,6 +6,7 @@ package rioflashclient2.player {
   import rioflashclient2.event.LessonEvent;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.model.Lesson;
+  import rioflashclient2.model.Video;
   import rioflashclient2.net.RioServerNetLoader;
   import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
   
@@ -46,9 +47,12 @@ package rioflashclient2.player {
       //hide();
     }
     
-    public function load():void {
+    public function load(video:Video):void {
+      logger.info('Loading video from url: ' + video.url());
+      
       var url:String;
       //url = lesson.videoURL();
+      //url = video.url();
       url = "http://vegas.local:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://roxo.no-ip.com:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
       //url = "http://roxo.no-ip.com:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
@@ -84,44 +88,30 @@ package rioflashclient2.player {
     
     public function play():void {
       logger.info('Playing...');
-      
-      if (isStopped()) {
-        fadeIn();
-      }
-      
+
+      fadeIn();
       this.mediaPlayer.play();
     }
     
     public function pause():void {
-      if (this.mediaPlayer.playing) {
-        logger.info('Paused...');
-        this.mediaPlayer.pause();
-      }
+      logger.info('Paused...');
+
+      this.mediaPlayer.pause();
     }
     
     public function stop():void {
-      if (!this.isStopped()) {
-        logger.info('Stopping...');
-        
-        this.mediaPlayer.stop();
-      }
-      
+      logger.info('Stopping...');
+
+      this.mediaPlayer.stop();
       fadeOut();
     }
     
-    private function onLessonLoaded(e:LessonEvent):void {
-      lesson = e.lesson;
-    }
-    
-    private function onReadyToPlay(e:PlayerEvent):void {
-      load();
-      EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY));
+    private function onLoad(e:PlayerEvent):void {
+      load(e.data.video);
     }
     
     private function onPlay(e:PlayerEvent):void {
-      if (hasVideoLoaded()) {
-        play();
-      }
+      play();
     }
     
     private function onPause(e:PlayerEvent):void {
@@ -134,9 +124,7 @@ package rioflashclient2.player {
     
     private function onVolumeChange(e:PlayerEvent):void {
       logger.debug('Volume changed: ' + e.data);
-      var volume:Number = e.data;
-      this.mediaPlayer.volume = volume;
-      this.mediaPlayer.muted = (volume == 0);
+      this.mediaPlayer.volume = e.data;
     }
     
     private function onMute(e:PlayerEvent):void {
@@ -151,6 +139,8 @@ package rioflashclient2.player {
     
     private function onVideoEnded(e:TimeEvent):void {
       logger.debug('Video ended.');
+
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.ENDED, { video: currentVideo }));
       stop();
     }
     
@@ -187,17 +177,11 @@ package rioflashclient2.player {
       return this.media != null;
     }
     
-    public function isStopped():Boolean {
-      return !this.mediaPlayer.playing && !this.mediaPlayer.paused;
-    }
-    
     public function fadeIn():void {
-      this.alpha = 0;
       Tweener.addTween(this, { time: 2, alpha: 1, onStart: show });
     }
     
     public function fadeOut():void {
-      this.alpha = 1;
       Tweener.addTween(this, { time: 2, alpha: 0, onComplete: hide });
     }
     
@@ -207,6 +191,7 @@ package rioflashclient2.player {
     
     public function hide():void {
       visible = false;
+      alpha = 0;
     }
     
     private function setupMediaPlayer():void {
@@ -235,14 +220,11 @@ package rioflashclient2.player {
       this.mediaPlayer.addEventListener(LoadEvent.BYTES_TOTAL_CHANGE, EventBus.dispatch);
     }
     
-    private function setupBusListeners():void {      
-      EventBus.addListener(LessonEvent.LOADED, onLessonLoaded);
-      
+    private function setupBusListeners():void {
+      EventBus.addListener(PlayerEvent.LOAD, onLoad);
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.PAUSE, onPause);
       EventBus.addListener(PlayerEvent.STOP, onStop);
-      
-      EventBus.addListener(PlayerEvent.READY_TO_PLAY, onReadyToPlay);
       
       EventBus.addListener(TimeEvent.COMPLETE, onVideoEnded);
       EventBus.addListener(TimeEvent.DURATION_CHANGE, onDurationChange);

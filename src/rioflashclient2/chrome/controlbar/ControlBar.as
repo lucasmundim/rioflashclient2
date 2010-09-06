@@ -14,7 +14,6 @@
   import rioflashclient2.event.PlayerEvent;
   
   import flash.display.MovieClip;
-  import flash.display.Sprite;
   import flash.events.Event;
   import flash.events.FullScreenEvent;
   import flash.events.MouseEvent;
@@ -35,12 +34,6 @@
     public var progressInformationLabel:ProgressInformationLabel = new ProgressInformationLabel();
     
     private var buttonsToLayout:Array = [];
-    
-    private var currentTime:Number = 0;
-    private var duration:Number = 0;
-    
-    private var bytesLoaded:Number = 0;
-    private var bytesTotal:Number = 0;
     
     private var displayed:Boolean = false;
     private var keepDisplaying:Boolean = false;
@@ -94,7 +87,6 @@
       setupControls();
       setupEventListeners();
       setupBusListeners();
-      setupBusDispatchers();
       resizeAndPosition();
     }
     
@@ -145,46 +137,9 @@
     
     private function setupBusListeners():void {
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
-      EventBus.addListener(PlayerEvent.PAUSE, onPause);
       EventBus.addListener(PlayerEvent.STOP, onStop);
-      
-      EventBus.addListener(PlayerEvent.SEEK, onSeek);
-      EventBus.addListener(PlayerEvent.SERVER_SEEK, onSeek);
-      
-      EventBus.addListener(PlayerEvent.MUTE, onMute);
-      EventBus.addListener(PlayerEvent.UNMUTE, onUnmute);
-      EventBus.addListener(PlayerEvent.VOLUME_CHANGE, onVolumeChange);
-      
+
       EventBus.addListener(TimeEvent.COMPLETE, onVideoEnded);
-      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
-      EventBus.addListener(TimeEvent.DURATION_CHANGE, onDurationChange);
-      
-      EventBus.addListener(LoadEvent.BYTES_LOADED_CHANGE, onBytesLoadedChange);
-      EventBus.addListener(LoadEvent.BYTES_TOTAL_CHANGE, onBytesTotalChange);
-      
-    }
-    
-    private function setupBusDispatchers():void {
-      if (hasPlayPauseButton()) {
-        playPauseButton.addEventListener(PlayerEvent.PLAY, EventBus.dispatch);
-        playPauseButton.addEventListener(PlayerEvent.PAUSE, EventBus.dispatch);
-      }
-      
-      if (hasFullScreenButton()) {
-        fullScreenButton.addEventListener(PlayerEvent.ENTER_FULL_SCREEN, EventBus.dispatch);
-        fullScreenButton.addEventListener(PlayerEvent.EXIT_FULL_SCREEN, EventBus.dispatch);
-      }
-      
-      if (hasVolume()) {
-        volume.addEventListener(PlayerEvent.VOLUME_CHANGE, EventBus.dispatch);
-        volume.addEventListener(PlayerEvent.MUTE, EventBus.dispatch);
-        volume.addEventListener(PlayerEvent.UNMUTE, EventBus.dispatch);
-      }
-      
-      progressBar.addEventListener(PlayerEvent.SEEK, EventBus.dispatch);
-      progressBar.addEventListener(PlayerEvent.SERVER_SEEK, EventBus.dispatch);
-      progressBar.addEventListener(PlayerEvent.PLAY, EventBus.dispatch);
-      progressBar.addEventListener(PlayerEvent.PAUSE, EventBus.dispatch);
     }
     
     private function resizeAndPosition(e:Event=null):void {
@@ -290,106 +245,19 @@
     }
     
     private function fullScreenChanged(e:FullScreenEvent): void {
-      if (e.fullScreen) {
-        logger.info('Entering full screen...');
-        setFullScreenState();
-      } else {
-        logger.info('Exiting full screen...');
-        setNormalState();
-      }
+      Tweener.removeTweens(this); // this fix a bug when changing from or to fullscreen
     }
     
     private function onPlay(e:PlayerEvent):void {
-      logger.debug('onPlay');
       enable();
-      setPlayState();
     }
     
-    private function onPause(e:PlayerEvent):void {
-      setPauseState();
-    }
-    
-    private function onStop(e:PlayerEvent=null):void {
+    private function onStop(e:PlayerEvent):void {
       disable();
     }
-    
-    private function onSeek(e:PlayerEvent):void {
-      var seekPercentage:Number = e.data as Number;
-      var time:Number = seekPercentage * duration;
-      
-      EventBus.dispatch(new TimeEvent(TimeEvent.CURRENT_TIME_CHANGE, false, false, time));
-    }
-    
-    private function onMute(e:PlayerEvent):void {
-      if (hasVolume()) {
-        volume.mute();
-      }
-    }
-    
-    private function onUnmute(e:PlayerEvent):void {
-      if (hasVolume()) {
-        volume.unmute();
-      }
-    }
-    
-    private function onVolumeChange(e:PlayerEvent):void {
-      if (hasVolume()) {
-        volume.level = e.data;
-      }
-    }
-    
+
     private function onVideoEnded(e:TimeEvent):void {
-      onStop(); 
-    }
-    
-    private function onCurrentTimeChange(e:TimeEvent):void {
-      logger.debug('Current Time Changed: ' + e.time);
-      currentTime = e.time;
-      updateCurrentProgress();
-    }
-    
-    private function onDurationChange(e:TimeEvent):void {
-      logger.debug('Duration Changed: ' + e.time);
-      duration = e.time;
-      updateCurrentProgress();
-    }
-    
-    private function updateCurrentProgress():void {
-      if (duration > 0) {
-        if (hasProgressInformationLabel()) {
-          progressInformationLabel.currentTime = currentTime;
-          progressInformationLabel.duration = duration;
-        }
-        
-        progressBar.currentProgressPercentage = currentTime / duration;
-      } else {
-        if (hasProgressInformationLabel()) {
-          progressInformationLabel.currentTime = 0;
-          progressInformationLabel.duration = 0;
-        }
-        
-        progressBar.currentProgressPercentage = 0;
-      }
-    }
-    
-    private function onBytesLoadedChange(e:LoadEvent):void {
-      logger.debug('Bytes Loaded Changed: ' + e.bytes);
-      bytesLoaded = e.bytes;
-      updateDownloadProgress();
-    }
-    
-    private function onBytesTotalChange(e:LoadEvent):void {
-      logger.debug('Bytes Total Changed: ' + e.bytes);
-      bytesTotal = e.bytes;
-      updateDownloadProgress();
-    }
-    
-    private function updateDownloadProgress():void {
-      if (bytesTotal > 0) {
-        progressBar.downloadProgressPercentage = bytesLoaded / bytesTotal;
-      } else {
-        progressBar.downloadProgressPercentage = 0;
-      }
+      disable();
     }
     
     private function addEventHandlers():void {
@@ -421,36 +289,6 @@
       removeEventHandlers();
       hideControlBar();
       fadeOut();
-    }
-    
-    public function setPlayState():void {
-      if (hasPlayPauseButton()) {
-        playPauseButton.setOnState();
-      }
-      resetAutoHide();
-    }
-    
-    public function setPauseState():void {
-      if (hasPlayPauseButton()) {
-        playPauseButton.setOffState();
-      }
-      resetAutoHide();
-    }
-    
-    public function setFullScreenState():void {
-      Tweener.removeTweens(this);
-      if (hasFullScreenButton()) {
-        fullScreenButton.setOnState();
-      }
-      resetAutoHide();
-    }
-    
-    public function setNormalState():void {
-      Tweener.removeTweens(this);
-      if (hasFullScreenButton()) {
-        fullScreenButton.setOffState();
-      }
-      resetAutoHide();
     }
     
     public function fadeIn():void {

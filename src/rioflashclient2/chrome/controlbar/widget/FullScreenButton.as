@@ -2,6 +2,7 @@
   import caurina.transitions.Tweener;
   
   import rioflashclient2.assets.FullScreenButtonAsset;
+  import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
   
   import flash.display.StageDisplayState;
@@ -18,11 +19,8 @@
   public class FullScreenButton extends FullScreenButtonAsset implements ILayoutWidget {
     private var currentState:String;
     
-    private var onState:String = 'fullscreen';
-    private var offState:String = 'normal';
-    
-    private var onEvent:Event = new PlayerEvent(PlayerEvent.ENTER_FULL_SCREEN);
-    private var offEvent:Event = new PlayerEvent(PlayerEvent.EXIT_FULL_SCREEN);
+    private var fullScreenState:String = 'fullscreen';
+    private var normalState:String = 'normal';
     
     public function FullScreenButton() {
       if (!!stage) init();
@@ -31,14 +29,20 @@
     
     private function init(e:Event=null):void {
       setupEventListeners();
+      setupBusListeners();
       setupInterface();
-      setOffState();
+      setNormalState();
     }
     
     private function setupEventListeners():void {
-      addEventListener(MouseEvent.ROLL_OVER, hover);
-      addEventListener(MouseEvent.ROLL_OUT, out);
-      addEventListener(MouseEvent.CLICK, click);
+      addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+      addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
+      addEventListener(MouseEvent.CLICK, onClick);
+    }
+
+    private function setupBusListeners():void {
+      EventBus.addListener(PlayerEvent.ENTER_FULL_SCREEN, onEnterFullScreen);
+      EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, onExitFullScreen);
     }
     
     private function setupInterface():void {
@@ -46,32 +50,40 @@
       background.alpha = 0;
     }
     
-    public function setOnState():void {
-      currentState = onState;
+    public function setFullScreenState():void {
+      currentState = fullScreenState;
       gotoAndStop(currentState);
     }
     
-    public function setOffState():void {
-      currentState = offState;
+    public function setNormalState():void {
+      currentState = normalState
       gotoAndStop(currentState);
     }
     
-    private function hover(e:MouseEvent):void {
+    private function onMouseOver(e:MouseEvent):void {
       Tweener.addTween(background, { time: 0.5, alpha: 1 });
     }
     
-    private function out(e:MouseEvent):void {
+    private function onMouseOut(e:MouseEvent):void {
       Tweener.addTween(background, { time: 0.5, alpha: 0 });
     }
     
-    private function click(e:MouseEvent=null):void {
-      if (currentState == onState) {
-        setOffState();
-        dispatchEvent(offEvent);
+    private function onClick(e:MouseEvent):void {
+      trace(currentState);
+      if (currentState == fullScreenState) {
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.EXIT_FULL_SCREEN), EventBus.INPUT);
       } else {
-        setOnState();
-        dispatchEvent(onEvent);
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.ENTER_FULL_SCREEN), EventBus.INPUT);
       }
+      trace(currentState);
+    }
+
+    private function onEnterFullScreen(e:PlayerEvent):void {
+      setFullScreenState();
+    }
+
+    private function onExitFullScreen(e:PlayerEvent):void {
+      setNormalState();
     }
     
     public function get offsetLeft():Number {

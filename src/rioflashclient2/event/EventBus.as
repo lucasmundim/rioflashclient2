@@ -1,5 +1,4 @@
 package rioflashclient2.event {
-  
   import flash.events.Event;
   import flash.events.EventDispatcher;
 
@@ -7,12 +6,22 @@ package rioflashclient2.event {
   import org.osmf.logging.Logger;
   
   public class EventBus extends EventDispatcher {
+    /**
+    * The name of the default bus.
+    */
+    public static const DEFAULT_BUS:String = 'default';
+
+    /**
+    * The name of the user input bus.
+    */
+    public static const INPUT:String = 'input';
+  
     private static var instances:Object = {};
 
     private var logger:Logger;
     private var name:String;
 
-    public function EventBus(name:String='default') {
+    public function EventBus(name:String=DEFAULT_BUS) {
       this.name = name;
 
       logger = Log.getLogger('EventBus(' + name + ')');
@@ -30,7 +39,7 @@ package rioflashclient2.event {
       return super.addEventListener(type, listener, useCapture, priority, useWeakReference);
     }
     
-    public static function getInstance(name:String='default'):EventBus {
+    public static function getInstance(name:String=DEFAULT_BUS):EventBus {
       if (!instances[name]) {
         instances[name] = new EventBus(name);
       }
@@ -38,7 +47,7 @@ package rioflashclient2.event {
       return instances[name];
     }
     
-    public static function addListener(type:String, listener:Function, name:String='default'):void {
+    public static function addListener(type:String, listener:Function, name:String=DEFAULT_BUS):void {
       getInstance(name).addEventListener(type, listener);
     }
     

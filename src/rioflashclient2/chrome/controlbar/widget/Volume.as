@@ -2,6 +2,7 @@
   import caurina.transitions.Tweener;
   
   import rioflashclient2.assets.VolumeButtonAsset;
+  import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
   
   import flash.events.Event;
@@ -19,7 +20,6 @@
     private var logger:Logger = Log.getLogger('VolumeButton');
     
     private var _level:Number;
-    private var _lastOnLevel:Number = 1;
     
     private var isMuted:Boolean = false;
     private var isSliderBeingDragged:Boolean = false;
@@ -34,18 +34,23 @@
     
     private function init(e:Event=null):void {
       setupEventListeners();
+      setupBusListeners();
       setupInterface();
     }
     
     private function setupEventListeners():void {
-      addEventListener(MouseEvent.ROLL_OVER, hover);
-      addEventListener(MouseEvent.ROLL_OUT, out);
+      addEventListener(MouseEvent.ROLL_OVER, onMouseOver);
+      addEventListener(MouseEvent.ROLL_OUT, onMouseOut);
       
-      slider.dragHitArea.addEventListener(MouseEvent.CLICK, changeLevel);
-      slider.drag.addEventListener(MouseEvent.MOUSE_DOWN, startSliderDrag);
+      slider.dragHitArea.addEventListener(MouseEvent.CLICK, onChangeLevel);
+      slider.drag.addEventListener(MouseEvent.MOUSE_DOWN, onStartSliderDrag);
       
-      muteButton.addEventListener(MouseEvent.CLICK, mute);
-      unmuteButton.addEventListener(MouseEvent.CLICK, unmute);
+      muteButton.addEventListener(MouseEvent.CLICK, onMuteClick);
+      unmuteButton.addEventListener(MouseEvent.CLICK, onUnmuteClick);
+    }
+
+    private function setupBusListeners():void {
+      EventBus.addListener(PlayerEvent.VOLUME_CHANGE, onVolumeChange);
     }
     
     private function setupInterface():void {
@@ -76,31 +81,21 @@
       }
     }
     
-    public function unmute(e:Event=null):void {
-      if (isMuted) {
-        logger.info('Unmuting...');
-        restoreLevelState();
-        volumeChanged();
-        dispatchEvent(new PlayerEvent(PlayerEvent.UNMUTE));
-        logger.debug('Unmuted, current level: ' + level);
-      }
+    public function onUnmuteClick(e:Event=null):void {
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.UNMUTE), EventBus.INPUT);
     }
     
-    public function mute(e:Event=null):void {
-      if (!isMuted) {
-        logger.debug('Muting...');
-        saveLevelState();
-        muteLevel();
-        volumeChanged();
-        dispatchEvent(new PlayerEvent(PlayerEvent.MUTE));
-        logger.debug('Muted, last on level: ' + _lastOnLevel);
-      }
+    public function onMuteClick(e:Event=null):void {
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.MUTE), EventBus.INPUT);
     }
     
-    private function changeLevel(e:MouseEvent):void {
-      saveLevelState();
+    private function onChangeLevel(e:MouseEvent):void {
       level = calculatedLevelGivenY(e.currentTarget.mouseY);
-      volumeChanged();
+      dispatchVolumeChanged();
+    }
+
+    private function onVolumeChange(e:PlayerEvent):void {
+      level = e.data;
     }
     
     private function animateVolumeSlider():void {
@@ -108,24 +103,8 @@
       Tweener.addTween(slider.drag, { time: 0.7, y: calculatedDragAndFillY() });
     }
     
-    private function volumeChanged():void {
-      dispatchEvent(new PlayerEvent(PlayerEvent.VOLUME_CHANGE, level));
-    }
-    
-    private function muteLevel():void {
-      level = 0;
-    }
-    
-    private function saveLevelState():void {
-      if (level > 0) {
-        _lastOnLevel = level;
-      }
-    }
-    
-    private function restoreLevelState():void {
-      if (level == 0 || isNaN(level)) {
-        level = _lastOnLevel;
-      }
+    private function dispatchVolumeChanged():void {
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.VOLUME_CHANGE, level), EventBus.INPUT);
     }
     
     private function setIsMuted():void {
@@ -137,34 +116,27 @@
       unmuteButton.visible = isMuted;
     }
     
-    private function sliderDragged(e:MouseEvent):void {
-      logger.debug('Volume slider is being dragged. Current drag Y:' + slider.drag.y);
-      
+    private function onSliderDragged(e:MouseEvent):void {
       level = calculatedLevelGivenY(slider.drag.y);
       slider.fillBar.y = slider.drag.y; // changing the fill to follow drag position
       
-      saveLevelState(); // saving level state
-      volumeChanged(); // notifying volume modification
+      dispatchVolumeChanged(); // notifying volume modification
     }
     
-    private function startSliderDrag(e:MouseEvent):void {
-      logger.debug('Starting volume slider drag...');
-      
+    private function onStartSliderDrag(e:MouseEvent):void {
       isSliderBeingDragged = true;
       slider.drag.startDrag(false, sliderDragRegion());
       
-      stage.addEventListener(MouseEvent.MOUSE_MOVE, sliderDragged);
-      stage.addEventListener(MouseEvent.MOUSE_UP, stopSliderDrag);
+      stage.addEventListener(MouseEvent.MOUSE_MOVE, onSliderDragged);
+      stage.addEventListener(MouseEvent.MOUSE_UP, onStopSliderDrag);
     }
     
-    private function stopSliderDrag(e:MouseEvent):void {
-      logger.debug('Stopping volume slider drag...');
-      
+    private function onStopSliderDrag(e:MouseEvent):void {
       slider.drag.stopDrag();
       isSliderBeingDragged = false;
       
-      stage.removeEventListener(MouseEvent.MOUSE_MOVE, sliderDragged);
-      stage.removeEventListener(MouseEvent.MOUSE_UP, stopSliderDrag);
+      stage.removeEventListener(MouseEvent.MOUSE_MOVE, onSliderDragged);
+      stage.removeEventListener(MouseEvent.MOUSE_UP, onStopSliderDrag);
     }
     
     private function sliderDragRegion():Rectangle {
@@ -181,11 +153,11 @@
       Tweener.addTween(background, { time: 1, alpha: 0, height: BACKGROUND_OFF_HEIGHT, y: 0 });
     }
     
-    private function hover(e:MouseEvent):void {
+    private function onMouseOver(e:MouseEvent):void {
       displaySlider();
     }
     
-    private function out(e:MouseEvent):void {
+    private function onMouseOut(e:MouseEvent):void {
       if (!isSliderBeingDragged) {
         hideSlider();
       }

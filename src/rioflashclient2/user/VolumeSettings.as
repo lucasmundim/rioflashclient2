@@ -1,6 +1,7 @@
 package rioflashclient2.user {
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
+  import rioflashclient2.model.Volume;
   
   import flash.net.SharedObject;
   
@@ -14,9 +15,11 @@ package rioflashclient2.user {
     private var logger:Logger = Log.getLogger('VolumeSettings');
     
     private var userSettings:SharedObject;
+    private var volume:Volume;
     
     public function VolumeSettings() {
       userSettings = SharedObject.getLocal(USER_VOLUME_SETTINGS_COOKIE_NAME, "/");
+      volume = new Volume();
       
       setupEventListeners();
     }
@@ -38,7 +41,7 @@ package rioflashclient2.user {
     }
     
     private function volumeChanged():void {
-      EventBus.dispatch(new PlayerEvent(PlayerEvent.VOLUME_CHANGE, level));
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.VOLUME_CHANGE, level), EventBus.INPUT);
     }
     
     public function get level():Object {

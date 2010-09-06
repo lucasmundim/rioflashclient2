@@ -5,6 +5,8 @@ package rioflashclient2.model {
 
   import flash.events.Event;
 
+  import org.osmf.events.TimeEvent;
+
   import br.com.stimuli.loading.BulkLoader;
   import br.com.stimuli.loading.BulkProgressEvent;
 
@@ -26,7 +28,7 @@ package rioflashclient2.model {
     public var resolution_y:String;
     public var index:String;
     public var sync:String;
-    public var video:String;
+    private var _video:Video;
     private var slides:Array = new Array();
     private var topics:Array = new Array();
     
@@ -35,7 +37,19 @@ package rioflashclient2.model {
     }
     
     public function valid():Boolean {
-      return allSlidesValid() && allTopicsValid();
+      return hasVideo() && videoValid() && allSlidesValid() && allTopicsValid();
+    }
+
+    public function videoValid():Boolean {
+      return _video.valid();
+    }
+
+    public function video():Video {
+      return _video;
+    }
+
+    public function hasVideo():Boolean {
+      return video != null;
     }
     
     public function allSlidesValid():Boolean {
@@ -66,14 +80,38 @@ package rioflashclient2.model {
       resolution_y = xml.resolution.r_y
       index = xml.related_media.rm_item.(rm_type == 'index').rm_filename;
       sync = xml.related_media.rm_item.(rm_type == 'sync').rm_filename;
-      video = xml.related_media.rm_item.(rm_type == 'video').rm_filename;
+      _video = new Video(resourceURL(xml.related_media.rm_item.(rm_type == 'video').rm_filename));
+
+      setupInputBusListeners();
+    }
+
+    private function onInputPlay(e:PlayerEvent):void {
+      video().play();
+    }
+
+    private function onInputPause(e:PlayerEvent):void {
+      video().pause();
+    }
+
+    private function onInputStop(e:PlayerEvent):void {
+      video().stop();
+    }
+
+    private function setupInputBusListeners():void {
+      EventBus.addListener(PlayerEvent.PLAY, onInputPlay, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.PAUSE, onInputPause, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.STOP, onInputStop, EventBus.INPUT);
+
+      EventBus.addListener(PlayerEvent.SEEK, EventBus.dispatch, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.SERVER_SEEK, EventBus.dispatch, EventBus.INPUT);
+      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, EventBus.dispatch, EventBus.INPUT);
     }
 
     public function loadTopicsAndSlides():void {
       loader = new BulkLoader('index-sync-load');
       
-      loader.add(Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + this.sync, { id: "sync-xml" });
-      loader.add(Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + this.index, { id: "index-xml" });
+      loader.add(resourceURL(this.sync), { id: "sync-xml" });
+      loader.add(resourceURL(this.index), { id: "index-xml" });
       
       loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
       
@@ -91,12 +129,10 @@ package rioflashclient2.model {
       for each (var topic:XML in indexXML.ind_item) {
         topics.push(Topic.createFromRaw(topic));
       }
-
-      EventBus.dispatch(new PlayerEvent(PlayerEvent.READY_TO_PLAY));
     }
     
-    public function videoURL():String {
-      return Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + this.video
+    public function resourceURL(resource:String):String {
+      return Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + resource;
     }
   }
 }

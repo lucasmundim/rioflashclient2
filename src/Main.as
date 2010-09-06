@@ -1,11 +1,11 @@
 ﻿package {
   import rioflashclient2.chrome.controlbar.ControlBar;
   import rioflashclient2.chrome.screen.DebugConsole;
+  import rioflashclient2.chrome.screen.FullScreenManager;
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.player.Player;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LoggerEvent;
-  import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.logging.EventfulLogger;
   import rioflashclient2.logging.EventfulLoggerFactory;
   import rioflashclient2.model.LessonLoader;
@@ -14,7 +14,6 @@
   import flash.display.LoaderInfo;
   import flash.display.Sprite;
   import flash.display.StageAlign;
-  import flash.display.StageDisplayState;
   import flash.display.StageScaleMode;
   import flash.events.ErrorEvent;
   import flash.events.Event;
@@ -29,6 +28,7 @@
     private var rawParameters:Object;
 
     private var debugConsole:DebugConsole;
+    private var fullScreenManager:FullScreenManager;
     private var player:Player;
     private var controlbar:ControlBar;
     private var lessonLoader:LessonLoader;
@@ -50,7 +50,7 @@
       logger.info('Starting Application...');
 
       setupConfiguration();
-      setupFullScreenHandlers();
+      setupFullScreenManager();
       setupPlayer();
       setupControlBar();
       
@@ -87,17 +87,8 @@
       Configuration.getInstance().readParameters(this.rawParameters);
     }
 
-    private function setupFullScreenHandlers():void {
-      EventBus.addListener(PlayerEvent.ENTER_FULL_SCREEN, enterFullScreen);
-      EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, exitFullScreen);
-    }
-
-    private function enterFullScreen(e:PlayerEvent):void {
-      stage.displayState = StageDisplayState.FULL_SCREEN;
-    }
-    
-    private function exitFullScreen(e:PlayerEvent):void {
-      stage.displayState = StageDisplayState.NORMAL;
+    private function setupFullScreenManager():void {
+      fullScreenManager = new FullScreenManager(stage);
     }
 
     private function setupPlayer():void {

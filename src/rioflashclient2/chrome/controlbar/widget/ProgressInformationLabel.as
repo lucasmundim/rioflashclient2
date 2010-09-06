@@ -1,9 +1,13 @@
 package rioflashclient2.chrome.controlbar.widget {
+  import rioflashclient2.event.EventBus;
+  
   import flash.display.Sprite;
   import flash.text.AntiAliasType;
   import flash.text.TextField;
   import flash.text.TextFormat;
   import flash.text.TextFormatAlign;
+
+  import org.osmf.events.TimeEvent;
   
   public class ProgressInformationLabel extends Sprite implements ILayoutWidget {
     private var timeInformationField:TextField;
@@ -16,11 +20,25 @@ package rioflashclient2.chrome.controlbar.widget {
     private static const TOP_PADDING:Number = 4;
     
     public function ProgressInformationLabel() {
+      setupBusListeners();
       setupFormat();
       setupTimeInformationField();
       
       addChild(timeInformationField);
       formatLabel();
+    }
+
+    private function setupBusListeners():void {
+      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
+      EventBus.addListener(TimeEvent.DURATION_CHANGE, onDurationChange);
+    }
+
+    private function onCurrentTimeChange(e:TimeEvent):void {
+      currentTime = e.time;
+    }
+
+    private function onDurationChange(e:TimeEvent):void {
+      duration = e.time;
     }
     
     public function get label():String {
@@ -28,13 +46,17 @@ package rioflashclient2.chrome.controlbar.widget {
     }
     
     public function set currentTime(currentTime:Number):void {
-      _currentTime = currentTime;
-      formatLabel();
+      if (!isNaN(currentTime)) {
+        _currentTime = currentTime;
+        formatLabel();
+      }
     }
     
     public function set duration(duration:Number):void {
-      _duration = duration;
-      formatLabel();
+      if (!isNaN(duration)) {
+        _duration = duration;
+        formatLabel();
+      }
     }
     
     private function formatLabel():void {
