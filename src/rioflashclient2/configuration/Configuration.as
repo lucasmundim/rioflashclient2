@@ -24,7 +24,7 @@ package rioflashclient2.configuration {
      */
     public var defaultConfigsPerEnvironments:Object = {
       development: {
-        lessonHost: 'http://vegas.local:3001',
+        lessonHost: 'http://roxo.no-ip.com:3001',
         lessonBaseURI: '/redirect.rio'
       },
       staging: {
@@ -183,7 +183,7 @@ package rioflashclient2.configuration {
     }
 
     private function setupLessonXML():void {
-      lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml'
+      lessonXML = rawParameters.aulaXML || 'Aula_002.xml'
     }
 
     private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
