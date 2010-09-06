@@ -49,8 +49,6 @@ package rioflashclient2.player {
     }
     
     public function load(video:Video):void {
-      logger.info('Loading video from url: ' + video.url());
-
       this.video = video;
 
       var url:String;
@@ -64,7 +62,7 @@ package rioflashclient2.player {
   
       loadMedia(url);
       this.media.client.addHandler("onMetaData", onMetadata);
-      resize();
+      //resize();
     }
 
     public function loadMedia(url:String=""):void {
