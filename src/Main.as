@@ -29,6 +29,7 @@
 
     private var debugConsole:DebugConsole;
     private var fullScreenManager:FullScreenManager;
+    private var volumeSettings:VolumeSettings;
     private var player:Player;
     private var topicsTree:TopicsNavigator;
     private var controlbar:ControlBar;

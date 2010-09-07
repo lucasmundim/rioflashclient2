@@ -1,4 +1,5 @@
 package rioflashclient2.net.pseudostreaming {
+import rioflashclient2.event.EventBus;
 
 import flash.events.ErrorEvent;
 
@@ -6,7 +7,7 @@ import org.osmf.logging.Log;
 import org.osmf.logging.Logger;
 
 public class DefaultSeekDataStore {
-    protected var log:Logger = Log.getLogger(this);
+    protected var log:Logger = Log.getLogger('DefaultSeekDataStore');
     protected var _keyFrameTimes:Array;
     protected var _keyFrameFilePositions:Array;
     private var _prevSeekTime:Number = 0;

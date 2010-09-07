@@ -1,17 +1,10 @@
 package rioflashclient2.player {
   import caurina.transitions.Tweener;
   
-  import rioflashclient2.configuration.Configuration;
-  import rioflashclient2.event.EventBus;
-  import rioflashclient2.event.PlayerEvent;
-  import rioflashclient2.media.PlayerMediaFactory;
-  import rioflashclient2.model.Lesson;
-  import rioflashclient2.model.Video;
-  import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
-  
   import flash.events.ErrorEvent;
   import flash.events.Event;
   
+  import org.osmf.elements.VideoElement;
   import org.osmf.events.LoadEvent;
   import org.osmf.events.TimeEvent;
   import org.osmf.layout.ScaleMode;
@@ -19,6 +12,14 @@ package rioflashclient2.player {
   import org.osmf.logging.Logger;
   import org.osmf.media.MediaPlayerSprite;
   import org.osmf.media.URLResource;
+  
+  import rioflashclient2.configuration.Configuration;
+  import rioflashclient2.event.EventBus;
+  import rioflashclient2.event.PlayerEvent;
+  import rioflashclient2.media.PlayerMediaFactory;
+  import rioflashclient2.model.Lesson;
+  import rioflashclient2.model.Video;
+  import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
   
   public class Player extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('Player');
@@ -61,7 +62,7 @@ package rioflashclient2.player {
       //url = "http://edad.rnp.br/transfer.rio?start=29217776&file=/ufrj/exemplos/transp_flash/Aula_002.flv";
   
       loadMedia(url);
-      this.media.client.addHandler("onMetaData", onMetadata);
+      (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
       //resize();
     }
 
@@ -176,8 +177,8 @@ package rioflashclient2.player {
     }
 
     private function onDurationChange(e:TimeEvent):void {
-      if (e.time && e.time != '0') {
-        this.media.defaultDuration = e.time;
+      if (e.time && e.time.toString() != '0') {
+        (this.media as VideoElement).defaultDuration = e.time;
       }     
     }
 
