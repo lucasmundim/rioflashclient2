@@ -164,6 +164,17 @@ package rioflashclient2.player {
       }
     }
 
+    private function onTopicsSeek(e:PlayerEvent):void {
+      if (seekDataStore.allowRandomSeek()) {
+        logger.debug('Topics Seeking to position {0} in seconds.', e.data);
+
+        loadMedia(appendQueryString(originalVideoURL, e.data));
+        play();
+      } else {
+        logger.debug('RandomSeek not supported by media element');
+      }
+    }
+
     private function onDurationChange(e:TimeEvent):void {
       if (e.time && e.time != '0') {
         this.media.defaultDuration = e.time;
@@ -240,6 +251,7 @@ package rioflashclient2.player {
       
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.SERVER_SEEK, onServerSeek);
+      EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
 
       EventBus.addListener(ErrorEvent.ERROR, onError);
     }

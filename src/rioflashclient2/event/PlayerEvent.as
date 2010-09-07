@@ -12,6 +12,7 @@ package rioflashclient2.event {
     
     public static const SEEK                  :String = "onSeek";
     public static const SERVER_SEEK           :String = "onServerSeek";
+    public static const TOPICS_SEEK           :String = "onTopicsSeek";
     
     public static const VOLUME_CHANGE         :String = "onVolumeChange";
     public static const MUTE                  :String = "onMute";

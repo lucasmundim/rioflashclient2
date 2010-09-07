@@ -2,14 +2,11 @@
   import rioflashclient2.model.Lesson;
   
   import flash.events.Event;
-  
-  /**
-   * ...
-   * @author 
-   */
+
   public class LessonEvent extends Event {
-    static public const LOADED   :String = "Lesson Loaded"
-    static public const RELOADED :String = "Lesson Reloaded"
+    static public const LOADED             :String = "Lesson Loaded"
+    static public const RESOURCES_LOADED   :String = "Lesson Resources Loaded"
+    static public const RELOADED           :String = "Lesson Reloaded"
     
     public var lesson:Lesson;
     

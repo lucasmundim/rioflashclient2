@@ -1,5 +1,6 @@
 package rioflashclient2.model {
   import rioflashclient2.event.EventBus;
+  import rioflashclient2.event.LessonEvent;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.configuration.Configuration;
 
@@ -28,16 +29,18 @@ package rioflashclient2.model {
     public var resolution_y:String;
     public var index:String;
     public var sync:String;
+    public var indexXML:XML;
+    public var syncXML:XML;
+    public var topics:Topics;
     private var _video:Video;
     private var slides:Array = new Array();
-    private var topics:Array = new Array();
     
     public function Lesson() {
       // do nothing
     }
     
     public function valid():Boolean {
-      return hasVideo() && videoValid() && allSlidesValid() && allTopicsValid();
+      return hasVideo() && videoValid() && allSlidesValid();
     }
 
     public function videoValid():Boolean {
@@ -55,12 +58,6 @@ package rioflashclient2.model {
     public function allSlidesValid():Boolean {
       return slides.every(function(slide:Slide, index:int, array:Array):Boolean {
         return slide.valid();
-      });
-    }
-
-    public function allTopicsValid():Boolean {
-      return topics.every(function(topic:Topic, index:int, array:Array):Boolean {
-        return topic.valid();
       });
     }
     
@@ -119,17 +116,16 @@ package rioflashclient2.model {
     }
     
     public function onAllItemsLoaded(evt : Event) : void {
-      var syncXML:XML = new XML(loader.getText("sync-xml"));
-      var indexXML:XML = new XML(loader.getText("index-xml"));
+      syncXML = new XML(loader.getText("sync-xml"));
+      indexXML = new XML(loader.getText("index-xml"));
 
       for each (var slide:XML in syncXML.slide) {
         slides.push(Slide.createFromRaw(slide));
       }
       
-      for each (var topic:XML in indexXML.ind_item) {
-        topics.push(Topic.createFromRaw(topic));
-      }
-      Topic.toXML(topics);
+      topics = new Topics(indexXML);
+
+      EventBus.dispatch(new LessonEvent(LessonEvent.RESOURCES_LOADED, this));
     }
     
     public function resourceURL(resource:String):String {

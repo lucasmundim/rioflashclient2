@@ -10,6 +10,7 @@
   import rioflashclient2.logging.EventfulLoggerFactory;
   import rioflashclient2.model.LessonLoader;
   import rioflashclient2.user.VolumeSettings;
+  import rioflashclient2.chrome.controlbar.widget.TopicsNavigator;
   
   import flash.display.LoaderInfo;
   import flash.display.Sprite;
@@ -19,9 +20,6 @@
   
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
-
-  import com.yahoo.astra.fl.controls.Tree;
-  import com.yahoo.astra.fl.controls.treeClasses.*;
     
   [SWF(backgroundColor="0x000000", frameRate="30", width="640", height="360")]
   public class Main extends Sprite {
@@ -32,7 +30,7 @@
     private var debugConsole:DebugConsole;
     private var fullScreenManager:FullScreenManager;
     private var player:Player;
-		private var topicsTree:Tree;
+    private var topicsTree:TopicsNavigator;
     private var controlbar:ControlBar;
     private var errorScreen:ErrorScreen;
     private var lessonLoader:LessonLoader;
@@ -106,21 +104,7 @@
     }
 
     private function setupTreeView():void {
-      topicsTree = new Tree();  
-
-      var topicsXML:XML = <node label="Root">  
-        <node label="Folder 1">  
-          <node label="File 1"/>  
-          <node label="File 2"/>  
-        </node>  
-        <node label="Folder 2">  
-          <node label="File 3"/>  
-          <node label="File 4"/>  
-        </node>  
-      </node>  
-
-      topicsTree.dataProvider = new TreeDataProvider( topicsXML );
-
+      topicsTree = new TopicsNavigator();  
       addChild(topicsTree);
     }
 
