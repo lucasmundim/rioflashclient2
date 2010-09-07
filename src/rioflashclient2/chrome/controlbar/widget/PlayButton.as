@@ -6,10 +6,6 @@
   import flash.events.Event;
   import flash.events.MouseEvent;
   
-  /**
-   * ...
-   * @author 
-   */
   public class PlayButton extends PlayOverlay {
     public function PlayButton() {
       if (!!stage) init();
