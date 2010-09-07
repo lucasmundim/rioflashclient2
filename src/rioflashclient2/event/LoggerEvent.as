@@ -1,10 +1,6 @@
 ﻿package rioflashclient2.event {
   import flash.events.Event;
-  
-  /**
-   * ...
-   * @author 
-   */
+
   public class LoggerEvent extends Event {
     public static const LOGGER_EVENT:String = "loggerEvent";
     
