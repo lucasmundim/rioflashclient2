@@ -183,7 +183,8 @@ package rioflashclient2.configuration {
     }
 
     private function setupLessonXML():void {
-      lessonXML = rawParameters.aulaXML || 'Aula_002.xml'
+      //lessonXML = rawParameters.aulaXML || 'Aula_002.xml'
+      lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml'
     }
 
     private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
