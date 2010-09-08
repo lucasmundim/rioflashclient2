@@ -183,8 +183,12 @@ package rioflashclient2.configuration {
     }
 
     private function setupLessonXML():void {
-      //lessonXML = rawParameters.aulaXML || 'Aula_002.xml'
-      lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml'
+      //lessonXML = rawParameters.aulaXML || 'Aula_002.xml';
+      
+      //lessonXML = 'Aula_002.xml';
+      //lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
+      //lessonXML = '/ufjf/ciencias_exatas/dcc119/aula1/dcc119_aula1.xml';
+      lessonXML = '/ufrj/exemplos/exemplo_workshop_abertura_se/exemplo_frutas.xml';
     }
 
     private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
