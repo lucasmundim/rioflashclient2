@@ -12,6 +12,7 @@
   public class ProgressBar extends ProgressBarAsset {
     private var _currentProgressPercentage:Number;
     private var _downloadProgressPercentage:Number;
+    private var _startedPlayAheadPercentage:Number = 0;
 
     private var duration:Number = 0;
     private var bytesTotal:Number = 0;
@@ -47,6 +48,14 @@
     public function set downloadProgressPercentage(percentage:Number):void {
       _downloadProgressPercentage = percentage;
       resizeDownloadProgress();
+    }
+
+    public function get startedPlayAheadPercentage():Number {
+      return _startedPlayAheadPercentage;
+    }
+    
+    public function set startedPlayAheadPercentage(percentage:Number):void {
+      _startedPlayAheadPercentage = percentage;
     }
     
     public function streamingMode():void {
@@ -112,10 +121,11 @@
       
       currentProgress.width = e.currentTarget.mouseX;
 
-      if (seekPercentage <= downloadProgressPercentage) {
+      if (seekPercentage <= downloadProgressPercentage && seekPercentage >= startedPlayAheadPercentage) {
         EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
       } else {
         EventBus.dispatch(new PlayerEvent(PlayerEvent.SERVER_SEEK, seekPercentage), EventBus.INPUT);
+        startedPlayAheadPercentage = seekPercentage;
       }
       EventBus.dispatch(new TimeEvent(TimeEvent.CURRENT_TIME_CHANGE, false, false, seekPercentage * duration), EventBus.INPUT)
     }
