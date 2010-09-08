@@ -16,4 +16,4 @@ test_server.log
 .FlexUnitSettings/**/*
 src/FlexUnitApplication.as
 src/FlexUnitCompilerApplication.as
-test/fixtures/xmls/palestra_nelson.flv
+test/fixtures/xmls/*.flv
