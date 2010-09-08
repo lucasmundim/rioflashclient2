@@ -69,7 +69,7 @@
     }
     
     public function setupLogger():void {
-      Log.loggerFactory = new EventfulLoggerFactory(this.rawParameters.logLevel);
+      Log.loggerFactory = new EventfulLoggerFactory(this.rawParameters.logLevel || 3);
       logger = Log.getLogger('Main');
     }
 
