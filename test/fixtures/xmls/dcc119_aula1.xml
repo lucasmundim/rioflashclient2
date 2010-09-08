@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rio_object SYSTEM "object.dtd">
+<rio_object>
+    <obj_filename>dcc119_aula1.flv</obj_filename>
+    <obj_filesize>31281530</obj_filesize>
+    <obj_title>Tipos de Dados, Variáveis e Comandos de Entrada e Saída</obj_title>
+    <obj_type>h.264 FLV</obj_type>
+    <professor>Eduardo Barrére</professor>
+    <course>Algoritmos</course>
+    <coursecode>dcc119</coursecode>
+    <grad_program>Ciências Exatas</grad_program>
+    <source>UFJF</source>
+    <bitrate>1100.0</bitrate>
+    <duration>00:41:22</duration>
+    <resolution>
+        <r_x>320</r_x>
+        <r_y>240</r_y>
+    </resolution>
+<related_media>
+        <rm_item>
+            <rm_filename>dcc119_aula1.index</rm_filename>
+            <rm_type>index</rm_type>
+        </rm_item>
+        <rm_item>
+            <rm_filename>dcc119_aula1.flv</rm_filename>
+            <rm_type>video</rm_type>
+        </rm_item>
+        <rm_item>
+            <rm_filename>dcc119_aula1.sync</rm_filename>
+            <rm_type>sync</rm_type>
+        </rm_item>
+    </related_media>
+</rio_object>

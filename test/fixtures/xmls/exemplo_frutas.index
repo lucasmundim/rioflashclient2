@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE index SYSTEM "index.dtd">
+<index>
+    <!-- Nome da disciplina -->
+    <main_title> Exemplo Frutas  </main_title>
+
+    <ind_item>
+        <time>15</time>
+        <text>Cenoura 1</text>
+    </ind_item>
+
+    <ind_item>
+        <time>37</time>
+        <text>Abacaxi</text>
+    </ind_item>
+
+    <ind_item>
+        <time>60</time>
+        <text>Morango</text>
+    </ind_item>
+
+</index>

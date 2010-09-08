@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<slides>
+    <slide time="1" relative_path="exemplo_videoaula.swf">
+    </slide>
+    <slide time="15" relative_path="exemplo_cenouras.swf">
+    </slide>
+    <slide time="37" relative_path="exemplo_abacaxi.swf">
+    </slide>
+    <slide time="60" relative_path="exemplo_morango.swf">
+    </slide>
+</slides>

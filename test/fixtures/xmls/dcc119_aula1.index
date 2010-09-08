@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE index SYSTEM "index.dtd">
+<index>
+    <main_title>Algoritmos</main_title>
+    <class>
+        <number>1</number>
+        <sub_title>Tipos de Dados, Variáveis e Comandos de Entrada e Saída</sub_title>
+    </class>
+    <ind_item>
+        <time>0</time>
+        <text>Apresentação</text>
+    </ind_item>
+    <ind_item>
+        <time>159.32</time>
+        <text>Variáveis</text>
+    </ind_item>
+
+
+    
+    <ind_item>    
+        <time>296.36</time>
+        <text>Tipos de Dados</text>
+
+        <ind_item>
+            <time>1002.2</time>
+            <text>Pratique</text> 
+        </ind_item>	  
+    </ind_item>    
+   
+    
+    <ind_item>    
+        <time>1146.92</time>
+        <text>Comandos Básicos</text>
+    </ind_item>
+            
+     <ind_item>
+            <time>1777.32</time>
+            <text>Estrutura de Controle</text> 	  
+    </ind_item>    
+    
+    <ind_item>    
+        <time>1840.36</time>
+        <text>Métodos de Criação - Método Direto</text>
+       <ind_item>    
+         <time>1943.88</time>
+         <text>Questão 1</text>
+        <ind_item>
+            <time>2177.56</time>
+            <text>Questão 2</text> 
+        </ind_item>	  
+    </ind_item>    
+</ind_item>
+
+    <ind_item>
+        <time>2338.36</time>
+        <text>Método dos Refinamentos Sucessivos</text>
+    </ind_item>	
+    
+    <ind_item>
+        <time>2406</time>
+        <text>Método Misto</text>
+    </ind_item>	
+    
+</index>
+

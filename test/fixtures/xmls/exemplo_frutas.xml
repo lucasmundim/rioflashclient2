@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rio_object SYSTEM "object.dtd">
+<rio_object>
+    <obj_filename>exemplo_frutas.flv</obj_filename>
+    <obj_filesize>454155</obj_filesize>
+    <obj_title>Exemplo Frutas</obj_title>
+    <obj_type>flv</obj_type>
+    <professor>Daniel</professor>
+    <course>Frutas e legumes</course>
+    <coursecode>P001</coursecode>
+    <grad_program>P001</grad_program>
+    <source>UFRJ</source>
+    <bitrate>200</bitrate>
+    <duration>00:01:11</duration>
+    <resolution>
+        <r_x>320</r_x>
+        <r_y>240</r_y>
+    </resolution>
+    <related_media>
+        <rm_item>
+            <rm_filename>exemplo_frutas.flv</rm_filename>
+            <rm_type>video</rm_type>
+        </rm_item>
+        <rm_item>
+            <rm_filename>exemplo_frutas.sync</rm_filename>
+            <rm_type>sync</rm_type>
+        </rm_item>
+        <rm_item>
+            <rm_filename>exemplo_frutas.index</rm_filename>
+            <rm_type>index</rm_type>
+        </rm_item>
+    </related_media>
+</rio_object>
