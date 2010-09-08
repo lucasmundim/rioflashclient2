@@ -146,7 +146,7 @@ package rioflashclient2.player {
       var seekPercentage:Number = (e.data as Number);
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
       
-      logger.debug('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+      logger.info('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
       
       this.mediaPlayer.seek(seekPosition);
     }
@@ -156,23 +156,23 @@ package rioflashclient2.player {
         var seekPercentage:Number = (e.data as Number);
         var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
       
-        logger.debug('Server Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+        logger.info('Server Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
 
         loadMedia(appendQueryString(originalVideoURL, seekPosition));
         play();
       } else {
-        logger.debug('RandomSeek not supported by media element');
+        logger.info('RandomSeek not supported by media element');
       }
     }
 
     private function onTopicsSeek(e:PlayerEvent):void {
       if (seekDataStore.allowRandomSeek()) {
-        logger.debug('Topics Seeking to position {0} in seconds.', e.data);
+        logger.info('Topics Seeking to position {0} in seconds.', e.data);
 
         loadMedia(appendQueryString(originalVideoURL, e.data));
         play();
       } else {
-        logger.debug('RandomSeek not supported by media element');
+        logger.info('RandomSeek not supported by media element');
       }
     }
 
