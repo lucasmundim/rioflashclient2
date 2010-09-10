@@ -1,5 +1,6 @@
 package rioflashclient2.chrome.controlbar.widget {
   import rioflashclient2.event.EventBus;
+  import rioflashclient2.event.PlayerEvent;
   
   import flash.display.Sprite;
   import flash.text.AntiAliasType;
@@ -16,6 +17,9 @@ package rioflashclient2.chrome.controlbar.widget {
     
     private var _currentTime:Number = 0;
     private var _duration:Number = 0;
+    private var hasDuration:Boolean = false;
+    private var playAheadTime:Number = 0;
+    private var _needToKeepPlayaheadTime:Boolean = false;
     
     private static const TOP_PADDING:Number = 4;
     
@@ -31,14 +35,34 @@ package rioflashclient2.chrome.controlbar.widget {
     private function setupBusListeners():void {
       EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
       EventBus.addListener(TimeEvent.DURATION_CHANGE, onDurationChange);
+      EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onPlayAheadTimeChanged);
+      EventBus.addListener(PlayerEvent.NEED_TO_KEEP_PLAYAHEAD_TIME, onNeedToKeepPlayaheadTime);
+    }
+    
+    private function onNeedToKeepPlayaheadTime(e:PlayerEvent):void {
+      needToKeepPlayaheadTime = e.data;
+    }
+    
+    private function onPlayAheadTimeChanged(e:PlayerEvent):void {
+      playAheadTime = e.data;
     }
 
     private function onCurrentTimeChange(e:TimeEvent):void {
-      currentTime = e.time;
+      var elapsedTime:Number = 0;
+      elapsedTime = e.time;
+      
+      if (needToKeepPlayaheadTime) {
+        elapsedTime += playAheadTime;
+      }
+      
+      currentTime = elapsedTime;
     }
 
     private function onDurationChange(e:TimeEvent):void {
-      duration = e.time;
+      if (e.time && e.time.toString() != '0' && !hasDuration) {
+        duration = e.time;
+        hasDuration = true;
+      }
     }
     
     public function get label():String {
@@ -57,6 +81,14 @@ package rioflashclient2.chrome.controlbar.widget {
         _duration = duration;
         formatLabel();
       }
+    }
+    
+    public function get needToKeepPlayaheadTime():Boolean {
+      return _needToKeepPlayaheadTime;
+    }
+    
+    public function set needToKeepPlayaheadTime(value:Boolean):void {
+      _needToKeepPlayaheadTime = value;
     }
     
     private function formatLabel():void {

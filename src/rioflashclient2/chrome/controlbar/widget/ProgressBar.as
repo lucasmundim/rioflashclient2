@@ -12,9 +12,11 @@
   public class ProgressBar extends ProgressBarAsset {
     private var _currentProgressPercentage:Number;
     private var _downloadProgressPercentage:Number;
-    private var _startedPlayAheadPercentage:Number = 0;
+    private var playaheadTime:Number = 0;
+    private var _needToKeepPlayaheadTime:Boolean = false;
 
     private var duration:Number = 0;
+    private var hasDuration:Boolean = false;
     private var bytesTotal:Number = 0;
     
     public function ProgressBar() {
@@ -49,13 +51,13 @@
       _downloadProgressPercentage = percentage;
       resizeDownloadProgress();
     }
-
-    public function get startedPlayAheadPercentage():Number {
-      return _startedPlayAheadPercentage;
+    
+    public function get needToKeepPlayaheadTime():Boolean {
+      return _needToKeepPlayaheadTime;
     }
     
-    public function set startedPlayAheadPercentage(percentage:Number):void {
-      _startedPlayAheadPercentage = percentage;
+    public function set needToKeepPlayaheadTime(value:Boolean):void {
+      _needToKeepPlayaheadTime = value;
     }
     
     public function streamingMode():void {
@@ -82,14 +84,35 @@
 
       EventBus.addListener(LoadEvent.BYTES_LOADED_CHANGE, onBytesLoadedChange);
       EventBus.addListener(LoadEvent.BYTES_TOTAL_CHANGE, onBytesTotalChange);
+      
+      EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onPlayaheadTimeChanged);
+      EventBus.addListener(PlayerEvent.NEED_TO_KEEP_PLAYAHEAD_TIME, onNeedToKeepPlayaheadTime);
+    }
+    
+    private function onPlayaheadTimeChanged(e:PlayerEvent):void {
+      playaheadTime = e.data;
+    }
+    
+    private function onNeedToKeepPlayaheadTime(e:PlayerEvent):void {
+      needToKeepPlayaheadTime = e.data;
     }
 
     private function onCurrentTimeChange(e:TimeEvent):void {
-      updateCurrentProgress(e.time);
+      var elapsedTime:Number = 0;
+      elapsedTime = e.time;
+      
+      if (needToKeepPlayaheadTime) {
+        elapsedTime += playaheadTime;
+      }
+      
+      updateCurrentProgress(elapsedTime);
     }
 
     private function onDurationChange(e:TimeEvent):void {
-      duration = e.time;
+      if (e.time && e.time.toString() != '0' && !hasDuration) {
+        duration = e.time;
+        hasDuration = true;
+      }
     }
 
     private function updateCurrentProgress(currentTime:Number):void {
@@ -121,13 +144,19 @@
       
       currentProgress.width = e.currentTarget.mouseX;
 
-      if (seekPercentage <= downloadProgressPercentage && seekPercentage >= startedPlayAheadPercentage) {
+      if (isInBuffer(seekPercentage)) {
         EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
       } else {
         EventBus.dispatch(new PlayerEvent(PlayerEvent.SERVER_SEEK, seekPercentage), EventBus.INPUT);
-        startedPlayAheadPercentage = seekPercentage;
       }
-      EventBus.dispatch(new TimeEvent(TimeEvent.CURRENT_TIME_CHANGE, false, false, seekPercentage * duration), EventBus.INPUT)
+    }
+    
+    private function isInBuffer(seekPercentage:Number):Boolean {
+      return isAfterPlayahead(seekPercentage) && seekPercentage <= downloadProgressPercentage;
+    }
+    
+    private function isAfterPlayahead(seekPercentage:Number): Boolean {
+      return (seekPercentage * duration) >= playaheadTime;
     }
     
     private function calculatedSeekPercentageGivenX(x:Number):Number {

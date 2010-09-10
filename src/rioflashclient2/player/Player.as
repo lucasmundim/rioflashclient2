@@ -29,6 +29,7 @@ package rioflashclient2.player {
     private var seekDataStore:DefaultSeekDataStore;
     private var originalVideoURL:String;
     private var duration:Number = 0;
+    private var hasDuration:Boolean = false;
     
     public function Player() {
       this.name = 'Player';
@@ -40,28 +41,16 @@ package rioflashclient2.player {
     }
     
     private function init(e:Event=null):void {
-      setupMediaPlayer(); // TODO: This should not be here, maybe in a model???
+      setupMediaPlayer();
       setupInterface();
       setupBusDispatchers();
       setupBusListeners();
       setupEventListeners();
-      
-      //hide();
     }
     
     public function load(video:Video):void {
       this.video = video;
-
-      var url:String;
-      //url = lesson.videoURL();
-      url = video.url();
-      //url = "http://vegas.local:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.flv";
-      //url = "http://roxo.no-ip.com:3001/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
-      //url = "http://roxo.no-ip.com:3001/redirect.rio?start=0&file=/ufrj/palestras/hucff/palestra_nelson.flv";
-      //url = "http://edad.rnp.br/redirect.rio?start=35080866&file=/ufrj/palestras/hucff/palestra_nelson.flv";
-      //url = "http://edad.rnp.br/transfer.rio?start=29217776&file=/ufrj/exemplos/transp_flash/Aula_002.flv";
-  
-      loadMedia(url);
+      loadMedia(video.url());
       (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
       //resize();
     }
@@ -82,6 +71,7 @@ package rioflashclient2.player {
       logger.info('Loading video metadata...');
       seekDataStore = DefaultSeekDataStore.create(info);
       seekDataStore.reset();
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.NEED_TO_KEEP_PLAYAHEAD_TIME, seekDataStore.needToKeepPlayAheadTime()));
     }
     
     public function play():void {
@@ -159,6 +149,7 @@ package rioflashclient2.player {
         logger.info('Server Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
 
         loadMedia(appendQueryString(originalVideoURL, seekPosition));
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.getQueryStringStartValue(seekPosition)));
         play();
       } else {
         logger.info('RandomSeek not supported by media element');
@@ -177,9 +168,13 @@ package rioflashclient2.player {
     }
 
     private function onDurationChange(e:TimeEvent):void {
-      if (e.time && e.time.toString() != '0') {
-        (this.media as VideoElement).defaultDuration = e.time;
-      }     
+      if (e.time && e.time.toString() != '0' && !hasDuration) {
+        duration = e.time;
+        hasDuration = true;
+      }
+      if (hasDuration) {
+        (this.media as VideoElement).defaultDuration = duration;
+      }
     }
 
     private function onError(e:ErrorEvent):void {

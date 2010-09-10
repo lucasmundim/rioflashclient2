@@ -55,14 +55,19 @@ package rioflashclient2.net
     }
     
     private function validExtension(url:URL):Boolean {
-      var extensionPattern:RegExp = new RegExp("\.flv", "i");
+      var extensionPattern:RegExp = new RegExp("\.flv|\.f4v|\.mov|\.mp4|\.mp4v|\.m4v", "i");
       return extensionPattern.test(url.rawUrl);
     }
     
     private static const MEDIA_TYPES_SUPPORTED:Vector.<String> = Vector.<String>([MediaType.VIDEO]);
     private static const MIME_TYPES_SUPPORTED:Vector.<String> = Vector.<String>
     ([
-      "video/x-flv",
+      "video/x-flv", 
+      "video/x-f4v",
+      "video/mp4",
+      "video/mp4v-es",
+      "video/x-m4v",
+      "video/quicktime",
     ]);
   }
 }

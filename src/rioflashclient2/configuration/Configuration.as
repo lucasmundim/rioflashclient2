@@ -188,7 +188,8 @@ package rioflashclient2.configuration {
       //lessonXML = 'Aula_002.xml';
       //lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
       //lessonXML = '/ufjf/ciencias_exatas/dcc119/aula1/dcc119_aula1.xml';
-      lessonXML = '/ufrj/exemplos/exemplo_workshop_abertura_se/exemplo_frutas.xml';
+      //lessonXML = '/ufrj/exemplos/exemplo_workshop_abertura_se/exemplo_frutas.xml';
+      lessonXML = 'iphone.xml';
     }
 
     private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
