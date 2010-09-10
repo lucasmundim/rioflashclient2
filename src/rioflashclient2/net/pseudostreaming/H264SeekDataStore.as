@@ -6,7 +6,7 @@ package rioflashclient2.net.pseudostreaming {
       var times:Array = new Array();
       for (var j:Number = 0; j != metaData.seekpoints.length; ++j) {
         times[j] = Number(metaData.seekpoints[j]['time']);
-        log.info("keyFrame[" + j + "] = " + times[j]);
+        log.debug("keyFrame[" + j + "] = " + times[j]);
       }
       return times;
     }
