@@ -254,11 +254,11 @@
     }
     
     private function onStop(e:PlayerEvent):void {
-      disable();
+      show();
     }
 
     private function onVideoEnded(e:TimeEvent):void {
-      disable();
+      show();
     }
 
     private function onError(e:ErrorEvent):void {
