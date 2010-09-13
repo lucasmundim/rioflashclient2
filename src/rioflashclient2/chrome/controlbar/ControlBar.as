@@ -1,6 +1,18 @@
 ﻿package rioflashclient2.chrome.controlbar {
   import caurina.transitions.Tweener;
   
+  import flash.display.MovieClip;
+  import flash.events.ErrorEvent;
+  import flash.events.Event;
+  import flash.events.FullScreenEvent;
+  import flash.events.MouseEvent;
+  import flash.events.TimerEvent;
+  import flash.utils.Timer;
+  
+  import org.osmf.events.TimeEvent;
+  import org.osmf.logging.Log;
+  import org.osmf.logging.Logger;
+  
   import rioflashclient2.assets.ControlBarBackground;
   import rioflashclient2.chrome.controlbar.widget.FullScreenButton;
   import rioflashclient2.chrome.controlbar.widget.ILayoutWidget;
@@ -12,18 +24,6 @@
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
-  
-  import flash.display.MovieClip;
-  import flash.events.ErrorEvent;
-  import flash.events.Event;
-  import flash.events.FullScreenEvent;
-  import flash.events.MouseEvent;
-  import flash.events.TimerEvent;
-  import flash.utils.Timer;
-
-  import org.osmf.events.TimeEvent;
-  import org.osmf.logging.Log;
-  import org.osmf.logging.Logger;
 
   public class ControlBar extends MovieClip {
     public var background:ControlBarBackground = new ControlBarBackground();
@@ -34,7 +34,7 @@
     public var progressInformationLabel:ProgressInformationLabel = new ProgressInformationLabel();
     
     private var buttonsToLayout:Array = [];
-    
+    private var _basicWidth:Number = 320;
     private var displayed:Boolean = false;
     private var keepDisplaying:Boolean = false;
     
@@ -73,17 +73,15 @@
     public function ControlBar() {
       this.name = 'ControlBar';
       this.tabChildren = false;
-      
+     
       if (!!stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
     }
     
     private function init(e:Event=null):void {
       logger.info('Initializing control bar...');
-      
-      initialSetup();
-      
       setupBackground();
+	  initialSetup();
       setupControls();
       setupEventListeners();
       setupBusListeners();
@@ -92,8 +90,7 @@
     
     private function initialSetup():void {
       this.x = 0;
-      this.y = hiddenY();
-      
+      this.y = 0;
       this.autoHideTimer = new Timer(IDLE_TIME_BEFORE_AUTO_HIDE);
     }
     
@@ -131,14 +128,12 @@
     private function setupEventListeners():void {
       stage.addEventListener(FullScreenEvent.FULL_SCREEN, fullScreenChanged);
       stage.addEventListener(Event.RESIZE, resizeAndPosition);
-      
       autoHideTimer.addEventListener(TimerEvent.TIMER, hideControlBar);
     }
     
     private function setupBusListeners():void {
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.STOP, onStop);
-
       EventBus.addListener(TimeEvent.COMPLETE, onVideoEnded);
       EventBus.addListener(ErrorEvent.ERROR, onError);
     }
@@ -146,15 +141,15 @@
     private function resizeAndPosition(e:Event=null):void {
       resizeControls();
       positionControls();
-      
       position();
     }
-    
+
     private function resizeControls():void {
-      background.width = stage.stageWidth;
-      
-      progressBar.maskBufferAnimation.width = stage.stageWidth;
-      progressBar.background.width = stage.stageWidth;
+		
+		background.width = _basicWidth;
+		progressBar.maskBufferAnimation.width =  background.width;
+		progressBar.background.width =  background.width;
+		_basicWidth = this.width;
     }
     
     private function position():void {
@@ -162,11 +157,11 @@
     }
     
     private function displayedY():int {
-      return stage.stageHeight - HEIGHT;
+      return 0;
     }
     
     private function hiddenY():int {
-      return stage.stageHeight;
+      return 0;
     }
     
     private function positionControls():void {
@@ -187,7 +182,7 @@
     
     private function positionButtonsHorizontally():void {
       var currentLeftPosition:Number = 0 + SIDE_PADDING;
-      var currentRightPosition:Number = stage.stageWidth - SIDE_PADDING;
+      var currentRightPosition:Number = background.width - SIDE_PADDING;
       
       for each (var button:ILayoutWidget in buttonsToLayout) {
         if (button.align == WidgetAlignment.LEFT) {
@@ -266,19 +261,19 @@
     }
     
     private function addEventHandlers():void {
-      stage.addEventListener(MouseEvent.MOUSE_MOVE, showControlBar);
+      /*stage.addEventListener(MouseEvent.MOUSE_MOVE, showControlBar);
       stage.addEventListener(MouseEvent.MOUSE_MOVE, resetAutoHide);
       
       addEventListener(MouseEvent.MOUSE_OVER, keepControlBar);
-      addEventListener(MouseEvent.MOUSE_OUT, releaseControlBar);
+      addEventListener(MouseEvent.MOUSE_OUT, releaseControlBar);*/
     }
     
     private function removeEventHandlers():void {
-      stage.removeEventListener(MouseEvent.MOUSE_MOVE, showControlBar);
+      /*stage.removeEventListener(MouseEvent.MOUSE_MOVE, showControlBar);
       stage.removeEventListener(MouseEvent.MOUSE_MOVE, resetAutoHide);
       
       removeEventListener(MouseEvent.MOUSE_OVER, keepControlBar);
-      removeEventListener(MouseEvent.MOUSE_OUT, releaseControlBar);
+      removeEventListener(MouseEvent.MOUSE_OUT, releaseControlBar);*/
     }
     
     public function enable():void {

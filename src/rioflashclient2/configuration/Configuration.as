@@ -24,7 +24,7 @@ package rioflashclient2.configuration {
      */
     public var defaultConfigsPerEnvironments:Object = {
       development: {
-        lessonHost: 'http://roxo.no-ip.com:3001',
+        lessonHost: 'http://edad.rnp.br',
         lessonBaseURI: '/redirect.rio'
       },
       staging: {
@@ -113,9 +113,11 @@ package rioflashclient2.configuration {
      * The number of seconds to buffer before start playing the video.
      */
     public var bufferTime:Number;
-
+	public var playerWidth:Number = 320;
+	public var playerHeight:Number = 240;
     private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
     
+	
     private var rawParameters:Object;
     private var logger:Logger = Log.getLogger('Configuration');
     
@@ -186,10 +188,10 @@ package rioflashclient2.configuration {
       //lessonXML = rawParameters.aulaXML || 'Aula_002.xml';
       
       //lessonXML = 'Aula_002.xml';
-      //lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
+      lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
       //lessonXML = '/ufjf/ciencias_exatas/dcc119/aula1/dcc119_aula1.xml';
       //lessonXML = '/ufrj/exemplos/exemplo_workshop_abertura_se/exemplo_frutas.xml';
-      lessonXML = 'iphone.xml';
+      //lessonXML = 'iphone.xml';
     }
 
     private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {

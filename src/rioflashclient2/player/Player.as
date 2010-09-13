@@ -33,7 +33,6 @@ package rioflashclient2.player {
     
     public function Player() {
       this.name = 'Player';
-
       super(null, null, new PlayerMediaFactory());
       
       if (!!stage) init();
@@ -50,6 +49,7 @@ package rioflashclient2.player {
     
     public function load(video:Video):void {
       this.video = video;
+	  
       loadMedia(video.url());
       (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
       //resize();
@@ -212,22 +212,23 @@ package rioflashclient2.player {
     
     private function setupInterface():void {
       this.scaleMode = ScaleMode.LETTERBOX;
-      
       resize();
     }
     
-    private function resize(e:Event=null):void {
+    public function resize(newWidth:Number = 320, newHeight:Number = 240):void {
       if (stage != null) {
-        this.width = stage.stageWidth;
-        this.height = stage.stageHeight;
+        this.width = newWidth;
+        this.height = newHeight;
       }
     }
-    
+    public function setSize(newWidth:Number = 320, newHeight:Number = 240):void{
+		this.width = newWidth;
+		this.height = newHeight;
+	}
     private function setupBusDispatchers():void {
       this.mediaPlayer.addEventListener(TimeEvent.COMPLETE, EventBus.dispatch);
       this.mediaPlayer.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, EventBus.dispatch);
       this.mediaPlayer.addEventListener(TimeEvent.DURATION_CHANGE, EventBus.dispatch);
-      
       this.mediaPlayer.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, EventBus.dispatch);
       this.mediaPlayer.addEventListener(LoadEvent.BYTES_TOTAL_CHANGE, EventBus.dispatch);
     }
@@ -253,7 +254,7 @@ package rioflashclient2.player {
     }
     
     private function setupEventListeners():void {
-      stage.addEventListener(Event.RESIZE, resize);
+      //stage.addEventListener(Event.RESIZE, resize);
     }
 
     private function appendQueryString(url:String, start:Number):String {
