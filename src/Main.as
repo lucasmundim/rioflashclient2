@@ -73,6 +73,7 @@
 
 	private var controlSlide:MovieClip;
 	private var containerSlide:MovieClip;
+	private var containerControlBar:MovieClip;
 	private function testeDraw():void
 	{
 		controlSlide = new MovieClip();
@@ -80,14 +81,15 @@
 		controlSlide.graphics.drawRect(0,0,400,400);
 		controlSlide.graphics.endFill();
 		
-		addChild(controlSlide);
-		
 		containerSlide = new MovieClip();
 		containerSlide.graphics.beginFill(0x00CC00);
 		containerSlide.graphics.drawRect(0,0,400,40);
 		containerSlide.graphics.endFill();
-		addChild(containerSlide);
 		
+		containerControlBar = new MovieClip();
+		containerControlBar.graphics.beginFill(0x00CC00);
+		containerControlBar.graphics.drawRect(0,0,320,37);
+		containerControlBar.graphics.endFill();
 	}
 	
 	private var mainContainer:LayoutContainer;
@@ -104,37 +106,36 @@
 		border.height = stage.stageHeight;
 		
 		left = new VBoxPane([{target:player,maintainAspectRatio: true},
-							{target:topicsTree,maintainAspectRatio: true}]);
+			                 {target:containerControlBar,percentWidth: 100},
+							 {target:topicsTree,maintainAspectRatio: true}]);
 		left.verticalAlign = VerticalAlignment.TOP;
 		left.setSize(320, stage.stageHeight);
 		left.name = 'left';
-		addChild(left);
 		
 		resizeHandle = new ResizeHandle();
 		resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragStartHandler);
 		resizeHandle.addEventListener(DragEvent.DRAG_UPDATE, resizeDragUpdateHandler);
-		addChild(resizeHandle);
 		
 		right = new VBoxPane([{target:controlSlide,percentWidth: 100, percentHeight: 100},
 												{target:containerSlide, percentWidth: 100}]);
 		right.verticalAlign = VerticalAlignment.TOP;
 		right.setSize(stage.stageWidth-(resizeHandle.x+resizeHandle.width), stage.stageHeight);
 		right.name = 'right';
-		addChild(controlbar);
-		addChild(right);
-		
 		
 		border.configuration = [{target:left, constraint: BorderConstraints.LEFT},
 								{ target: resizeHandle, constraint: BorderConstraints.LEFT } ,
 								{ target: right, constraint: BorderConstraints.LEFT}];
 		
 		addChild(border);
+		var dragEvent:DragEvent = new DragEvent(DragEvent.DRAG_UPDATE);
+		dragEvent.delta = 0;
+		resizeDragUpdateHandler(dragEvent);
 	}
 	private function resizeHandler(e:LayoutEvent):void
 	{
 		trace(e.target);
 	}
-	private var dragStartWidth:Number;
+	private var dragStartWidth:Number = 320;
 	private function resizeDragStartHandler(event:DragEvent):void
 	{
 		this.dragStartWidth = topicsTree.width||320;
@@ -147,13 +148,14 @@
 		
 		
 		left.setSize(resizeHandle.x,stage.stageHeight);
-		right.setSize(resizeHandle.x+resizeHandle.width, stage.stageHeight);
+		right.setSize(stage.stageWidth - (resizeHandle.x+resizeHandle.width), stage.stageHeight);
 		
 		var widthVideo:Number = left.width;
 		var heightVideo:Number = 240*widthVideo/320;
 		
 		player.setSize(widthVideo, heightVideo);
-		topicsTree.setSize(left.width,stage.stageHeight-heightVideo);
+		//controlbar.setSize(left.width, 37);
+		topicsTree.setSize(left.width,stage.stageHeight-heightVideo-37);
 	}
     private function setupErrorScreen():void{
       errorScreen = new ErrorScreen();
@@ -209,7 +211,7 @@
         controlbar = new ControlBar();
 		
 		
-		controlbar.scaleX = controlbar.scaleY = 1;
+		//controlbar.scaleX = controlbar.scaleY = 1;
         
       } else {
         logger.info('Control bar will not be displayed.');

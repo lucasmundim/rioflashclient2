@@ -89,9 +89,9 @@
     }
     
     private function initialSetup():void {
-      this.x = 0;
-      this.y = 0;
-      this.autoHideTimer = new Timer(IDLE_TIME_BEFORE_AUTO_HIDE);
+      //this.x = 0;
+      //this.y = 0;
+      //this.autoHideTimer = new Timer(IDLE_TIME_BEFORE_AUTO_HIDE);
     }
     
     private function setupBackground():void {
@@ -128,7 +128,7 @@
     private function setupEventListeners():void {
       stage.addEventListener(FullScreenEvent.FULL_SCREEN, fullScreenChanged);
       stage.addEventListener(Event.RESIZE, resizeAndPosition);
-      autoHideTimer.addEventListener(TimerEvent.TIMER, hideControlBar);
+      //autoHideTimer.addEventListener(TimerEvent.TIMER, hideControlBar);
     }
     
     private function setupBusListeners():void {
@@ -139,21 +139,13 @@
     }
     
     private function resizeAndPosition(e:Event=null):void {
-      resizeControls();
+      //resizeControls();
       positionControls();
-      position();
-    }
-
-    private function resizeControls():void {
-		
-		background.width = _basicWidth;
-		progressBar.maskBufferAnimation.width =  background.width;
-		progressBar.background.width =  background.width;
-		_basicWidth = this.width;
+      //position();
     }
     
     private function position():void {
-      y = displayed ? displayedY() : hiddenY();
+      //y = displayed ? displayedY() : hiddenY();
     }
     
     private function displayedY():int {
@@ -203,7 +195,7 @@
     private function showControlBar(e:MouseEvent=null):void {
       if (!displayed) {
         logger.debug('Displaying control bar...');
-        Tweener.addTween(this, { time: 1, y: displayedY() });
+        //Tweener.addTween(this, { time: 1, y: displayedY() });
         displayed = true;
         keepDisplaying = false;
       }
@@ -221,7 +213,7 @@
       if (displayed && !keepDisplaying) {
         logger.debug('Hiding control bar...');
         
-        Tweener.addTween(this, { time: 2, y: hiddenY() });
+        //Tweener.addTween(this, { time: 2, y: hiddenY() });
         displayed = false;
         autoHideTimer.stop();
         
@@ -306,7 +298,7 @@
     public function hide():void {
       visible = false;
     }
-    
+
     private function hasPlayPauseButton():Boolean {
       return hasButton('playPauseButton');
     }
@@ -326,5 +318,13 @@
     private function hasButton(buttonName:String):Boolean {
       return buttonsToLayout.indexOf(this[buttonName]) != -1;
     }
+	
+	public function setSize(newWidth:Number = 320, newHeight:Number = 37):void{
+		//this.width = newWidth;
+		//this.height = newHeight;
+		background.width = newWidth;
+		progressBar.maskBufferAnimation.width =  background.width;
+		progressBar.background.width =  background.width;
+	}
   }
 }
