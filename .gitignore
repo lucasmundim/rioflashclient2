@@ -4,6 +4,9 @@ docs/**/*
 bin
 bin/**/*
 bin/fixtures
+bin-release
+bin-release/*
+bin-release/**/*
 bin-debug/*
 bin-debug/**/*
 lib/asunit3
