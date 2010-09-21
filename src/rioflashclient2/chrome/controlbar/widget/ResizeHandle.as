@@ -18,40 +18,39 @@ package rioflashclient2.chrome.controlbar.widget
 		public function ResizeHandle()
 		{
 			super();
-			this.buttonMode = true;
-			this.useHandCursor = true;
-			this.addEventListener(MouseEvent.MOUSE_DOWN,resizeHandleDownHandler);
+			buttonMode = true;
+			useHandCursor = true;
+			addEventListener(MouseEvent.MOUSE_DOWN,resizeHandleDownHandler);
 		}
 
 		protected var startDragPosition:Number;
 				
 		protected function resizeHandleDownHandler(event:MouseEvent):void
 		{
-			this.startDragPosition = this.stage.mouseX;
-			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler, false, 0, true);
-			this.stage.addEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler, false, 0, true);
-			var dragEvent:DragEvent = new DragEvent(DragEvent.DRAG_START, 0);
-			this.dispatchEvent(dragEvent);
+			event.updateAfterEvent();
+			startDragPosition = stage.mouseX;
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler, false, 0, true);
+			stage.addEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler, false, 0, true);
+			dispatchEvent(new DragEvent(DragEvent.DRAG_START, 0));
 		}
 		
 		protected function handleDragHandler(event:MouseEvent):void
 		{
-			var dragEvent:DragEvent = new DragEvent(DragEvent.DRAG_UPDATE, this.calculateOffset());
-			this.dispatchEvent(dragEvent);
+			dispatchEvent(new DragEvent(DragEvent.DRAG_UPDATE, calculateOffset()));
 		}
 		
 		protected function handleDragStopHandler(event:MouseEvent):void
 		{
-			this.handleDragHandler(event);
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler);
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler);
-			var dragEvent:DragEvent = new DragEvent(DragEvent.DRAG_END, this.calculateOffset());
-			this.dispatchEvent(dragEvent);
+			handleDragHandler(event);
+			stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler);
+			var dragEvent:DragEvent = new DragEvent(DragEvent.DRAG_END, calculateOffset());
+			dispatchEvent(dragEvent);
 		}
 		
 		protected function calculateOffset():Number
 		{
-			var offset:Number = this.stage.mouseX - this.startDragPosition;
+			var offset:Number = stage.mouseX - startDragPosition;
 			return offset;
 		}
 

@@ -1,6 +1,5 @@
 package br.com.stimuli.loading.loadingtypes {
 	
-	import br.com.stimuli.loading.loadingtypes.LoadingItem;
 	import br.com.stimuli.loading.BulkLoader;
 	
 	

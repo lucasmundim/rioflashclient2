@@ -115,8 +115,8 @@ package rioflashclient2.configuration {
     public var bufferTime:Number;
 	public var playerWidth:Number = 320;
 	public var playerHeight:Number = 240;
-    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
-    
+	private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
+
 	
     private var rawParameters:Object;
     private var logger:Logger = Log.getLogger('Configuration');

@@ -16,7 +16,7 @@
    * ...
    * @author 
    */
-  public class FullScreenButton extends FullScreenButtonAsset implements ILayoutWidget {
+  public class FullScreenButton extends FullScreenButtonAsset{
     private var currentState:String;
     
     private var fullScreenState:String = 'fullscreen';

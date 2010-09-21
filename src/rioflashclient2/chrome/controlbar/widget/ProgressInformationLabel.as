@@ -10,7 +10,7 @@ package rioflashclient2.chrome.controlbar.widget {
 
   import org.osmf.events.TimeEvent;
   
-  public class ProgressInformationLabel extends Sprite implements ILayoutWidget {
+  public class ProgressInformationLabel extends Sprite {
     private var timeInformationField:TextField;
     
     private var format:TextFormat;

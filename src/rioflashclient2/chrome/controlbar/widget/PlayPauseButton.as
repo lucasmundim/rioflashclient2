@@ -12,7 +12,7 @@
    * ...
    * @author 
    */
-  public class PlayPauseButton extends PlayPauseButtonAsset implements ILayoutWidget {
+  public class PlayPauseButton extends PlayPauseButtonAsset{
     private var currentState:String;
     
     private var playingState:String = 'playing';

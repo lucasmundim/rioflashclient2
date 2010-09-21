@@ -122,7 +122,7 @@
     
     private function renderProgressBar():void {
       logger.info('Rendering progress bar.');
-      addChild(progressBar);
+      //addChild(progressBar);
     }
     
     private function setupEventListeners():void {
@@ -139,15 +139,23 @@
     }
     
     private function resizeAndPosition(e:Event=null):void {
-      //resizeControls();
+
       positionControls();
-      //position();
+      position();
     }
     
     private function position():void {
       //y = displayed ? displayedY() : hiddenY();
     }
-    
+  
+	 override public function get width():Number
+	 {
+	 	return background.width;
+	 }
+	 override public function get height():Number
+	 {
+	 	return 37;
+	 }
     private function displayedY():int {
       return 0;
     }
@@ -167,7 +175,7 @@
     }
     
     private function positionButtonsVertically():void {
-      for each (var button:ILayoutWidget in buttonsToLayout) {
+      for each (var button:* in buttonsToLayout) {
         button.y = TOP_OFFSET + button.offsetTop;
       }
     }
@@ -176,7 +184,7 @@
       var currentLeftPosition:Number = 0 + SIDE_PADDING;
       var currentRightPosition:Number = background.width - SIDE_PADDING;
       
-      for each (var button:ILayoutWidget in buttonsToLayout) {
+      for each (var button:* in buttonsToLayout) {
         if (button.align == WidgetAlignment.LEFT) {
           button.x = currentLeftPosition + button.offsetLeft;
           currentLeftPosition = button.x + button.width + BUTTON_SPACEMENT;
@@ -320,8 +328,6 @@
     }
 	
 	public function setSize(newWidth:Number = 320, newHeight:Number = 37):void{
-		//this.width = newWidth;
-		//this.height = newHeight;
 		background.width = newWidth;
 		progressBar.maskBufferAnimation.width =  background.width;
 		progressBar.background.width =  background.width;

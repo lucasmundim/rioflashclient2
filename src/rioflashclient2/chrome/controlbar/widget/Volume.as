@@ -16,7 +16,7 @@
    * ...
    * @author 
    */
-  public class Volume extends VolumeButtonAsset implements ILayoutWidget {
+  public class Volume extends VolumeButtonAsset{
     private var logger:Logger = Log.getLogger('VolumeButton');
     
     private var _level:Number;

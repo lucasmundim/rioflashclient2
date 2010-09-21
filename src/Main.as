@@ -6,6 +6,9 @@
   import com.yahoo.astra.layout.modes.BorderConstraints;
   import com.yahoo.astra.layout.modes.VerticalAlignment;
   
+  import fl.containers.BaseScrollPane;
+  import fl.controls.ScrollPolicy;
+  
   import flash.display.LoaderInfo;
   import flash.display.MovieClip;
   import flash.display.Sprite;
@@ -13,10 +16,14 @@
   import flash.display.StageScaleMode;
   import flash.events.Event;
   
+  import mx.utils.NameUtil;
+  
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
   
   import rioflashclient2.chrome.controlbar.ControlBar;
+  import rioflashclient2.chrome.controlbar.ControlBar2;
+  import rioflashclient2.chrome.controlbar.NavigationBar;
   import rioflashclient2.chrome.controlbar.widget.ResizeHandle;
   import rioflashclient2.chrome.controlbar.widget.TopicsNavigator;
   import rioflashclient2.chrome.screen.DebugConsole;
@@ -31,12 +38,10 @@
   import rioflashclient2.player.Player;
   import rioflashclient2.user.VolumeSettings;
     
-  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
+  [SWF(backgroundColor="0x000000", frameRate="30", width="1024", height="768")]
   public class Main extends Sprite {
     private var logger:Logger;
-    
     private var rawParameters:Object;
-
     private var debugConsole:DebugConsole;
     private var fullScreenManager:FullScreenManager;
     private var volumeSettings:VolumeSettings;
@@ -45,7 +50,19 @@
     private var controlbar:ControlBar;
     private var errorScreen:ErrorScreen;
     private var lessonLoader:LessonLoader;
-    
+	private var controlSlide:MovieClip;
+	private var containerSlide:MovieClip;
+	private var containerControlBar:MovieClip;
+	private var mainContainer:LayoutContainer;
+	private var resizeHandle:ResizeHandle;
+	private var containerPane:BorderPane;
+	private var leftVBox:VBoxPane;
+	private var rightVBox:VBoxPane;
+	private var navigationBar:NavigationBar;
+	private var dragStartWidth:Number;
+	
+	public static const VIDEO_HEIGHT:Number = 240;
+	public static const VIDEO_WIDTH:Number = 320;
     public function Main():void {
       
       if (stage) init();
@@ -64,98 +81,106 @@
       setupErrorScreen();
       setupFullScreenManager();
       setupPlayer();
-      setupControlBar();
+      
       setupTreeView();
       loadUserSettings();
       loadLesson();
 	  drawLayout();
     }
 
-	private var controlSlide:MovieClip;
-	private var containerSlide:MovieClip;
-	private var containerControlBar:MovieClip;
+
 	private function testeDraw():void
 	{
 		controlSlide = new MovieClip();
 		controlSlide.graphics.beginFill(0xFFCC00);
 		controlSlide.graphics.drawRect(0,0,400,400);
 		controlSlide.graphics.endFill();
-		
 		containerSlide = new MovieClip();
 		containerSlide.graphics.beginFill(0x00CC00);
 		containerSlide.graphics.drawRect(0,0,400,40);
 		containerSlide.graphics.endFill();
-		
 		containerControlBar = new MovieClip();
 		containerControlBar.graphics.beginFill(0x00CC00);
 		containerControlBar.graphics.drawRect(0,0,320,37);
 		containerControlBar.graphics.endFill();
+		navigationBar = new NavigationBar();	
 	}
-	
-	private var mainContainer:LayoutContainer;
-	private var resizeHandle:ResizeHandle;
-	private var border:BorderPane;
-	private var left:VBoxPane;
-	private var right:VBoxPane;
 	private function drawLayout():void
 	{
 		testeDraw();
-		var border:BorderPane = new BorderPane();
-		border.name = 'borderPane';
-		border.width = stage.stageWidth;
-		border.height = stage.stageHeight;
+		setupControlBar();
+		containerPane = new BorderPane();
+		containerPane.name = 'containerPane';
+		containerPane.width = stage.stageWidth;
+		containerPane.height = stage.stageHeight;
 		
-		left = new VBoxPane([{target:player,maintainAspectRatio: true},
-			                 {target:containerControlBar,percentWidth: 100},
+		containerPane.verticalScrollPolicy = ScrollPolicy.OFF;
+		containerPane.horizontalScrollPolicy = ScrollPolicy.OFF;
+		leftVBox = new VBoxPane([{target:player,maintainAspectRatio: true},
+			                 {target:controlbar,maintainAspectRatio: true},
 							 {target:topicsTree,maintainAspectRatio: true}]);
-		left.verticalAlign = VerticalAlignment.TOP;
-		left.setSize(320, stage.stageHeight);
-		left.name = 'left';
-		
+
+		leftVBox.verticalScrollPolicy = ScrollPolicy.OFF;
+		leftVBox.horizontalScrollPolicy = ScrollPolicy.OFF;
+		leftVBox.verticalAlign = VerticalAlignment.TOP;
+		leftVBox.setSize(VIDEO_WIDTH, stage.stageHeight);
+		leftVBox.name = 'leftVBox';
 		resizeHandle = new ResizeHandle();
 		resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragStartHandler);
 		resizeHandle.addEventListener(DragEvent.DRAG_UPDATE, resizeDragUpdateHandler);
-		
-		right = new VBoxPane([{target:controlSlide,percentWidth: 100, percentHeight: 100},
-												{target:containerSlide, percentWidth: 100}]);
-		right.verticalAlign = VerticalAlignment.TOP;
-		right.setSize(stage.stageWidth-(resizeHandle.x+resizeHandle.width), stage.stageHeight);
-		right.name = 'right';
-		
-		border.configuration = [{target:left, constraint: BorderConstraints.LEFT},
-								{ target: resizeHandle, constraint: BorderConstraints.LEFT } ,
-								{ target: right, constraint: BorderConstraints.LEFT}];
-		
-		addChild(border);
-		var dragEvent:DragEvent = new DragEvent(DragEvent.DRAG_UPDATE);
-		dragEvent.delta = 0;
-		resizeDragUpdateHandler(dragEvent);
+		rightVBox = new VBoxPane([{target:controlSlide,percentWidth: 100, percentHeight: 100},{target:navigationBar,maintainAspectRatio: true}]);
+		rightVBox.verticalAlign = VerticalAlignment.TOP;
+		rightVBox.setSize(stage.stageWidth-(resizeHandle.x+resizeHandle.width), stage.stageHeight);
+		rightVBox.name = 'rightVBox';
+		containerPane.configuration = [{target:leftVBox, constraint: BorderConstraints.LEFT},
+								{ target: resizeHandle, maintainAspectRatio: true, constraint: BorderConstraints.LEFT } ,
+								{ target: rightVBox, constraint: BorderConstraints.LEFT}];
+		addChild(containerPane);
+		dragStartWidth = VIDEO_WIDTH;
+		resizeDragUpdateHandler(new DragEvent(DragEvent.DRAG_UPDATE));
 	}
-	private function resizeHandler(e:LayoutEvent):void
-	{
-		trace(e.target);
-	}
-	private var dragStartWidth:Number = 320;
+
 	private function resizeDragStartHandler(event:DragEvent):void
 	{
-		this.dragStartWidth = topicsTree.width||320;
-	}
-	
+		dragStartWidth = topicsTree.width||VIDEO_WIDTH;
+	}	
 	private function resizeDragUpdateHandler(event:DragEvent):void
 	{
-		
-		resizeHandle.x = this.dragStartWidth + event.delta;
-		
-		
-		left.setSize(resizeHandle.x,stage.stageHeight);
-		right.setSize(stage.stageWidth - (resizeHandle.x+resizeHandle.width), stage.stageHeight);
-		
-		var widthVideo:Number = left.width;
-		var heightVideo:Number = 240*widthVideo/320;
-		
-		player.setSize(widthVideo, heightVideo);
-		//controlbar.setSize(left.width, 37);
-		topicsTree.setSize(left.width,stage.stageHeight-heightVideo-37);
+		//Limit resize into area min VIDEO_WIDTH/2 and max VIDEO_WIDTH*2
+		resizeHandle.x = Math.min(Math.max(dragStartWidth + event.delta, VIDEO_WIDTH/2), VIDEO_WIDTH*2);
+		resizeHandle.bg.height = stage.stageHeight;
+		resizeHandle.icon.y = resizeHandle.height/2;
+		resizeElements();
+	}
+	private function resizeElements():void
+	{
+		resizeLeftVBox();
+		resizeRightVBox();
+		resizePlayer();
+		resizeTopicsTree();
+		controlbar.setSize(leftVBox.width,37);
+		trace(controlbar.background.width, controlbar.width);
+	}
+	private function resizePlayer():void
+	{
+		var newWidthVideo:Number = leftVBox.width||VIDEO_WIDTH;
+		var newHeightVideo:Number = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
+		player.setSize(newWidthVideo, newHeightVideo);
+	}
+	private function resizeRightVBox():void
+	{
+		rightVBox.setSize(stage.stageWidth - (resizeHandle.x+resizeHandle.width), stage.stageHeight);
+		navigationBar.setSize(rightVBox.width);
+	}
+	private function resizeLeftVBox():void
+	{
+		leftVBox.setSize(resizeHandle.x+10,stage.stageHeight);	
+	}
+	private function resizeTopicsTree():void
+	{
+		var videoHeight:Number = player.height||VIDEO_HEIGHT;
+		var heightTopics:Number = stage.stageHeight-(videoHeight+37);
+		topicsTree.setSize(leftVBox.width, heightTopics);
 	}
     private function setupErrorScreen():void{
       errorScreen = new ErrorScreen();
@@ -195,24 +220,19 @@
 
     private function setupPlayer():void {
       player = new Player();
-	  player.width = 320;
-	  player.height = 240;
-	  //addChild(player);
+	  player.setSize(VIDEO_WIDTH,VIDEO_HEIGHT); 
     }
 
     private function setupTreeView():void {
       topicsTree = new TopicsNavigator();
-      //addChild(topicsTree);
     }
 
     private function setupControlBar():void {
       if (Configuration.getInstance().displayControlBar) {
         logger.info('Displaying control bar.');
         controlbar = new ControlBar();
-		
-		
-		//controlbar.scaleX = controlbar.scaleY = 1;
-        
+		controlbar.setSize(320,37);
+		addChild(controlbar);
       } else {
         logger.info('Control bar will not be displayed.');
       }

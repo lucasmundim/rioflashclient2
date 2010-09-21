@@ -13,20 +13,22 @@
 		  allowfullscreen: "true",
 		  allowscriptaccess: "always",
 		  allowNetworking: "all"
+		  
 		};
 		var attributes = {
 		  id: "rioflashclient",
-		  name: "rioflashclient"
+		  name: "rioflashclient",
+		  backgroundColor:"#000000"
 		};
     	swfobject.registerObject("rioflashclient", "10.0.0", "expressInstall.swf", flashvars, params, attributes);
     	</script>
 	</head> 
 	<body>
 	    <div>
-	      <object id="rioflashclient" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%">
+	      <object id="rioflashclient" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="1024" height="768">
 	      	<param name="movie" value="Main.swf" />
 	        <!--[if !IE]>-->
-	        <object type="application/x-shockwave-flash" data="Main.swf" width="100%" height="100%">
+	        <object type="application/x-shockwave-flash" data="Main.swf" width="1024" height="768">
 	        <!--<![endif]-->
 	          <p>Você possui uma versão antiga do flash player atualize para acessar essa video aula</p>
 	        <!--[if !IE]>-->
