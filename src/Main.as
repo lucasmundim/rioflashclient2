@@ -29,14 +29,16 @@
   import rioflashclient2.chrome.screen.FullScreenManager;
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.DragEvent;
+  import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LoggerEvent;
   import rioflashclient2.logging.EventfulLogger;
   import rioflashclient2.logging.EventfulLoggerFactory;
   import rioflashclient2.model.LessonLoader;
   import rioflashclient2.player.Player;
+  import rioflashclient2.player.SlidePlayer;
   import rioflashclient2.user.VolumeSettings;
     
-  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
+  [SWF(backgroundColor="0x000000", frameRate="30", width="1024", height="768")]
   public class Main extends Sprite {
     private var logger:Logger;
     private var rawParameters:Object;
@@ -53,9 +55,10 @@
 	private var containerControlBar:MovieClip;
 	private var mainContainer:LayoutContainer;
 	private var resizeHandle:ResizeHandle;
-	private var containerPane:BorderPane;
+	/*private var containerPane:BorderPane;
 	private var leftVBox:VBoxPane;
-	private var rightVBox:VBoxPane;
+	private var rightVBox:VBoxPane;*/
+	private var slidePlayer:SlidePlayer;
 	private var navigationBar:NavigationBar;
 	private var dragStartWidth:Number;
 	
@@ -79,7 +82,7 @@
       setupErrorScreen();
       setupFullScreenManager();
       setupPlayer();
-      
+	  setupSlidePlayer();
       setupTreeView();
       loadUserSettings();
       loadLesson();
@@ -109,33 +112,21 @@
 		
 		var header:Header = new Header();
 		header.bg.width =  stage.stageWidth;
+		header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";
 		resizeHandle = new ResizeHandle();
 		resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragStartHandler);
 		resizeHandle.addEventListener(DragEvent.DRAG_UPDATE, resizeDragUpdateHandler);
-		
-		player.y = header.height;
-		player.x = 0;
-		controlbar.y = player.y + VIDEO_HEIGHT;
-		controlbar.x = 0;
-		topicsTree.y = controlbar.y + controlbar.height;
-		topicsTree.x = 0;
-		resizeHandle.y = player.y;
-		resizeHandle.x = player.x + VIDEO_WIDTH;
-		controlSlide.x = resizeHandle.x + resizeHandle.width;
-		controlSlide.y = player.y;
-		navigationBar.x = controlSlide.x;
-		navigationBar.y = stage.stageHeight - navigationBar.height;
-		
+
 		addChild(player);
 		addChild(controlbar);
 		addChild(topicsTree);
 		addChild(resizeHandle);
-		addChild(controlSlide);
+		addChild(slidePlayer);
 		addChild(navigationBar);
 		addChild(header);
 		
 		dragStartWidth = VIDEO_WIDTH;
-		resizeDragUpdateHandler(new DragEvent(DragEvent.DRAG_UPDATE));
+		resizeDragStartHandler(new DragEvent(DragEvent.DRAG_UPDATE));
 		/*
 		
 		containerPane = new BorderPane();
@@ -190,10 +181,10 @@
 	}
 	private function resizeSlideAndNavigation():void
 	{
-		controlSlide.x = resizeHandle.x + resizeHandle.width;
-		controlSlide.width = stage.stageWidth - (resizeHandle.x+resizeHandle.width);		
-		navigationBar.setSize(controlSlide.width);
-		navigationBar.x = controlSlide.x;
+		slidePlayer.x = resizeHandle.x + resizeHandle.width;
+		slidePlayer.width = stage.stageWidth - (resizeHandle.x+resizeHandle.width);		
+		navigationBar.setSize(slidePlayer.width);
+		navigationBar.x = slidePlayer.x;
 		navigationBar.y = stage.stageHeight-navigationBar.height;
 	}
 
@@ -208,6 +199,10 @@
 		var heightTopics:Number = stage.stageHeight-(videoHeight+37);
 		topicsTree.setSize(resizeHandle.x, heightTopics);
 		topicsTree.y = controlbar.y + controlbar.height;
+	}
+	private function setupSlidePlayer():void {
+		slidePlayer = new SlidePlayer();
+		//addChild(slidePlayer);
 	}
     private function setupErrorScreen():void{
       errorScreen = new ErrorScreen();

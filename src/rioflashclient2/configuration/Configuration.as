@@ -24,7 +24,7 @@ package rioflashclient2.configuration {
      */
     public var defaultConfigsPerEnvironments:Object = {
       development: {
-        lessonHost: 'http://roxo.noip.com:3000',
+        lessonHost: 'http://roxo.no-ip.com:3001',
         lessonBaseURI: '/redirect.rio'
       },
       staging: {
