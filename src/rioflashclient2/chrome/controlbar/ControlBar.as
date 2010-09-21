@@ -122,7 +122,7 @@
     
     private function renderProgressBar():void {
       logger.info('Rendering progress bar.');
-      //addChild(progressBar);
+      addChild(progressBar);
     }
     
     private function setupEventListeners():void {

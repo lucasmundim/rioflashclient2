@@ -16,13 +16,11 @@
   import flash.display.StageScaleMode;
   import flash.events.Event;
   
-  import mx.utils.NameUtil;
-  
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
   
+  import rioflashclient2.assets.Header;
   import rioflashclient2.chrome.controlbar.ControlBar;
-  import rioflashclient2.chrome.controlbar.ControlBar2;
   import rioflashclient2.chrome.controlbar.NavigationBar;
   import rioflashclient2.chrome.controlbar.widget.ResizeHandle;
   import rioflashclient2.chrome.controlbar.widget.TopicsNavigator;
@@ -38,7 +36,7 @@
   import rioflashclient2.player.Player;
   import rioflashclient2.user.VolumeSettings;
     
-  [SWF(backgroundColor="0x000000", frameRate="30", width="1024", height="768")]
+  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
   public class Main extends Sprite {
     private var logger:Logger;
     private var rawParameters:Object;
@@ -95,10 +93,6 @@
 		controlSlide.graphics.beginFill(0xFFCC00);
 		controlSlide.graphics.drawRect(0,0,400,400);
 		controlSlide.graphics.endFill();
-		containerSlide = new MovieClip();
-		containerSlide.graphics.beginFill(0x00CC00);
-		containerSlide.graphics.drawRect(0,0,400,40);
-		containerSlide.graphics.endFill();
 		containerControlBar = new MovieClip();
 		containerControlBar.graphics.beginFill(0x00CC00);
 		containerControlBar.graphics.drawRect(0,0,320,37);
@@ -108,26 +102,54 @@
 	private function drawLayout():void
 	{
 		testeDraw();
+		
 		setupControlBar();
+		
+		
+		
+		var header:Header = new Header();
+		header.bg.width =  stage.stageWidth;
+		resizeHandle = new ResizeHandle();
+		resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragStartHandler);
+		resizeHandle.addEventListener(DragEvent.DRAG_UPDATE, resizeDragUpdateHandler);
+		
+		player.y = header.height;
+		player.x = 0;
+		controlbar.y = player.y + VIDEO_HEIGHT;
+		controlbar.x = 0;
+		topicsTree.y = controlbar.y + controlbar.height;
+		topicsTree.x = 0;
+		resizeHandle.y = player.y;
+		resizeHandle.x = player.x + VIDEO_WIDTH;
+		controlSlide.x = resizeHandle.x + resizeHandle.width;
+		controlSlide.y = player.y;
+		navigationBar.x = controlSlide.x;
+		navigationBar.y = stage.stageHeight - navigationBar.height;
+		
+		addChild(player);
+		addChild(controlbar);
+		addChild(topicsTree);
+		addChild(resizeHandle);
+		addChild(controlSlide);
+		addChild(navigationBar);
+		addChild(header);
+		
+		dragStartWidth = VIDEO_WIDTH;
+		resizeDragUpdateHandler(new DragEvent(DragEvent.DRAG_UPDATE));
+		/*
+		
 		containerPane = new BorderPane();
 		containerPane.name = 'containerPane';
 		containerPane.width = stage.stageWidth;
 		containerPane.height = stage.stageHeight;
 		
-		containerPane.verticalScrollPolicy = ScrollPolicy.OFF;
-		containerPane.horizontalScrollPolicy = ScrollPolicy.OFF;
 		leftVBox = new VBoxPane([{target:player,maintainAspectRatio: true},
 			                 {target:controlbar,maintainAspectRatio: true},
 							 {target:topicsTree,maintainAspectRatio: true}]);
 
-		leftVBox.verticalScrollPolicy = ScrollPolicy.OFF;
-		leftVBox.horizontalScrollPolicy = ScrollPolicy.OFF;
 		leftVBox.verticalAlign = VerticalAlignment.TOP;
 		leftVBox.setSize(VIDEO_WIDTH, stage.stageHeight);
 		leftVBox.name = 'leftVBox';
-		resizeHandle = new ResizeHandle();
-		resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragStartHandler);
-		resizeHandle.addEventListener(DragEvent.DRAG_UPDATE, resizeDragUpdateHandler);
 		rightVBox = new VBoxPane([{target:controlSlide,percentWidth: 100, percentHeight: 100},{target:navigationBar,maintainAspectRatio: true}]);
 		rightVBox.verticalAlign = VerticalAlignment.TOP;
 		rightVBox.setSize(stage.stageWidth-(resizeHandle.x+resizeHandle.width), stage.stageHeight);
@@ -137,12 +159,13 @@
 								{ target: rightVBox, constraint: BorderConstraints.LEFT}];
 		addChild(containerPane);
 		dragStartWidth = VIDEO_WIDTH;
-		resizeDragUpdateHandler(new DragEvent(DragEvent.DRAG_UPDATE));
+		resizeDragUpdateHandler(new DragEvent(DragEvent.DRAG_UPDATE));*/
 	}
 
 	private function resizeDragStartHandler(event:DragEvent):void
 	{
 		dragStartWidth = topicsTree.width||VIDEO_WIDTH;
+		resizeDragUpdateHandler(event);
 	}	
 	private function resizeDragUpdateHandler(event:DragEvent):void
 	{
@@ -154,33 +177,37 @@
 	}
 	private function resizeElements():void
 	{
-		resizeLeftVBox();
-		resizeRightVBox();
 		resizePlayer();
+		resizeControlBar()
 		resizeTopicsTree();
-		controlbar.setSize(leftVBox.width,37);
-		trace(controlbar.background.width, controlbar.width);
+		resizeSlideAndNavigation();
 	}
 	private function resizePlayer():void
 	{
-		var newWidthVideo:Number = leftVBox.width||VIDEO_WIDTH;
+		var newWidthVideo:Number = resizeHandle.x||VIDEO_WIDTH;
 		var newHeightVideo:Number = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
 		player.setSize(newWidthVideo, newHeightVideo);
 	}
-	private function resizeRightVBox():void
+	private function resizeSlideAndNavigation():void
 	{
-		rightVBox.setSize(stage.stageWidth - (resizeHandle.x+resizeHandle.width), stage.stageHeight);
-		navigationBar.setSize(rightVBox.width);
+		controlSlide.x = resizeHandle.x + resizeHandle.width;
+		controlSlide.width = stage.stageWidth - (resizeHandle.x+resizeHandle.width);		
+		navigationBar.setSize(controlSlide.width);
+		navigationBar.x = controlSlide.x;
+		navigationBar.y = stage.stageHeight-navigationBar.height;
 	}
-	private function resizeLeftVBox():void
+
+	private function resizeControlBar():void
 	{
-		leftVBox.setSize(resizeHandle.x+10,stage.stageHeight);	
+		controlbar.setSize(player.width||VIDEO_WIDTH);
+		controlbar.y = player.y + (player.height||VIDEO_HEIGHT);
 	}
 	private function resizeTopicsTree():void
 	{
 		var videoHeight:Number = player.height||VIDEO_HEIGHT;
 		var heightTopics:Number = stage.stageHeight-(videoHeight+37);
-		topicsTree.setSize(leftVBox.width, heightTopics);
+		topicsTree.setSize(resizeHandle.x, heightTopics);
+		topicsTree.y = controlbar.y + controlbar.height;
 	}
     private function setupErrorScreen():void{
       errorScreen = new ErrorScreen();
@@ -232,7 +259,6 @@
         logger.info('Displaying control bar.');
         controlbar = new ControlBar();
 		controlbar.setSize(320,37);
-		addChild(controlbar);
       } else {
         logger.info('Control bar will not be displayed.');
       }

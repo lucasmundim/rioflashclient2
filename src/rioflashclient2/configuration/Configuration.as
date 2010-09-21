@@ -24,7 +24,7 @@ package rioflashclient2.configuration {
      */
     public var defaultConfigsPerEnvironments:Object = {
       development: {
-        lessonHost: 'http://edad.rnp.br',
+        lessonHost: 'http://roxo.noip.com:3000',
         lessonBaseURI: '/redirect.rio'
       },
       staging: {
@@ -187,8 +187,8 @@ package rioflashclient2.configuration {
     private function setupLessonXML():void {
       //lessonXML = rawParameters.aulaXML || 'Aula_002.xml';
       
-      //lessonXML = 'Aula_002.xml';
-      lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
+      lessonXML = 'Aula_002.xml';
+      //lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
       //lessonXML = '/ufjf/ciencias_exatas/dcc119/aula1/dcc119_aula1.xml';
       //lessonXML = '/ufrj/exemplos/exemplo_workshop_abertura_se/exemplo_frutas.xml';
       //lessonXML = 'iphone.xml';
