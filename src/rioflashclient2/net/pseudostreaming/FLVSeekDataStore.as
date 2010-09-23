@@ -1,8 +1,7 @@
 package rioflashclient2.net.pseudostreaming {
+  import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
 
-import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
-
-public class FLVSeekDataStore extends DefaultSeekDataStore {
+  public class FLVSeekDataStore extends DefaultSeekDataStore {
 
     override protected function extractKeyFrameFilePositions(metaData:Object):Array {
         log.debug("extractKeyFrameFilePositions");
@@ -15,14 +14,14 @@ public class FLVSeekDataStore extends DefaultSeekDataStore {
         log.debug("extractKeyFrameTimes");
         var keyFrames:Object = extractKeyFrames(metaData);
         if (!keyFrames) return null;
-        
+
         var keyFrameTimes:Array = keyFrames.times;
         if (!keyFrameTimes) {
             log.error("clip does not have keyframe metadata, cannot use pseudostreaming");
         }
         return keyFrameTimes as Array;
     }
-    
+
     private function extractKeyFrames(metaData:Object):Object {
         var keyFrames:Object = metaData.keyframes;
         log.debug("keyFrames: " + keyFrames); // commented
@@ -34,6 +33,7 @@ public class FLVSeekDataStore extends DefaultSeekDataStore {
     }
 
     override protected function queryParamValue(pos:Number):Number {
+        _startKeyFrameTime = _keyFrameTimes[pos];
         return _keyFrameFilePositions[pos] as Number;
     }
 

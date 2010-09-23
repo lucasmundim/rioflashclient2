@@ -107,12 +107,12 @@ package rioflashclient2.player {
     }
 
     private function setupBusDispatchers():void {
-      this.mediaPlayer.addEventListener(TimeEvent.COMPLETE, EventBus.dispatch);
-      this.mediaPlayer.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, EventBus.dispatch);
-      this.mediaPlayer.addEventListener(TimeEvent.DURATION_CHANGE, EventBus.dispatch);
+      /*this.mediaPlayer.addEventListener(TimeEvent.COMPLETE, EventBus.dispatch);
+            this.mediaPlayer.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, EventBus.dispatch);
+            this.mediaPlayer.addEventListener(TimeEvent.DURATION_CHANGE, EventBus.dispatch);
 
-      this.mediaPlayer.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, EventBus.dispatch);
-      this.mediaPlayer.addEventListener(LoadEvent.BYTES_TOTAL_CHANGE, EventBus.dispatch);
+            this.mediaPlayer.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, EventBus.dispatch);
+            this.mediaPlayer.addEventListener(LoadEvent.BYTES_TOTAL_CHANGE, EventBus.dispatch);*/
     }
 
     private function setupBusListeners():void {

@@ -14,6 +14,7 @@ package rioflashclient2.event {
     public static const SERVER_SEEK                 :String = "onServerSeek";
     public static const TOPICS_SEEK                 :String = "onTopicsSeek";
 
+    public static const DURATION_CHANGE            :String = "onDurationChange";
     public static const PLAYAHEAD_TIME_CHANGED      :String = "onPlayaheadTimeChanged";
     public static const NEED_TO_KEEP_PLAYAHEAD_TIME :String = "onNeedToKeepPlayaheadTime";
 
@@ -29,15 +30,15 @@ package rioflashclient2.event {
 
     public var data:*;
 
-    public function PlayerEvent(type:String, data:*=null, bubbles:Boolean=false, cancelable:Boolean=false) { 
+    public function PlayerEvent(type:String, data:*=null, bubbles:Boolean=false, cancelable:Boolean=false) {
       super(type, bubbles, cancelable);
 
       this.data = data;
     }
 
-    public override function clone():Event { 
+    public override function clone():Event {
       return new PlayerEvent(type, this.data, bubbles, cancelable);
-    } 
+    }
 
     public override function toString():String {
       return formatToString("PlayerEvent", "type", "data", "bubbles", "cancelable", "eventPhase");

@@ -83,15 +83,15 @@ package rioflashclient2.model {
     }
 
     private function onInputPlay(e:PlayerEvent):void {
-      video().play();
+      //video().play();
     }
 
     private function onInputPause(e:PlayerEvent):void {
-      video().pause();
+      //video().pause();
     }
 
     private function onInputStop(e:PlayerEvent):void {
-      video().stop();
+      //video().stop();
     }
 
     private function dispatchLoad():void {

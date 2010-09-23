@@ -29,7 +29,7 @@ package rioflashclient2.player {
     private var seekDataStore:DefaultSeekDataStore;
     private var originalVideoURL:String;
     private var duration:Number = 0;
-    private var hasDuration:Boolean = false;
+    private var durationCached:Boolean = false;
 
     public function Player() {
       this.name = 'Player';
@@ -49,7 +49,6 @@ package rioflashclient2.player {
 
     public function load(lesson:Lesson):void {
       this.video = (lesson.video() as Video);
-
       loadMedia(this.video.url());
       (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
       //resize();
@@ -60,10 +59,15 @@ package rioflashclient2.player {
         originalVideoURL = url;
         logger.info('Loading video from url: ' + url);
       } else {
-        logger.info('Seeking from url: ' + url);
+        logger.info('Server seeking to: ' + url);
       }
 
       this.resource = new URLResource(url);
+
+      if (durationCached) {
+        (this.media as VideoElement).defaultDuration = duration;
+        logger.info('Video duration restored from cached duration: ' + duration);
+      }
     }
 
     public function onMetadata(info:Object):void
@@ -142,38 +146,37 @@ package rioflashclient2.player {
     }
 
     private function onServerSeek(e:PlayerEvent):void {
-      if (seekDataStore.allowRandomSeek()) {
-        var seekPercentage:Number = (e.data as Number);
-        var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
-
-        logger.info('Server Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
-
-        loadMedia(appendQueryString(originalVideoURL, seekPosition));
-        EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.getQueryStringStartValue(seekPosition)));
-        play();
-      } else {
-        logger.info('RandomSeek not supported by media element');
-      }
+      var seekPercentage:Number = (e.data as Number);
+      var requestedSeekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage)
+      logger.info('Server seek requested to position {0} in seconds, given percentual {1}.', requestedSeekPosition, seekPercentage);
+      serverSeekTo(requestedSeekPosition);
     }
 
     private function onTopicsSeek(e:PlayerEvent):void {
-      if (seekDataStore.allowRandomSeek()) {
-        logger.info('Topics Seeking to position {0} in seconds.', e.data);
+      var requestedSeekPosition:Number = e.data;
+      logger.info('Server seek requested to position {0} in seconds.', requestedSeekPosition);
+      serverSeekTo(requestedSeekPosition);
+    }
 
-        loadMedia(appendQueryString(originalVideoURL, e.data));
+    private function serverSeekTo(requestedSeekPosition:Number):void {
+      if (seekDataStore.allowRandomSeek()) {
+        var seekPosition:Number = seekDataStore.getNearestKeyFramePosition(requestedSeekPosition)
+        logger.info('Server seeking to position {0} in seconds', seekDataStore.keyFrameTime());
+
+        loadMedia(appendQueryString(originalVideoURL, seekPosition));
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.keyFrameTime()));
         play();
       } else {
-        logger.info('RandomSeek not supported by media element');
+        logger.info('ServerSeek not supported by media element');
       }
     }
 
     private function onDurationChange(e:TimeEvent):void {
-      if (e.time && e.time.toString() != '0' && !hasDuration) {
+      if (e.time && e.time != 0 && !durationCached) {
         duration = e.time;
-        hasDuration = true;
-      }
-      if (hasDuration) {
-        (this.media as VideoElement).defaultDuration = duration;
+        durationCached = true;
+        logger.info('Video duration cached');
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.DURATION_CHANGE, duration));
       }
     }
 
@@ -182,7 +185,7 @@ package rioflashclient2.player {
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
-      return seekPercentage * this.mediaPlayer.duration;
+      return seekPercentage * duration;
     }
 
     public function hasVideoLoaded():Boolean {
@@ -221,10 +224,12 @@ package rioflashclient2.player {
         this.height = newHeight;
       }
     }
+
     public function setSize(newWidth:Number = 320, newHeight:Number = 240):void{
-    this.width = newWidth;
-    this.height = newHeight;
-  }
+      this.width = newWidth;
+      this.height = newHeight;
+    }
+
     private function setupBusDispatchers():void {
       this.mediaPlayer.addEventListener(TimeEvent.COMPLETE, EventBus.dispatch);
       this.mediaPlayer.addEventListener(TimeEvent.CURRENT_TIME_CHANGE, EventBus.dispatch);
@@ -257,14 +262,14 @@ package rioflashclient2.player {
       //stage.addEventListener(Event.RESIZE, resize);
     }
 
+    private function getNearestKeyFramePosition(requestedStart:Number):Number {
+
+    }
+
     private function appendQueryString(url:String, start:Number):String {
-        logger.debug("seek requested to: " + start);
-
-        if (start == 0) return url;
-
-        logger.debug("seeking to: " + seekDataStore.getQueryStringStartValue(start));
-        return url + (url.indexOf("?") >= 0 ? "&" : "?") +
-               "start=${start}".replace("${start}", seekDataStore.getQueryStringStartValue(start));
+      logger.debug("Seek requested to: " + start);
+      if (start == 0) return url;
+      return url + (url.indexOf("?") >= 0 ? "&" : "?") + "start=${start}".replace("${start}", start);
     }
   }
 }

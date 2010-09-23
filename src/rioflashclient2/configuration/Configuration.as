@@ -113,10 +113,9 @@ package rioflashclient2.configuration {
      * The number of seconds to buffer before start playing the video.
      */
     public var bufferTime:Number;
-  public var playerWidth:Number = 320;
-  public var playerHeight:Number = 240;
-  private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
-
+    public var playerWidth:Number = 320;
+    public var playerHeight:Number = 240;
+    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
 
     private var rawParameters:Object;
     private var logger:Logger = Log.getLogger('Configuration');
@@ -171,7 +170,7 @@ package rioflashclient2.configuration {
     }
 
     private function setupAutoPlay():void {
-      autoPlay = booleanValueOf(rawParameters.autoPlay, false);
+      autoPlay = booleanValueOf(rawParameters.autoPlay, true);
     }
 
     private function setupControlBar():void {
@@ -205,4 +204,3 @@ package rioflashclient2.configuration {
     }
   }
 }
-

@@ -10,12 +10,13 @@ package rioflashclient2.net.pseudostreaming {
     protected var log:Logger = Log.getLogger('DefaultSeekDataStore');
     protected var _keyFrameTimes:Array;
     protected var _keyFrameFilePositions:Array;
+    protected var _startKeyFrameTime:Number;
     private var _prevSeekTime:Number = 0;
     private var _needToKeepPlayAheadTime:Boolean = false;
 
     private function init(metaData:Object):void {
-      if (! metaData) return;
-      log.debug("will extract keyframe metadata");
+      if (!metaData) return;
+      log.debug("Will extract keyframe metadata...");
       try {
         _keyFrameTimes = extractKeyFrameTimes(metaData);
         _keyFrameFilePositions = extractKeyFrameFilePositions(metaData);
@@ -23,18 +24,27 @@ package rioflashclient2.net.pseudostreaming {
           _needToKeepPlayAheadTime = true;
         }
       } catch (e:Error) {
-        log.error("error getting keyframes " + e.message);
+        log.error("Error getting keyframes: " + e.message);
         EventBus.dispatch(new ErrorEvent(ErrorEvent.ERROR, false, false, e.message));
       }
       // Debug
-      log.info("_keyFrameTimes array lenth is " + (_keyFrameTimes ? _keyFrameTimes.length+"" : "null array"));
-      log.info("_keyFrameFilePositions array lenth is " + (_keyFrameFilePositions ? _keyFrameFilePositions.length+"" : "null array"));
+      log.debug("KeyFrameTimes array lenth is " + (_keyFrameTimes ? _keyFrameTimes.length+"" : "null array"));
+      log.debug("KeyFrameFilePositions array lenth is " + (_keyFrameFilePositions ? _keyFrameFilePositions.length+"" : "null array"));
+      log.info("KeyFrames metadata loaded.");
     }
 
     public static function create(metaData:Object):DefaultSeekDataStore {
       var log:Logger = Log.getLogger('DefaultSeekDataStore');
-      log.debug("extracting keyframe times and filepositions");
-      var store:DefaultSeekDataStore = metaData.seekpoints ? new H264SeekDataStore() : new FLVSeekDataStore();
+      var store:DefaultSeekDataStore;
+
+      if (metaData.seekpoints) {
+        log.info("Loading h264 keyframes metadata...");
+        store = new H264SeekDataStore();
+      } else {
+        log.info("Loading flv keyframes metadata...");
+        store = new FLVSeekDataStore();
+      }
+
       store.init(metaData);
       return store;
     }
@@ -60,21 +70,21 @@ package rioflashclient2.net.pseudostreaming {
     }
 
 
-    public function getQueryStringStartValue(seekPosition: Number, rangeBegin:Number = 0, rangeEnd:Number = undefined):Number {
+    public function getNearestKeyFramePosition(seekPosition: Number, rangeBegin:Number = 0, rangeEnd:Number = undefined):Number {
       if (!rangeEnd) {
         rangeEnd = _keyFrameTimes.length - 1;
       }
 
-      if (rangeBegin == rangeEnd) { 
+      if (rangeBegin == rangeEnd) {
         _prevSeekTime =_keyFrameTimes[rangeBegin];
         return queryParamValue(rangeBegin);
       }
 
       var rangeMid:Number = Math.floor((rangeEnd + rangeBegin)/2);
       if (_keyFrameTimes[rangeMid] >= seekPosition)
-        return getQueryStringStartValue(seekPosition, rangeBegin, rangeMid);
+        return getNearestKeyFramePosition(seekPosition, rangeBegin, rangeMid);
       else
-        return getQueryStringStartValue(seekPosition, rangeMid+1, rangeEnd);
+        return getNearestKeyFramePosition(seekPosition, rangeMid+1, rangeEnd);
     }
 
     protected function queryParamValue(pos:Number):Number {
@@ -91,6 +101,10 @@ package rioflashclient2.net.pseudostreaming {
 
     public function currentPlayheadTime(time:Number, start:Number):Number {
       return time - start + _prevSeekTime;
+    }
+
+    public function keyFrameTime():Number {
+      return _startKeyFrameTime;
     }
   }
 }

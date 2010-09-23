@@ -12,7 +12,9 @@ package rioflashclient2.net.pseudostreaming {
     }
 
     override protected function queryParamValue(pos:Number):Number {
-      return _keyFrameTimes[pos] + 0.01;
+      var paramValue:Number = _keyFrameTimes[pos] + 0.01
+      _startKeyFrameTime = paramValue;
+      return paramValue;
     }
   }
 }
