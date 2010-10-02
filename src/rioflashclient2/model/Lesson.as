@@ -13,7 +13,7 @@ package rioflashclient2.model {
 
   public class Lesson {
     public var loader:BulkLoader;
-    
+
     public var filename:String;
     public var filesize:String;
     public var title:String;
@@ -34,11 +34,11 @@ package rioflashclient2.model {
     public var topics:Topics;
     private var _video:Video;
     private var slides:Array = new Array();
-    
+
     public function Lesson() {
       // do nothing
     }
-    
+
     public function valid():Boolean {
       return hasVideo() && videoValid() && allSlidesValid();
     }
@@ -54,13 +54,13 @@ package rioflashclient2.model {
     public function hasVideo():Boolean {
       return video != null;
     }
-    
+
     public function allSlidesValid():Boolean {
       return slides.every(function(slide:Slide, index:int, array:Array):Boolean {
         return slide.valid();
       });
     }
-    
+
     public function parse(xml:XML):void {
       filename = xml.obj_filename;
       filesize = xml.obj_filesize;
@@ -94,6 +94,11 @@ package rioflashclient2.model {
       video().stop();
     }
 
+    private function dispatchLoad():void {
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.LOAD, {lesson:this}));
+      video().play();
+    }
+
     private function setupInputBusListeners():void {
       EventBus.addListener(PlayerEvent.PLAY, onInputPlay, EventBus.INPUT);
       EventBus.addListener(PlayerEvent.PAUSE, onInputPause, EventBus.INPUT);
@@ -106,15 +111,15 @@ package rioflashclient2.model {
 
     public function loadTopicsAndSlides():void {
       loader = new BulkLoader('index-sync-load');
-      
+
       loader.add(resourceURL(this.sync), { id: "sync-xml" });
       loader.add(resourceURL(this.index), { id: "index-xml" });
-      
+
       loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
-      
+
       loader.start();
     }
-    
+
     public function onAllItemsLoaded(evt : Event) : void {
       syncXML = new XML(loader.getText("sync-xml"));
       indexXML = new XML(loader.getText("index-xml"));
@@ -122,12 +127,13 @@ package rioflashclient2.model {
       for each (var slide:XML in syncXML.slide) {
         slides.push(Slide.createFromRaw(slide));
       }
-      
+
       topics = new Topics(indexXML);
 
       EventBus.dispatch(new LessonEvent(LessonEvent.RESOURCES_LOADED, this));
+      dispatchLoad();
     }
-    
+
     public function resourceURL(resource:String):String {
       return Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + resource;
     }

@@ -15,6 +15,7 @@ package rioflashclient2.player {
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.media.PlayerMediaFactory;
+  import rioflashclient2.model.Lesson;
   import rioflashclient2.model.Video;
 
   import rioflashclient2.net.RioServerSWFLoader;
@@ -42,8 +43,8 @@ package rioflashclient2.player {
       setupEventListeners();
     }
 
-    public function load(video:Video):void {
-      loadMedia(video.url());
+    public function load(lesson:Lesson):void {
+      loadMedia(lesson.video().url());
     }
 
     public function loadMedia(url:String=""):void {
@@ -72,7 +73,7 @@ package rioflashclient2.player {
     }
 
     private function onLoad(e:PlayerEvent):void {
-      load(e.data.video);
+      load(e.data.lesson);
     }
 
     private function onSeek(e:PlayerEvent):void {
