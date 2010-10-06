@@ -113,7 +113,6 @@ package rioflashclient2.chrome.controlbar
 		{
 			sync.y = 10;
 			first.y = prev.y = last.y = next.y = 8;
-			first.x = PADDING;
 			prev.x = first.x + first.width + PADDING;
 			next.x = prev.x + first.width + PADDING;
 			last.x = next.x + next.width + PADDING;

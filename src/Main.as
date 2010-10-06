@@ -38,7 +38,7 @@
   import rioflashclient2.player.SlidePlayer;
   import rioflashclient2.user.VolumeSettings;
     
-  [SWF(backgroundColor="0x000000", frameRate="30", width="1024", height="768")]
+  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
   public class Main extends Sprite {
     private var logger:Logger;
     private var rawParameters:Object;
@@ -86,35 +86,22 @@
       setupTreeView();
       loadUserSettings();
       loadLesson();
+	  setupControlBar();
 	  drawLayout();
     }
-
-
-	private function testeDraw():void
-	{
-		controlSlide = new MovieClip();
-		controlSlide.graphics.beginFill(0xFFCC00);
-		controlSlide.graphics.drawRect(0,0,400,400);
-		controlSlide.graphics.endFill();
-		containerControlBar = new MovieClip();
-		containerControlBar.graphics.beginFill(0x00CC00);
-		containerControlBar.graphics.drawRect(0,0,320,37);
-		containerControlBar.graphics.endFill();
-		navigationBar = new NavigationBar();	
-	}
 	private function drawLayout():void
 	{
-		testeDraw();
-		
-		setupControlBar();
-		
-		
-		
+		navigationBar = new NavigationBar();
 		var header:Header = new Header();
 		header.bg.width =  stage.stageWidth;
 		header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";
 		resizeHandle = new ResizeHandle();
-		resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragStartHandler);
+		resizeHandle.x = VIDEO_WIDTH;
+		resizeHandle.bg.height = stage.stageHeight;
+		resizeHandle.icon.y = resizeHandle.height/2;
+		resizeHandle.constrains(VIDEO_WIDTH/2, resizeHandle.y, VIDEO_WIDTH*2-VIDEO_WIDTH, 0);
+		resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragUpdateHandler);
+		resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
 		resizeHandle.addEventListener(DragEvent.DRAG_UPDATE, resizeDragUpdateHandler);
 
 		addChild(player);
@@ -124,46 +111,12 @@
 		addChild(slidePlayer);
 		addChild(navigationBar);
 		addChild(header);
-		
-		dragStartWidth = VIDEO_WIDTH;
-		resizeDragStartHandler(new DragEvent(DragEvent.DRAG_UPDATE));
-		/*
-		
-		containerPane = new BorderPane();
-		containerPane.name = 'containerPane';
-		containerPane.width = stage.stageWidth;
-		containerPane.height = stage.stageHeight;
-		
-		leftVBox = new VBoxPane([{target:player,maintainAspectRatio: true},
-			                 {target:controlbar,maintainAspectRatio: true},
-							 {target:topicsTree,maintainAspectRatio: true}]);
+		resizeElements();
 
-		leftVBox.verticalAlign = VerticalAlignment.TOP;
-		leftVBox.setSize(VIDEO_WIDTH, stage.stageHeight);
-		leftVBox.name = 'leftVBox';
-		rightVBox = new VBoxPane([{target:controlSlide,percentWidth: 100, percentHeight: 100},{target:navigationBar,maintainAspectRatio: true}]);
-		rightVBox.verticalAlign = VerticalAlignment.TOP;
-		rightVBox.setSize(stage.stageWidth-(resizeHandle.x+resizeHandle.width), stage.stageHeight);
-		rightVBox.name = 'rightVBox';
-		containerPane.configuration = [{target:leftVBox, constraint: BorderConstraints.LEFT},
-								{ target: resizeHandle, maintainAspectRatio: true, constraint: BorderConstraints.LEFT } ,
-								{ target: rightVBox, constraint: BorderConstraints.LEFT}];
-		addChild(containerPane);
-		dragStartWidth = VIDEO_WIDTH;
-		resizeDragUpdateHandler(new DragEvent(DragEvent.DRAG_UPDATE));*/
 	}
 
-	private function resizeDragStartHandler(event:DragEvent):void
-	{
-		dragStartWidth = topicsTree.width||VIDEO_WIDTH;
-		resizeDragUpdateHandler(event);
-	}	
 	private function resizeDragUpdateHandler(event:DragEvent):void
-	{
-		//Limit resize into area min VIDEO_WIDTH/2 and max VIDEO_WIDTH*2
-		resizeHandle.x = Math.min(Math.max(dragStartWidth + event.delta, VIDEO_WIDTH/2), VIDEO_WIDTH*2);
-		resizeHandle.bg.height = stage.stageHeight;
-		resizeHandle.icon.y = resizeHandle.height/2;
+	{		
 		resizeElements();
 	}
 	private function resizeElements():void
@@ -181,16 +134,18 @@
 	}
 	private function resizeSlideAndNavigation():void
 	{
-		slidePlayer.x = resizeHandle.x + resizeHandle.width;
-		slidePlayer.width = stage.stageWidth - (resizeHandle.x+resizeHandle.width);		
-		navigationBar.setSize(slidePlayer.width);
-		navigationBar.x = slidePlayer.x;
+		var posXHandler:Number = resizeHandle.x + resizeHandle.width; 
+		var diffStage:Number = stage.stageWidth - (resizeHandle.x+resizeHandle.width);
+		slidePlayer.x = posXHandler;
+		slidePlayer.width = diffStage;	
+		navigationBar.setSize(diffStage);
+		navigationBar.x = posXHandler;
 		navigationBar.y = stage.stageHeight-navigationBar.height;
 	}
 
 	private function resizeControlBar():void
 	{
-		controlbar.setSize(player.width||VIDEO_WIDTH);
+		controlbar.setSize(resizeHandle.x||VIDEO_WIDTH);
 		controlbar.y = player.y + (player.height||VIDEO_HEIGHT);
 	}
 	private function resizeTopicsTree():void

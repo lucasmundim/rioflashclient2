@@ -192,7 +192,7 @@
     }
     
     public function get align():String {
-      return WidgetAlignment.RIGHT;
+      return WidgetAlignment.LEFT;
     }
   }
 }
