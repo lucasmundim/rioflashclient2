@@ -173,11 +173,23 @@ package rioflashclient2.player {
 
     private function onDurationChange(e:TimeEvent):void {
       if (e.time && e.time != 0 && !durationCached) {
-        duration = e.time;
-        durationCached = true;
-        logger.info('Video duration cached');
-        EventBus.dispatch(new PlayerEvent(PlayerEvent.DURATION_CHANGE, duration));
+        cacheDuration(e.time);
       }
+
+      if (durationCached) {
+        loadDurationFromCache();
+      }
+    }
+
+    private function cacheDuration(_duration:Number):void {
+      duration = _duration;
+      durationCached = true;
+      logger.info('Video duration cached');
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.DURATION_CHANGE, duration));
+    }
+
+    private function loadDurationFromCache():void {
+      (this.media as VideoElement).defaultDuration = duration;
     }
 
     private function onError(e:ErrorEvent):void {
