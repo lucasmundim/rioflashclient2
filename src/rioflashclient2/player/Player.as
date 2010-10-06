@@ -44,7 +44,6 @@ package rioflashclient2.player {
       setupInterface();
       setupBusDispatchers();
       setupBusListeners();
-      setupEventListeners();
     }
 
     public function load(lesson:Lesson):void {
@@ -274,9 +273,6 @@ package rioflashclient2.player {
       //stage.addEventListener(Event.RESIZE, resize);
     }
 
-    private function getNearestKeyFramePosition(requestedStart:Number):Number {
-
-    }
 
     private function appendQueryString(url:String, start:Number):String {
       logger.debug("Seek requested to: " + start);
