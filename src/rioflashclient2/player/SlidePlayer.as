@@ -25,6 +25,7 @@ package rioflashclient2.player {
 
   public class SlidePlayer extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('SlidePlayer');
+    private var duration:Number = 0;
 
     public function SlidePlayer() {
       this.name = 'SlidePlayer';
@@ -76,17 +77,21 @@ package rioflashclient2.player {
       load(e.data.lesson);
     }
 
+    private function onDurationChange(e:PlayerEvent):void {
+      duration = e.data;
+    }
+
     private function onSeek(e:PlayerEvent):void {
-      //var seekPercentage:Number = (e.data as Number);
-      //var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
+      var seekPercentage:Number = (e.data as Number);
+      var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
 
-      //logger.info('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+      logger.info('Slide Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
 
-      //this.mediaPlayer.seek(seekPosition);
+      this.mediaPlayer.seek(seekPosition);
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
-      return seekPercentage * this.mediaPlayer.duration;
+      return seekPercentage * duration;
     }
 
     private function setupInterface():void {
@@ -118,6 +123,9 @@ package rioflashclient2.player {
     private function setupBusListeners():void {
       EventBus.addListener(PlayerEvent.LOAD, onLoad);
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.SERVER_SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.TOPICS_SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
       /*
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.PAUSE, onPause);
