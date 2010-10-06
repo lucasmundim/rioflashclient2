@@ -17,7 +17,6 @@
     private var _needToKeepPlayaheadTime:Boolean = false;
 
     private var duration:Number = 0;
-    private var hasDuration:Boolean = false;
     private var bytesTotal:Number = 0;
 
     public function ProgressBar() {
