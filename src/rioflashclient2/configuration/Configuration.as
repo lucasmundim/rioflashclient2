@@ -202,5 +202,9 @@ package rioflashclient2.configuration {
         return defaultValue;
       }
     }
+
+    public function resourceURL(resource:String):String {
+      return Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + resource;
+    }
   }
 }

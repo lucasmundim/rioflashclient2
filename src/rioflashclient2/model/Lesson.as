@@ -1,15 +1,16 @@
 package rioflashclient2.model {
+  import br.com.stimuli.loading.BulkLoader;
+  import br.com.stimuli.loading.BulkProgressEvent;
+  
+  import flash.events.Event;
+  
+  import org.hamcrest.mxml.object.Null;
+  import org.osmf.events.TimeEvent;
+  
+  import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LessonEvent;
   import rioflashclient2.event.PlayerEvent;
-  import rioflashclient2.configuration.Configuration;
-
-  import flash.events.Event;
-
-  import org.osmf.events.TimeEvent;
-
-  import br.com.stimuli.loading.BulkLoader;
-  import br.com.stimuli.loading.BulkProgressEvent;
 
   public class Lesson {
     public var loader:BulkLoader;
@@ -24,7 +25,7 @@ package rioflashclient2.model {
     public var grad_program:String;
     public var source:String;
     public var bitrate:String;
-    public var duration:String;
+    public var duration:Number;
     public var resolution_x:String;
     public var resolution_y:String;
     public var index:String;
@@ -32,8 +33,9 @@ package rioflashclient2.model {
     public var indexXML:XML;
     public var syncXML:XML;
     public var topics:Topics;
+    public var slides:Array = new Array();
     private var _video:Video;
-    private var slides:Array = new Array();
+
 
     public function Lesson() {
       // do nothing
@@ -67,21 +69,28 @@ package rioflashclient2.model {
       title = xml.obj_title;
       type = xml.obj_type;
       professor = xml.professor;
-      course = xml.course
-      coursecode = xml.coursecode
-      grad_program = xml.grad_program
-      source = xml.source
-      bitrate = xml.bitrate
-      duration = xml.duration
+      course = xml.course;
+      coursecode = xml.coursecode;
+      grad_program = xml.grad_program;
+      source = xml.source;
+      bitrate = xml.bitrate;
+      duration = toNumber(xml.duration);
       resolution_x = xml.resolution.r_x
       resolution_y = xml.resolution.r_y
       index = xml.related_media.rm_item.(rm_type == 'index').rm_filename;
       sync = xml.related_media.rm_item.(rm_type == 'sync').rm_filename;
-      _video = new Video(resourceURL(xml.related_media.rm_item.(rm_type == 'video').rm_filename));
+      _video = new Video(Configuration.getInstance().resourceURL(xml.related_media.rm_item.(rm_type == 'video').rm_filename));
 
       setupInputBusListeners();
     }
-
+	
+	public function toNumber(value:String):Number{
+		var values:Array =  value.split(":");
+		var newValue:Number =	Number(values[0])*3600+Number(values[1])*3600+Number(values[2]);
+		return newValue;
+		
+	}
+	
     private function onInputPlay(e:PlayerEvent):void {
       //video().play();
     }
@@ -112,8 +121,8 @@ package rioflashclient2.model {
     public function loadTopicsAndSlides():void {
       loader = new BulkLoader('index-sync-load');
 
-      loader.add(resourceURL(this.sync), { id: "sync-xml" });
-      loader.add(resourceURL(this.index), { id: "index-xml" });
+      loader.add(Configuration.getInstance().resourceURL(this.sync), { id: "sync-xml" });
+      loader.add(Configuration.getInstance().resourceURL(this.index), { id: "index-xml" });
 
       loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
 
@@ -134,8 +143,6 @@ package rioflashclient2.model {
       dispatchLoad();
     }
 
-    public function resourceURL(resource:String):String {
-      return Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + resource;
-    }
+
   }
 }
