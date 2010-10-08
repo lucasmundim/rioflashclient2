@@ -30,7 +30,7 @@ package rioflashclient2.chrome.controlbar.widget {
     }
 
     private function onClick(ev:ListEvent):void {
-      EventBus.dispatch(new PlayerEvent(PlayerEvent.TOPICS_SEEK, ev.item.time));
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.TOPICS_SEEK, ev.item.time), EventBus.INPUT);
     }
 
     private function setupEventListeners():void {

@@ -87,10 +87,17 @@ package rioflashclient2.player {
     private function onSeek(e:PlayerEvent):void {
       var seekPercentage:Number = (e.data as Number);
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
+      seekTo(seekPosition);
+    }
 
-      logger.info('Slide Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+    private function onTopicsSeek(e:PlayerEvent):void {
+      var requestedSeekPosition:Number = e.data;
+      seekTo(requestedSeekPosition);
+    }
 
-      this.mediaPlayer.seek(seekPosition);
+    private function seekTo(requestedSeekPosition:Number):void {
+      logger.info('Slide Seeking to position {0} in seconds.', requestedSeekPosition);
+      this.mediaPlayer.seek(requestedSeekPosition);
       play();
     }
 
@@ -129,7 +136,7 @@ package rioflashclient2.player {
       EventBus.addListener(PlayerEvent.LOAD, onLoad);
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.SERVER_SEEK, onSeek);
-      EventBus.addListener(PlayerEvent.TOPICS_SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.PAUSE, onPause);

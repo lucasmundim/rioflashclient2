@@ -114,6 +114,7 @@ package rioflashclient2.model {
 
       EventBus.addListener(PlayerEvent.SEEK, EventBus.dispatch, EventBus.INPUT);
       EventBus.addListener(PlayerEvent.SERVER_SEEK, EventBus.dispatch, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.TOPICS_SEEK, EventBus.dispatch, EventBus.INPUT);
       EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, EventBus.dispatch, EventBus.INPUT);
     }
 
