@@ -1,12 +1,12 @@
 package rioflashclient2.model {
   import br.com.stimuli.loading.BulkLoader;
   import br.com.stimuli.loading.BulkProgressEvent;
-  
+
   import flash.events.Event;
-  
+
   import org.hamcrest.mxml.object.Null;
   import org.osmf.events.TimeEvent;
-  
+
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LessonEvent;
@@ -83,24 +83,23 @@ package rioflashclient2.model {
 
       setupInputBusListeners();
     }
-	
-	public function toNumber(value:String):Number{
-		var values:Array =  value.split(":");
-		var newValue:Number =	Number(values[0])*3600+Number(values[1])*3600+Number(values[2]);
-		return newValue;
-		
-	}
-	
+
+    public function toNumber(value:String):Number{
+      var values:Array =  value.split(":");
+      var newValue:Number = Number(values[0]) * 3600 + Number(values[1]) * 3600 + Number(values[2]);
+      return newValue;
+    }
+
     private function onInputPlay(e:PlayerEvent):void {
-      //video().play();
+      video().play();
     }
 
     private function onInputPause(e:PlayerEvent):void {
-      //video().pause();
+      video().pause();
     }
 
     private function onInputStop(e:PlayerEvent):void {
-      //video().stop();
+      video().stop();
     }
 
     private function dispatchLoad():void {
