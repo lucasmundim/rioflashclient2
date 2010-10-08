@@ -73,7 +73,6 @@
     private function setupEventListeners():void {
       stage.addEventListener(Event.RESIZE, resize);
 
-      background.addEventListener(MouseEvent.CLICK, onSeek);
       addEventListener(MouseEvent.CLICK, onSeek);
       addEventListener(MouseEvent.MOUSE_DOWN, onStartDrag);
     }
