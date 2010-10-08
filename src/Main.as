@@ -51,17 +51,17 @@ package {
     private var controlbar:ControlBar;
     private var errorScreen:ErrorScreen;
     private var lessonLoader:LessonLoader;
-    private var controlSlide:MovieClip;
-    private var containerSlide:MovieClip;
-    private var containerControlBar:MovieClip;
-    private var mainContainer:LayoutContainer;
-    private var resizeHandle:ResizeHandle;
-    private var slidePlayer:SlidePlayer;
-    private var navigationBar:NavigationBar;
-    private var dragStartWidth:Number;
-    private var header:Header;
-    public static const VIDEO_HEIGHT:Number = 240;
-    public static const VIDEO_WIDTH:Number = 320;
+	private var controlSlide:MovieClip;
+	private var containerSlide:MovieClip;
+	private var containerControlBar:MovieClip;
+	private var mainContainer:LayoutContainer;
+	private var resizeHandle:ResizeHandle;
+	private var slidePlayer:SlidePlayer;
+	private var navigationBar:NavigationBar;
+	private var dragStartWidth:Number;
+	private var header:Header;
+	public static const VIDEO_HEIGHT:Number = 240;
+	public static const VIDEO_WIDTH:Number = 320;
     public function Main():void {
       if (stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -86,6 +86,7 @@ package {
     setupControlBar();
     drawLayout();
     }
+
 	private function onEnterFullScreen(e:PlayerEvent):void{
 		resizeElements();
 	}
@@ -169,6 +170,7 @@ package {
 	private function setupSlidePlayer():void {
 		slidePlayer = new SlidePlayer();
 	}
+
     private function setupErrorScreen():void{
       errorScreen = new ErrorScreen();
       addChild(errorScreen);
@@ -182,7 +184,7 @@ package {
     private function setupDebugConsole():void {
       debugConsole = new DebugConsole();
       EventfulLogger.root().addEventListener(LoggerEvent.LOGGER_EVENT, debugConsole.onLogMessage);
-      addChild(debugConsole);      
+      addChild(debugConsole);
       logger.info('Logger and Debug Console initialized.');
     }
 
