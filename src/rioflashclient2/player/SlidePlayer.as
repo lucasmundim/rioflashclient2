@@ -106,7 +106,7 @@ package rioflashclient2.player {
     }
 
     private function setupInterface():void {
-      this.scaleMode = ScaleMode.LETTERBOX;
+      this.scaleMode = ScaleMode.STRETCH;
 
       resize();
     }

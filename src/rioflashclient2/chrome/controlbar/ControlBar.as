@@ -138,8 +138,7 @@
       EventBus.addListener(ErrorEvent.ERROR, onError);
     }
     
-    private function resizeAndPosition(e:Event=null):void {
-
+    public function resizeAndPosition(e:Event=null):void {
       positionControls();
       position();
     }

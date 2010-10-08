@@ -1,4 +1,4 @@
-﻿package {
+package {
   import com.yahoo.astra.fl.containers.BorderPane;
   import com.yahoo.astra.fl.containers.VBoxPane;
   import com.yahoo.astra.layout.LayoutContainer;
@@ -50,20 +50,17 @@
     private var controlbar:ControlBar;
     private var errorScreen:ErrorScreen;
     private var lessonLoader:LessonLoader;
-  private var controlSlide:MovieClip;
-  private var containerSlide:MovieClip;
-  private var containerControlBar:MovieClip;
-  private var mainContainer:LayoutContainer;
-  private var resizeHandle:ResizeHandle;
-  /*private var containerPane:BorderPane;
-  private var leftVBox:VBoxPane;
-  private var rightVBox:VBoxPane;*/
-  private var slidePlayer:SlidePlayer;
-  private var navigationBar:NavigationBar;
-  private var dragStartWidth:Number;
-
-  public static const VIDEO_HEIGHT:Number = 240;
-  public static const VIDEO_WIDTH:Number = 320;
+    private var controlSlide:MovieClip;
+    private var containerSlide:MovieClip;
+    private var containerControlBar:MovieClip;
+    private var mainContainer:LayoutContainer;
+    private var resizeHandle:ResizeHandle;
+    private var slidePlayer:SlidePlayer;
+    private var navigationBar:NavigationBar;
+    private var dragStartWidth:Number;
+    private var header:Header;
+    public static const VIDEO_HEIGHT:Number = 240;
+    public static const VIDEO_WIDTH:Number = 320;
     public function Main():void {
 
       if (stage) init();
@@ -73,7 +70,7 @@
     private function init(e:Event = null):void {
       this.rawParameters = LoaderInfo(root.loaderInfo).parameters;
       removeEventListener(Event.ADDED_TO_STAGE, init);
-
+		addEventListener(Event.RESIZE, onResize);
       setupLogger();
       setupDebugConsole();
       setupStage();
@@ -89,76 +86,82 @@
     setupControlBar();
     drawLayout();
     }
-  private function drawLayout():void
-  {
-    navigationBar = new NavigationBar();
-    var header:Header = new Header();
-    header.bg.width =  stage.stageWidth;
-    header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";
-    resizeHandle = new ResizeHandle();
-    resizeHandle.x = VIDEO_WIDTH;
-    resizeHandle.bg.height = stage.stageHeight;
-    resizeHandle.icon.y = resizeHandle.height/2;
-    resizeHandle.constrains(VIDEO_WIDTH/2, resizeHandle.y, VIDEO_WIDTH*2-VIDEO_WIDTH, 0);
-    resizeHandle.addEventListener(DragEvent.DRAG_START, resizeDragUpdateHandler);
-    resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
-    resizeHandle.addEventListener(DragEvent.DRAG_UPDATE, resizeDragUpdateHandler);
 
-    addChild(player);
-    addChild(controlbar);
-    addChild(topicsTree);
-    addChild(resizeHandle);
-    addChild(slidePlayer);
-    addChild(navigationBar);
-    addChild(header);
-    resizeElements();
+	private function drawLayout():void
+	{
+		navigationBar = new NavigationBar();
+		header = new Header();
+		header.bg.width =  stage.stageWidth;
+		header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";
+		
+		resizeHandle = new ResizeHandle();
+		resizeHandle.x = VIDEO_WIDTH;
+		resizeHandle.constrains(VIDEO_WIDTH/2, resizeHandle.y, VIDEO_WIDTH*2-VIDEO_WIDTH, 0);
+		resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
 
-  }
+		addChild(player);
+		addChild(controlbar);
+		addChild(topicsTree);
+		addChild(slidePlayer);
+		addChild(navigationBar);
+		addChild(resizeHandle);
+		addChild(header);
+		resizeElements();
+	}
+	private function onResize(e:Event):void
+	{
+		trace("ONRESIZE");
+		resizeElements();
+	}
+	private function resizeDragUpdateHandler(event:DragEvent):void
+	{	
+		resizeElements();
+	}
+	private function resizeElements():void
+	{
+		
+		header.bg.width = stage.stageWidth;
+		resizeHandle.setSize(0, stage.stageHeight);
+		resizePlayer();
+		resizeControlBar()
+		resizeTopicsTree();
+		resizeSlideAndNavigation();
+	}
+	private function resizePlayer():void
+	{
+		var newWidthVideo:Number = resizeHandle.getX()||VIDEO_WIDTH;
+		var newHeightVideo:Number = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
+		player.y = header.y+header.height;
+		player.setSize(newWidthVideo, newHeightVideo);
+	}
+	private function resizeSlideAndNavigation():void
+	{
+		var posXHandler:Number = resizeHandle.getX() + resizeHandle.width; 
+		var diffStage:Number = stage.stageWidth - (resizeHandle.getX()+resizeHandle.width);
+		slidePlayer.y = header.y+header.height;
+		slidePlayer.x = posXHandler;
+		slidePlayer.width = diffStage;	
+		navigationBar.setSize(diffStage);
+		navigationBar.x = posXHandler;
+		navigationBar.y = stage.stageHeight-navigationBar.height;
+	}
 
-  private function resizeDragUpdateHandler(event:DragEvent):void
-  {
-    resizeElements();
-  }
-  private function resizeElements():void
-  {
-    resizePlayer();
-    resizeControlBar()
-    resizeTopicsTree();
-    resizeSlideAndNavigation();
-  }
-  private function resizePlayer():void
-  {
-    var newWidthVideo:Number = resizeHandle.x||VIDEO_WIDTH;
-    var newHeightVideo:Number = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
-    player.setSize(newWidthVideo, newHeightVideo);
-  }
-  private function resizeSlideAndNavigation():void
-  {
-    var posXHandler:Number = resizeHandle.x + resizeHandle.width;
-    var diffStage:Number = stage.stageWidth - (resizeHandle.x+resizeHandle.width);
-    slidePlayer.x = posXHandler;
-    slidePlayer.width = diffStage;
-    navigationBar.setSize(diffStage);
-    navigationBar.x = posXHandler;
-    navigationBar.y = stage.stageHeight-navigationBar.height;
-  }
-
-  private function resizeControlBar():void
-  {
-    controlbar.setSize(resizeHandle.x||VIDEO_WIDTH);
-    controlbar.y = player.y + (player.height||VIDEO_HEIGHT);
-  }
-  private function resizeTopicsTree():void
-  {
-    var videoHeight:Number = player.height||VIDEO_HEIGHT;
-    var heightTopics:Number = stage.stageHeight-(videoHeight+37);
-    topicsTree.setSize(resizeHandle.x, heightTopics);
-    topicsTree.y = controlbar.y + controlbar.height;
-  }
-  private function setupSlidePlayer():void {
-    slidePlayer = new SlidePlayer();
-    //addChild(slidePlayer);
-  }
+	private function resizeControlBar():void
+	{
+		controlbar.setSize(resizeHandle.getX()||VIDEO_WIDTH);
+		controlbar.y = player.y + (player.height||VIDEO_HEIGHT);
+		controlbar.resizeAndPosition();
+	}
+	private function resizeTopicsTree():void
+	{
+		var videoHeight:Number = player.height||VIDEO_HEIGHT;
+		var heightTopics:Number = stage.stageHeight-(videoHeight+37);
+		topicsTree.setSize(resizeHandle.getX(), heightTopics);
+		topicsTree.y = controlbar.y + controlbar.height;
+	}
+	private function setupSlidePlayer():void {
+		slidePlayer = new SlidePlayer();
+	}
     private function setupErrorScreen():void{
       errorScreen = new ErrorScreen();
       addChild(errorScreen);
@@ -172,14 +175,12 @@
     private function setupDebugConsole():void {
       debugConsole = new DebugConsole();
       EventfulLogger.root().addEventListener(LoggerEvent.LOGGER_EVENT, debugConsole.onLogMessage);
-      addChild(debugConsole);
-
+      addChild(debugConsole);      
       logger.info('Logger and Debug Console initialized.');
     }
 
     private function setupStage():void {
       logger.info('Adjusting stage scale mode and alignment...');
-
       stage.scaleMode = StageScaleMode.NO_SCALE;
       stage.align = StageAlign.TOP_LEFT;
     }
