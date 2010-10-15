@@ -170,7 +170,7 @@ package rioflashclient2.configuration {
     }
 
     private function setupAutoPlay():void {
-      autoPlay = booleanValueOf(rawParameters.autoPlay, true);
+      autoPlay = booleanValueOf(rawParameters.autoPlay, false);
     }
 
     private function setupControlBar():void {
@@ -184,10 +184,9 @@ package rioflashclient2.configuration {
     }
 
     private function setupLessonXML():void {
-      //lessonXML = rawParameters.aulaXML || 'Aula_002.xml';
-
+      lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml';
       //lessonXML = 'Aula_002.xml';
-      lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
+      //lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
       //lessonXML = '/ufjf/ciencias_exatas/dcc119/aula1/dcc119_aula1.xml';
       //lessonXML = '/ufrj/exemplos/exemplo_workshop_abertura_se/exemplo_frutas.xml';
       //lessonXML = 'iphone.xml';

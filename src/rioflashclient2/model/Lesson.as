@@ -4,7 +4,6 @@ package rioflashclient2.model {
 
   import flash.events.Event;
 
-  import org.hamcrest.mxml.object.Null;
   import org.osmf.events.TimeEvent;
 
   import rioflashclient2.configuration.Configuration;

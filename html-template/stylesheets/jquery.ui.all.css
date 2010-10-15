@@ -1,0 +1,14 @@
+/*
+ * jQuery UI CSS Framework @VERSION
+ *
+ * Copyright 2010, AUTHORS.txt (http://jqueryui.com/about)
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Theming
+ */
+@import "jquery.ui.base.css";
+@import "jquery.ui.core.css";
+@import "jquery.ui.theme.css";
+@import "jquery.ui.resizable.css";
+@import "jquery.ui.dialog.css";
