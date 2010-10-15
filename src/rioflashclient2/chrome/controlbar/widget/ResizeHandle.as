@@ -44,47 +44,33 @@ package rioflashclient2.chrome.controlbar.widget
 		}
 		public function constrains(x:Number, y:Number, w:Number, h:Number):void{
 			var point1:Point = globalToLocal(new Point(x,y));
-			var point2:Point = globalToLocal(new Point(w,y));
-			rectangleConstrains = new Rectangle(point1.x, point1.y, point1.x-w, point1.y);
-
+			rectangleConstrains = new Rectangle(point1.x, point1.y, w, point1.y);
 		}
 				
 		protected function resizeHandleDownHandler(event:MouseEvent):void
 		{
 			ghost.visible = true;
 			ghost.startDrag(true,rectangleConstrains);
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler, false, 0, true);
-			addEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler, false, 0, true);
-			stage.addEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler, false, 0, true);
-			addEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler, false, 0, true);
+			stage.addEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler);
+			addEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler);
 			event.updateAfterEvent();
 		}
 		
-		protected function handleDragHandler(event:MouseEvent = null):void
-		{
-			event.updateAfterEvent();
-			//dispatchEvent(new DragEvent(DragEvent.DRAG_UPDATE));
-		}
 		public function getX():Number
 		{
 			return localToGlobal(new Point(slide.x,0)).x;
 		}
 		protected function handleDragStopHandler(event:MouseEvent):void
 		{
-			
-			handleDragHandler(event);
+			event.updateAfterEvent();
 			ghost.stopDrag();
-			removeEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler);
 			removeEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler);
-			stage.removeEventListener(MouseEvent.MOUSE_MOVE, handleDragHandler);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, handleDragStopHandler);
 			var newx:Number = ghost.x;
-			slide.x = newx;
+			slide.x = Math.round(newx-slide.width/2);
+			ghost.visible = false;
 			dispatchEvent(new DragEvent(DragEvent.DRAG_END));
-			event.updateAfterEvent();
-			//this.x = ghost.x;
-			//ghost.x = slide.x;
-			//ghost.visible = false;
+			
 		}
 	}
 }

@@ -15,7 +15,7 @@ package {
   import flash.display.StageAlign;
   import flash.display.StageScaleMode;
   import flash.events.Event;
-
+  import flash.utils.setTimeout;
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
 
@@ -31,6 +31,7 @@ package {
   import rioflashclient2.event.DragEvent;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LoggerEvent;
+  import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.logging.EventfulLogger;
   import rioflashclient2.logging.EventfulLoggerFactory;
   import rioflashclient2.model.LessonLoader;
@@ -62,7 +63,6 @@ package {
     public static const VIDEO_HEIGHT:Number = 240;
     public static const VIDEO_WIDTH:Number = 320;
     public function Main():void {
-
       if (stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
     }
@@ -70,7 +70,7 @@ package {
     private function init(e:Event = null):void {
       this.rawParameters = LoaderInfo(root.loaderInfo).parameters;
       removeEventListener(Event.ADDED_TO_STAGE, init);
-		addEventListener(Event.RESIZE, onResize);
+	  addEventListener(Event.RESIZE, onResize);
       setupLogger();
       setupDebugConsole();
       setupStage();
@@ -86,19 +86,22 @@ package {
     setupControlBar();
     drawLayout();
     }
-
+	private function onEnterFullScreen(e:PlayerEvent):void{
+		resizeElements();
+	}
+	private function onExitFullScreen(e:PlayerEvent):void{
+		resizeElements();
+	}
 	private function drawLayout():void
 	{
 		navigationBar = new NavigationBar();
 		header = new Header();
 		header.bg.width =  stage.stageWidth;
-		header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";
-		
+		header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";		
 		resizeHandle = new ResizeHandle();
 		resizeHandle.x = VIDEO_WIDTH;
 		resizeHandle.constrains(VIDEO_WIDTH/2, resizeHandle.y, VIDEO_WIDTH*2-VIDEO_WIDTH, 0);
 		resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
-
 		addChild(player);
 		addChild(controlbar);
 		addChild(topicsTree);
@@ -106,14 +109,16 @@ package {
 		addChild(navigationBar);
 		addChild(resizeHandle);
 		addChild(header);
-		resizeElements();
+		setTimeout(function():void{
+			resizeDragUpdateHandler();
+		},300);
+		
 	}
 	private function onResize(e:Event):void
 	{
-		trace("ONRESIZE");
 		resizeElements();
 	}
-	private function resizeDragUpdateHandler(event:DragEvent):void
+	private function resizeDragUpdateHandler(event:DragEvent = null):void
 	{	
 		resizeElements();
 	}
@@ -127,10 +132,12 @@ package {
 		resizeTopicsTree();
 		resizeSlideAndNavigation();
 	}
+	private var newWidthVideo:Number;
+	private var newHeightVideo:Number;
 	private function resizePlayer():void
 	{
-		var newWidthVideo:Number = resizeHandle.getX()||VIDEO_WIDTH;
-		var newHeightVideo:Number = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
+		newWidthVideo = resizeHandle.getX()||VIDEO_WIDTH;
+		newHeightVideo = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
 		player.y = header.y+header.height;
 		player.setSize(newWidthVideo, newHeightVideo);
 	}
@@ -149,12 +156,12 @@ package {
 	private function resizeControlBar():void
 	{
 		controlbar.setSize(resizeHandle.getX()||VIDEO_WIDTH);
-		controlbar.y = player.y + (player.height||VIDEO_HEIGHT);
+		controlbar.y = player.y + (newHeightVideo||VIDEO_HEIGHT);
 		controlbar.resizeAndPosition();
 	}
 	private function resizeTopicsTree():void
 	{
-		var videoHeight:Number = player.height||VIDEO_HEIGHT;
+		var videoHeight:Number = newHeightVideo||VIDEO_HEIGHT;
 		var heightTopics:Number = stage.stageHeight-(videoHeight+37);
 		topicsTree.setSize(resizeHandle.getX(), heightTopics);
 		topicsTree.y = controlbar.y + controlbar.height;
@@ -191,6 +198,8 @@ package {
 
     private function setupFullScreenManager():void {
       fullScreenManager = new FullScreenManager(stage);
+	  EventBus.addListener(PlayerEvent.ENTER_FULL_SCREEN, onEnterFullScreen, EventBus.INPUT);
+	  EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, onExitFullScreen, EventBus.INPUT);
     }
 
     private function setupPlayer():void {
