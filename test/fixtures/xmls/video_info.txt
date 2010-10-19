@@ -1,0 +1,63 @@
+File                     : palestra_nelson.flv
+Container                : flv
+Video Codec              : Sorenson (id: 2)
+Audio Codec              : mp3 (id: 2)
+Bit Rate                 : 266kb/s
+Resolution               : 320x240
+FPS                      : 29.92
+Duration                 : 1777740s (00:29:37.74)
+Video Color Space        : yuv420p
+Audio Sample Rate        : 44100Hz
+Audio Channels           : 2 stereo
+
+
+File                     : dcc119_aula1.flv
+Container                : flv
+Video Codec              : h264 (id: 7)
+Audio Codec              : aac (id: 10)
+Bit Rate                 : 72kb/s
+Resolution               : 320x240
+FPS                      : 25
+Duration                 : 2482560s (00:41:22.56)
+Video Color Space        : yuv420p
+Audio Sample Rate        : 16000Hz
+Audio Channels           : 1 mono
+
+
+File                     : Aula_002.flv
+Container                : flv
+Video Codec              : h264 (id: 7)
+Audio Codec              : aac (id: 10)
+Bit Rate                 : 71kb/s
+Resolution               : 320x240
+FPS                      : 29.97
+Duration                 : 2716340s (00:45:16.34)
+Video Color Space        : yuv420p
+Audio Sample Rate        : 16000Hz
+Audio Channels           : 1 mono
+
+
+File                     : exemplo_frutas.flv
+Container                : flv
+Video Codec              : Sorenson (id: 2)
+Audio Codec              : mp3 (id: 2)
+Bit Rate                 : 243kb/s
+Resolution               : 320x240
+FPS                      : 24
+Duration                 : 71620s (00:01:11.62)
+Video Color Space        : yuv420p
+Audio Sample Rate        : 11025Hz
+Audio Channels           : 2 stereo
+
+
+File                     : trailer.mp4
+Container                : mov,mp4,m4a,3gp,3g2,mj2
+Video Codec              : h264
+Audio Codec              : aac
+Bit Rate                 : 657kb/s
+Resolution               : 640x480
+FPS                      : 24
+Duration                 : 150500s (00:02:30.50)
+Video Color Space        : yuv420p
+Audio Sample Rate        : 44100Hz
+Audio Channels           : 2 stereo
