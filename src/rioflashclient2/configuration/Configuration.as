@@ -156,6 +156,7 @@ package rioflashclient2.configuration {
 
     private function setupEnvironment():void {
       environment = rawParameters.environment ? rawParameters.environment : 'production';
+      environment = 'development';
     }
 
     private function loadEnvironment():void {
