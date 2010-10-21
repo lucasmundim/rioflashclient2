@@ -103,7 +103,7 @@ package rioflashclient2.model {
 
     private function dispatchLoad():void {
       EventBus.dispatch(new PlayerEvent(PlayerEvent.LOAD, {lesson:this}));
-      video().play();
+      //video().play();
     }
 
     private function setupInputBusListeners():void {
