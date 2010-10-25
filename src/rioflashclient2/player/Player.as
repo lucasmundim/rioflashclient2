@@ -19,17 +19,38 @@ package rioflashclient2.player {
   import rioflashclient2.media.PlayerMediaFactory;
   import rioflashclient2.model.Lesson;
   import rioflashclient2.model.Video;
+  import rioflashclient2.model.Topics;
   import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
+
+  import mx.collections.ArrayCollection;
+  import org.osmf.metadata.CuePoint;
+  import org.osmf.metadata.CuePointType;
+  import org.osmf.events.TimelineMetadataEvent;
+  import org.osmf.metadata.TimelineMetadata;
+  import org.osmf.metadata.TimelineMarker;
+  import org.osmf.traits.TimeTrait;
+  import org.osmf.traits.LoadTrait;
+  import org.osmf.traits.MediaTraitType;
+  import org.osmf.media.MediaElement;
+  import org.osmf.events.*;
+  import rioflashclient2.net.RioServerNetLoader;
+  import org.osmf.net.NetLoader;
 
   public class Player extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('Player');
 
     public var lesson:Lesson;
     public var video:Video;
+    public var topics:Topics;
     private var seekDataStore:DefaultSeekDataStore;
     private var originalVideoURL:String;
     private var duration:Number = 0;
     private var durationCached:Boolean = false;
+
+    private var dynamicTimelineMetadata:TimelineMetadata;
+    [Bindable]
+    private var _cuePointsCollection:ArrayCollection;
+    private var netLoader:NetLoader;
 
     public function Player() {
       this.name = 'Player';
@@ -48,9 +69,9 @@ package rioflashclient2.player {
 
     public function load(lesson:Lesson):void {
       this.video = (lesson.video() as Video);
+      this.topics = (lesson.topics as Topics);
       loadMedia(this.video.url());
       (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
-      //resize();
     }
 
     public function loadMedia(url:String=""):void {
@@ -61,12 +82,35 @@ package rioflashclient2.player {
         logger.info('Server seeking to: ' + url);
       }
 
-      this.resource = new URLResource(url);
+      //this.resource = new URLResource(url);
+
+      netLoader = new RioServerNetLoader();
+      var videoElement:VideoElement = new VideoElement(null, netLoader);
+      videoElement.resource = new URLResource(url);
+      this.media = videoElement;
+
+      topicsTimelineMetadata = new TimelineMetadata(videoElement);
+      topicsTimelineMetadata.addEventListener(TimelineMetadataEvent.MARKER_TIME_REACHED, EventBus.dispatch, false, 0, true);
+      addTopicsMetadata(this.topics);
 
       if (durationCached) {
         (this.media as VideoElement).defaultDuration = duration;
         logger.info('Video duration restored from cached duration: ' + duration);
       }
+    }
+
+    public function addTopicsMetadata(topics:Topics):void {
+      for each (var topicTime:Number in topics.topicTimes) {
+        var cuePoint:CuePoint = new CuePoint(CuePointType.ACTIONSCRIPT, topicTime, "Topic", null);
+        topicsTimelineMetadata.addMarker(cuePoint);
+      }
+    }
+
+    private function onCuePoint(event:TimelineMetadataEvent):void
+    {
+      var cuePoint:CuePoint = event.marker as CuePoint;
+      var diff:Number = cuePoint.time - this.mediaPlayer.currentTime;
+      logger.info("CuePoint reached=" + cuePoint.time + ", currentTime:" + this.mediaPlayer.currentTime + ", diff="+diff);
     }
 
     public function onMetadata(info:Object):void
@@ -267,6 +311,7 @@ package rioflashclient2.player {
       EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
 
       EventBus.addListener(ErrorEvent.ERROR, onError);
+      EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onCuePoint);
     }
 
     private function setupEventListeners():void {
