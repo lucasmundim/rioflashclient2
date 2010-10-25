@@ -50,35 +50,35 @@ package rioflashclient2.player {
     }
 
     public function loadMedia(slides:Array):void {
-    var swfLoader:RioServerSWFLoader = new RioServerSWFLoader();
-    var swfSequence:SerialElement = new SerialElement();
-    swfSequence.addChild(new DurationElement(slides[0].time));
-    for( var i:uint = 0; i< slides.length; i++){
-      var slide:Slide = slides[i];
-      var slideURL:String = Configuration.getInstance().resourceURL(slide.relative_path);
-      var swfElement:SWFElement = new SWFElement(new URLResource(slideURL), swfLoader);
-      var slideDuration:Number = duration-slide.time;
-          if( i > 0 && i < slides.length - 1  ){
-            trace(i, "if ", slides.length-1)
-            slideDuration = slides[i+1].time-slide.time;
-          }
-      var durationElement:DurationElement = new DurationElement(slideDuration, swfElement);
-      var preloadElement:PreloadingProxyElement = new PreloadingProxyElement( durationElement );
+      var swfLoader:RioServerSWFLoader = new RioServerSWFLoader();
+      var swfSequence:SerialElement = new SerialElement();
+      swfSequence.addChild(new DurationElement(slides[0].time));
+      for( var i:uint = 0; i< slides.length; i++){
+        var slide:Slide = slides[i];
+        var slideURL:String = Configuration.getInstance().resourceURL(slide.relative_path);
+        var swfElement:SWFElement = new SWFElement(new URLResource(slideURL), swfLoader);
 
-      swfSequence.addChild(durationElement);
-      logger.info('Loading from url: ' + slideURL );
-    }
-    this.media = swfSequence;
-    this.mediaPlayer.play();
+        var slideDuration:Number;
+        if (i < (slides.length - 1)) {
+          slideDuration = slides[i+1].time - slide.time;
+        } else {
+          slideDuration = duration - slide.time;
+        }
+
+        var durationElement:DurationElement = new DurationElement(slideDuration, swfElement);
+        var preloadElement:PreloadingProxyElement = new PreloadingProxyElement( durationElement );
+        swfSequence.addChild(preloadElement);
+        logger.info('Loading: ' + slideURL + ' with ' + slideDuration + 's');
+      }
+      this.media = swfSequence;
     }
 
     private function onLoad(e:PlayerEvent):void {
-    lesson = e.data.lesson;
+      lesson = e.data.lesson;
       duration = lesson.duration;
-    load(e.data.lesson);
-
+      load(e.data.lesson);
+      play();
     }
-
 
     private function onDurationChange(e:PlayerEvent):void {
       duration = e.data;
@@ -87,10 +87,19 @@ package rioflashclient2.player {
     private function onSeek(e:PlayerEvent):void {
       var seekPercentage:Number = (e.data as Number);
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
-
       logger.info('Slide Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+      seekTo(seekPosition);
+    }
 
-      this.mediaPlayer.seek(seekPosition);
+    private function onServerSeek(e:PlayerEvent):void {
+      var seekPosition:Number = (e.data as Number);
+      logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
+      seekTo(seekPosition);
+    }
+
+    private function seekTo(requestedSeekPosition:Number):void {
+      this.mediaPlayer.seek(requestedSeekPosition);
+      play();
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
@@ -121,12 +130,11 @@ package rioflashclient2.player {
     private function setupBusListeners():void {
       EventBus.addListener(PlayerEvent.LOAD, onLoad);
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
-      EventBus.addListener(PlayerEvent.SERVER_SEEK, onSeek);
-      EventBus.addListener(PlayerEvent.TOPICS_SEEK, onSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
-    EventBus.addListener(PlayerEvent.PLAY, onPlay);
+      EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.PAUSE, onPause);
       EventBus.addListener(PlayerEvent.STOP, onStop);
+      EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onServerSeek);
     }
     public function play():void {
       logger.info('SlidePlayer Playing...');
