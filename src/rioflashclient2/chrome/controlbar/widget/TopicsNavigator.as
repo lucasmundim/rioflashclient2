@@ -20,7 +20,7 @@ package rioflashclient2.chrome.controlbar.widget {
   import org.osmf.logging.Logger;
 
   public class TopicsNavigator extends Tree {
-    private var logger:Logger = Log.getLogger('SlidePlayer');
+    private var logger:Logger = Log.getLogger('TopicsNavigator');
     private var duration:Number = 0;
     private var lesson:Lesson;
     private var topics:Topics;
