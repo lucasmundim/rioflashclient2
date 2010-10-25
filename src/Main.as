@@ -105,6 +105,7 @@ package {
       header = new Header();
       header.bg.width =  stage.stageWidth;
       header.txtHeader.text ="Carregando aula...";
+      header.txtHeader.width = stage.stageWidth;
       resizeHandle = new ResizeHandle();
       resizeHandle.x = DEFAULT_VIDEO_WIDTH;
       resizeHandle.constrains(DEFAULT_VIDEO_WIDTH/2, resizeHandle.y, DEFAULT_VIDEO_WIDTH*2-DEFAULT_VIDEO_WIDTH, 0);
@@ -131,6 +132,7 @@ package {
 
     private function resizeElements():void {
       header.bg.width = stage.stageWidth;
+      header.txtHeader.width = stage.stageWidth;
       resizeHandle.setSize(0, stage.stageHeight);
       resizePlayer();
       resizeControlBar()
@@ -237,7 +239,7 @@ package {
     }
 
     private function onLessonResourcesLoaded(e:LessonEvent):void {
-        header.txtHeader.text = e.lesson.title + " " + e.lesson.professor;
+      header.txtHeader.text = "Disciplina: " + e.lesson.grad_program + " - Aula: " + e.lesson.course + " - Professor: " + e.lesson.professor;
     }
   }
 }
