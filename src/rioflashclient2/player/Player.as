@@ -273,7 +273,6 @@ package rioflashclient2.player {
       //stage.addEventListener(Event.RESIZE, resize);
     }
 
-
     private function appendQueryString(url:String, start:Number):String {
       logger.debug("Seek requested to: " + start);
       if (start == 0) return url;

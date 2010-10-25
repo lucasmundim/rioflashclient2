@@ -41,6 +41,9 @@ package {
 
   [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
   public class Main extends Sprite {
+    public static const DEFAULT_VIDEO_WIDTH:Number = 320;
+    public static const DEFAULT_VIDEO_HEIGHT:Number = 240;
+
     private var logger:Logger;
     private var rawParameters:Object;
     private var debugConsole:DebugConsole;
@@ -51,17 +54,18 @@ package {
     private var controlbar:ControlBar;
     private var errorScreen:ErrorScreen;
     private var lessonLoader:LessonLoader;
-	private var controlSlide:MovieClip;
-	private var containerSlide:MovieClip;
-	private var containerControlBar:MovieClip;
-	private var mainContainer:LayoutContainer;
-	private var resizeHandle:ResizeHandle;
-	private var slidePlayer:SlidePlayer;
-	private var navigationBar:NavigationBar;
-	private var dragStartWidth:Number;
-	private var header:Header;
-	public static const VIDEO_HEIGHT:Number = 240;
-	public static const VIDEO_WIDTH:Number = 320;
+    private var controlSlide:MovieClip;
+    private var containerSlide:MovieClip;
+    private var containerControlBar:MovieClip;
+    private var mainContainer:LayoutContainer;
+    private var resizeHandle:ResizeHandle;
+    private var slidePlayer:SlidePlayer;
+    private var navigationBar:NavigationBar;
+    private var dragStartWidth:Number;
+    private var header:Header;
+    private var newWidthVideo:Number;
+    private var newHeightVideo:Number;
+
     public function Main():void {
       if (stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -70,7 +74,7 @@ package {
     private function init(e:Event = null):void {
       this.rawParameters = LoaderInfo(root.loaderInfo).parameters;
       removeEventListener(Event.ADDED_TO_STAGE, init);
-	  addEventListener(Event.RESIZE, onResize);
+      addEventListener(Event.RESIZE, onResize);
       setupLogger();
       setupDebugConsole();
       setupStage();
@@ -79,99 +83,96 @@ package {
       setupErrorScreen();
       setupFullScreenManager();
       setupPlayer();
-    setupSlidePlayer();
+      setupSlidePlayer();
       setupTreeView();
       loadUserSettings();
       loadLesson();
-    setupControlBar();
-    drawLayout();
+      setupControlBar();
+      drawLayout();
     }
 
-	private function onEnterFullScreen(e:PlayerEvent):void{
-		resizeElements();
-	}
-	private function onExitFullScreen(e:PlayerEvent):void{
-		resizeElements();
-	}
-	private function drawLayout():void
-	{
-		navigationBar = new NavigationBar();
-		header = new Header();
-		header.bg.width =  stage.stageWidth;
-		header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";		
-		resizeHandle = new ResizeHandle();
-		resizeHandle.x = VIDEO_WIDTH;
-		resizeHandle.constrains(VIDEO_WIDTH/2, resizeHandle.y, VIDEO_WIDTH*2-VIDEO_WIDTH, 0);
-		resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
-		addChild(player);
-		addChild(controlbar);
-		addChild(topicsTree);
-		addChild(slidePlayer);
-		addChild(navigationBar);
-		addChild(resizeHandle);
-		addChild(header);
-		setTimeout(function():void{
-			resizeDragUpdateHandler();
-		},300);
-		
-	}
-	private function onResize(e:Event):void
-	{
-		resizeElements();
-	}
-	private function resizeDragUpdateHandler(event:DragEvent = null):void
-	{	
-		resizeElements();
-	}
-	private function resizeElements():void
-	{
-		
-		header.bg.width = stage.stageWidth;
-		resizeHandle.setSize(0, stage.stageHeight);
-		resizePlayer();
-		resizeControlBar()
-		resizeTopicsTree();
-		resizeSlideAndNavigation();
-	}
-	private var newWidthVideo:Number;
-	private var newHeightVideo:Number;
-	private function resizePlayer():void
-	{
-		newWidthVideo = resizeHandle.getX()||VIDEO_WIDTH;
-		newHeightVideo = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
-		player.y = header.y+header.height;
-		player.setSize(newWidthVideo, newHeightVideo);
-	}
-	private function resizeSlideAndNavigation():void
-	{
-		var posXHandler:Number = resizeHandle.getX() + resizeHandle.width; 
-		var diffStage:Number = stage.stageWidth - (resizeHandle.getX()+resizeHandle.width);
-		slidePlayer.y = header.y+header.height;
-		slidePlayer.x = posXHandler;
-		slidePlayer.width = diffStage;	
-		navigationBar.setSize(diffStage);
-		navigationBar.x = posXHandler;
-		navigationBar.y = stage.stageHeight-navigationBar.height;
-	}
+    private function onEnterFullScreen(e:PlayerEvent):void {
+      resizeElements();
+    }
 
-	private function resizeControlBar():void
-	{
-		controlbar.setSize(resizeHandle.getX()||VIDEO_WIDTH);
-		controlbar.y = player.y + (newHeightVideo||VIDEO_HEIGHT);
-		controlbar.resizeAndPosition();
-	}
-	private function resizeTopicsTree():void
-	{
-		var videoHeight:Number = newHeightVideo||VIDEO_HEIGHT;
-		var heightTopics:Number = stage.stageHeight-(videoHeight+37);
-		topicsTree.setSize(resizeHandle.getX(), heightTopics);
-		topicsTree.y = controlbar.y + controlbar.height;
-	}
-	private function setupSlidePlayer():void {
-		slidePlayer = new SlidePlayer();
-	}
+    private function onExitFullScreen(e:PlayerEvent):void {
+      resizeElements();
+    }
 
-    private function setupErrorScreen():void{
+    private function drawLayout():void {
+      navigationBar = new NavigationBar();
+      header = new Header();
+      header.bg.width =  stage.stageWidth;
+      header.txtHeader.text = "Palestra Professor Nelson de Souza e Silva - Instituto do Coração - UFRJ";
+      resizeHandle = new ResizeHandle();
+      resizeHandle.x = DEFAULT_VIDEO_WIDTH;
+      resizeHandle.constrains(DEFAULT_VIDEO_WIDTH/2, resizeHandle.y, DEFAULT_VIDEO_WIDTH*2-DEFAULT_VIDEO_WIDTH, 0);
+      resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
+      addChild(player);
+      addChild(controlbar);
+      addChild(topicsTree);
+      addChild(slidePlayer);
+      addChild(navigationBar);
+      addChild(resizeHandle);
+      addChild(header);
+      setTimeout(function():void{
+        resizeDragUpdateHandler();
+      },300);
+    }
+
+    private function onResize(e:Event):void {
+      resizeElements();
+    }
+
+    private function resizeDragUpdateHandler(event:DragEvent = null):void {
+      resizeElements();
+    }
+
+    private function resizeElements():void {
+      header.bg.width = stage.stageWidth;
+      resizeHandle.setSize(0, stage.stageHeight);
+      resizePlayer();
+      resizeControlBar()
+      resizeTopicsTree();
+      resizeSlideAndNavigation();
+    }
+
+    private function resizePlayer():void {
+      newWidthVideo = resizeHandle.getX()||DEFAULT_VIDEO_WIDTH;
+      newHeightVideo = DEFAULT_VIDEO_HEIGHT*newWidthVideo/DEFAULT_VIDEO_WIDTH;
+      player.y = header.y+header.height;
+      player.setSize(newWidthVideo, newHeightVideo);
+    }
+
+    private function resizeSlideAndNavigation():void {
+      var posXHandler:Number = resizeHandle.getX() + resizeHandle.width;
+      var diffStage:Number = stage.stageWidth - (resizeHandle.getX()+resizeHandle.width);
+      slidePlayer.y = header.y+header.height;
+      slidePlayer.x = posXHandler;
+      slidePlayer.width = diffStage;
+      navigationBar.setSize(diffStage);
+      navigationBar.x = posXHandler;
+      navigationBar.y = stage.stageHeight-navigationBar.height;
+    }
+
+    private function resizeControlBar():void {
+      controlbar.setSize(resizeHandle.getX()||DEFAULT_VIDEO_WIDTH);
+      controlbar.y = player.y + (newHeightVideo||DEFAULT_VIDEO_HEIGHT);
+      controlbar.resizeAndPosition();
+    }
+
+    private function resizeTopicsTree():void {
+      var videoHeight:Number = newHeightVideo||DEFAULT_VIDEO_HEIGHT;
+      var heightTopics:Number = stage.stageHeight-(videoHeight+37);
+      topicsTree.setSize(resizeHandle.getX(), heightTopics);
+      topicsTree.y = controlbar.y + controlbar.height;
+    }
+
+    private function setupSlidePlayer():void {
+      slidePlayer = new SlidePlayer();
+    }
+
+    private function setupErrorScreen():void {
       errorScreen = new ErrorScreen();
       addChild(errorScreen);
     }
@@ -200,13 +201,13 @@ package {
 
     private function setupFullScreenManager():void {
       fullScreenManager = new FullScreenManager(stage);
-	  EventBus.addListener(PlayerEvent.ENTER_FULL_SCREEN, onEnterFullScreen, EventBus.INPUT);
-	  EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, onExitFullScreen, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.ENTER_FULL_SCREEN, onEnterFullScreen, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, onExitFullScreen, EventBus.INPUT);
     }
 
     private function setupPlayer():void {
       player = new Player();
-    player.setSize(VIDEO_WIDTH,VIDEO_HEIGHT);
+      player.setSize(DEFAULT_VIDEO_WIDTH, DEFAULT_VIDEO_HEIGHT);
     }
 
     private function setupTreeView():void {
@@ -217,7 +218,7 @@ package {
       if (Configuration.getInstance().displayControlBar) {
         logger.info('Displaying control bar.');
         controlbar = new ControlBar();
-    controlbar.setSize(320,37);
+        controlbar.setSize(320,37);
       } else {
         logger.info('Control bar will not be displayed.');
       }
