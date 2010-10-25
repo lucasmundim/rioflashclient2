@@ -91,9 +91,71 @@ package {
       drawLayout();
     }
 
-    private function onEnterFullScreen(e:PlayerEvent):void {
-      resizeElements();
-    }
+	private function onEnterFullScreen(e:PlayerEvent):void{
+		resizeElements();
+	}
+	private function onExitFullScreen(e:PlayerEvent):void{
+		resizeElements();
+	}
+	private function drawLayout():void
+	{
+		navigationBar = new NavigationBar();
+		header = new Header();
+		header.bg.width =  stage.stageWidth;		
+		resizeHandle = new ResizeHandle();
+		resizeHandle.x = VIDEO_WIDTH;
+		resizeHandle.constrains(VIDEO_WIDTH/2, resizeHandle.y, VIDEO_WIDTH*2-VIDEO_WIDTH, 0);
+		resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
+		addChild(player);
+		addChild(controlbar);
+		addChild(topicsTree);
+		addChild(slidePlayer);
+		addChild(navigationBar);
+		addChild(resizeHandle);
+		addChild(header);
+		setTimeout(function():void{
+			resizeDragUpdateHandler();
+		},300);
+		
+	}
+	private function onResize(e:Event):void
+	{
+		resizeElements();
+	}
+	private function resizeDragUpdateHandler(event:DragEvent = null):void
+	{	
+		resizeElements();
+	}
+	private function resizeElements():void
+	{
+		
+		header.bg.width = stage.stageWidth;
+		resizeHandle.setSize(0, stage.stageHeight);
+		resizePlayer();
+		resizeControlBar()
+		resizeTopicsTree();
+		resizeSlideAndNavigation();
+	}
+	private var newWidthVideo:Number;
+	private var newHeightVideo:Number;
+	private function resizePlayer():void
+	{
+		newWidthVideo = resizeHandle.getX()||VIDEO_WIDTH;
+		newHeightVideo = VIDEO_HEIGHT*newWidthVideo/VIDEO_WIDTH;
+		player.y = header.y+header.height;
+		player.setSize(newWidthVideo, newHeightVideo);
+	}
+	private function resizeSlideAndNavigation():void
+	{
+		var posXHandler:Number = resizeHandle.getX() + resizeHandle.width; 
+		var diffStage:Number = stage.stageWidth - (resizeHandle.getX()+resizeHandle.width);
+		slidePlayer.y = header.y+header.height;
+		slidePlayer.x = posXHandler;
+		slidePlayer.width = diffStage;	
+		navigationBar.setSize(diffStage);
+		navigationBar.x = posXHandler;
+		navigationBar.y = stage.stageHeight-navigationBar.height;
+	}
 
     private function onExitFullScreen(e:PlayerEvent):void {
       resizeElements();

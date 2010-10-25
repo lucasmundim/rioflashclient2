@@ -1,4 +1,5 @@
 package rioflashclient2.model {
+  import rioflashclient2.configuration.Configuration;
   public class Topics {
     public var rawXML:XML;
     public var parsedXML:XML;
@@ -12,7 +13,7 @@ package rioflashclient2.model {
 			var item:XML = <node />
 			
 			if (xml.hasOwnProperty("text")) {
-				item.@label = xml.text;
+				item.@label = Configuration.getInstance().formatTime(xml.time) + " - " + xml.text;
 				item.@time = xml.time;
 			} else {
 				item.@label = 'Root';

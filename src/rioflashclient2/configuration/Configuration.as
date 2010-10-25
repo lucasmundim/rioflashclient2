@@ -149,7 +149,19 @@ package rioflashclient2.configuration {
 
       logger.info("Configurations loaded.");
     }
+    public function formatTime(time:Number):String {
+      var roundedTime:Number = Math.floor(time);
+      var formattedTime:Array = [];
 
+      if (roundedTime >= 3600) {
+        formattedTime.push(fillWithZero(Math.floor(roundedTime/3600)));    // hours
+      }
+
+      formattedTime.push(fillWithZero(Math.floor((roundedTime%3600)/60))); // minutes
+      formattedTime.push(fillWithZero(roundedTime%60));                    // seconds
+
+      return formattedTime.join(':');
+    }
     public function environmentConfig(configName:String):String {
       return defaultConfigsPerEnvironments[environment][configName];
     }
@@ -158,7 +170,9 @@ package rioflashclient2.configuration {
       environment = rawParameters.environment ? rawParameters.environment : 'production';
       environment = 'development';
     }
-
+    private function fillWithZero(number:Number):String {
+      return number > 9 ? number.toString() : '0' + number;
+    }
     private function loadEnvironment():void {
       logger.info('Loading {0} environment configurations...', environment);
 
@@ -185,7 +199,7 @@ package rioflashclient2.configuration {
     }
 
     private function setupLessonXML():void {
-      lessonXML = rawParameters.aulaXML || '/ufrj/palestras/hucff/palestra_nelson.xml';
+      lessonXML = rawParameters.xmlfile|| '/ufrj/palestras/hucff/palestra_nelson.xml';
       //lessonXML = 'Aula_002.xml';
       //lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
       //lessonXML = '/ufjf/ciencias_exatas/dcc119/aula1/dcc119_aula1.xml';
