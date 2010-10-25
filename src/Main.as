@@ -31,6 +31,7 @@ package {
   import rioflashclient2.event.DragEvent;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LoggerEvent;
+  import rioflashclient2.event.LessonEvent;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.logging.EventfulLogger;
   import rioflashclient2.logging.EventfulLoggerFactory;
@@ -101,7 +102,8 @@ package {
 	{
 		navigationBar = new NavigationBar();
 		header = new Header();
-		header.bg.width =  stage.stageWidth;		
+		header.bg.width =  stage.stageWidth;
+		header.txtHeader.text ="Carregando aula...";		
 		resizeHandle = new ResizeHandle();
 		resizeHandle.x = VIDEO_WIDTH;
 		resizeHandle.constrains(VIDEO_WIDTH/2, resizeHandle.y, VIDEO_WIDTH*2-VIDEO_WIDTH, 0);
@@ -294,6 +296,12 @@ package {
     private function loadLesson():void {
       lessonLoader = new LessonLoader(Configuration.getInstance().lessonXML);
       lessonLoader.load();
+      EventBus.addListener(LessonEvent.RESOURCES_LOADED, onLessonResourcesLoaded);
+    }
+    
+    private function onLessonResourcesLoaded(e:LessonEvent):void
+    {
+        header.txtHeader.text = e.lesson.title + " " + e.lesson.professor;
     }
   }
 }
