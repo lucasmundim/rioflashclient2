@@ -191,7 +191,11 @@ package rioflashclient2.configuration {
     private function setupControlBar():void {
       displayControlBar = booleanValueOf(rawParameters.displayControlBar, true);
 
-      controlBarButtons = (rawParameters.controlBarButtons || DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT).split('|');
+      if (rawParameters.controlBarButtons) {
+        controlBarButtons = rawParameters.controlBarButtons.split('|');
+      } else {
+        controlBarButtons = DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT.split('|');
+      }
     }
 
     private function setupBufferTime():void {
