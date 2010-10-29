@@ -47,7 +47,7 @@ package rioflashclient2.player {
     private var duration:Number = 0;
     private var durationCached:Boolean = false;
 
-    private var dynamicTimelineMetadata:TimelineMetadata;
+    private var topicsTimelineMetadata:TimelineMetadata;
     [Bindable]
     private var _cuePointsCollection:ArrayCollection;
     private var netLoader:NetLoader;

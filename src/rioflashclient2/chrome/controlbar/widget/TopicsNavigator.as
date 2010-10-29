@@ -57,7 +57,7 @@ package rioflashclient2.chrome.controlbar.widget {
     }
 
     private function highlightTopic(time:Number):void {
-      this.selectedIndex = this.dataProvider.getItemIndex(this.findNode('time', time))
+      this.selectedIndex = this.dataProvider.getItemIndex(this.findNode('time', Number(time).toString()))
     }
 
     private function onSeek(e:PlayerEvent):void {

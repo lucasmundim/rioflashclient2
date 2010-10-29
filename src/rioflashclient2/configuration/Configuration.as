@@ -168,7 +168,6 @@ package rioflashclient2.configuration {
 
     private function setupEnvironment():void {
       environment = rawParameters.environment ? rawParameters.environment : 'production';
-      environment = 'development';
     }
     private function fillWithZero(number:Number):String {
       return number > 9 ? number.toString() : '0' + number;
