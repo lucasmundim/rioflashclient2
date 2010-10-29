@@ -6,15 +6,28 @@
   <link href="stylesheets/jquery.ui.all.css" rel="stylesheet" />
   <script src="javascripts/jquery-1.4.2.js"></script>
   <script src="javascripts/jquery.ui.all.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow:hidden;
+      margin-left: 0px;
+      margin-top: 0px;
+      margin-right: 0px;
+      margin-bottom: 0px;
+      background-color:#1e1e1e;
+    }
+  </style>
 </head>
 <body>
-<object id="rioflashclient2" type="application/x-shockwave-flash" data="${swf}.swf" width="${width}" height="${height}">
+<object id="rioflashclient2" type="application/x-shockwave-flash" data="${swf}.swf" width="100%" height="100%">
   <param name="movie" value="${swf}.swf" />
   <param name="quality" value="high" />
   <param name="flashvars" value="${flashvars}" />
   <param name="wmode" value="transparent" />
   <param name="allowScriptAccess" value="sameDomain" />
   <param name="allowFullScreen" value="true" />
+  <param name="scale" value="default" />
 </object>
 </body>
 </html>
