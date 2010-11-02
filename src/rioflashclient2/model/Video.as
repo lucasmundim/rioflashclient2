@@ -9,25 +9,25 @@ package rioflashclient2.model {
 
     private var state:String = 'stopped';
 
-    public function Video(url:String) {
+    public function Video(file:String) {
       setupBusListeners();
-      _url = url;
+      _file = file;
     }
 
-    public function url():String {
-      return _url;
+    public function file():String {
+      return _file;
     }
 
     public function valid():Boolean {
-      return hasUrl();
+      return hasFile();
     }
 
-    public function hasUrl():Boolean {
-      return url != null
+    public function hasFile():Boolean {
+      return file != null
     }
 
     public function equals(video:Video):Boolean {
-      return video != null && video is Video && video.url == url;
+      return video != null && video is Video && video.file == file;
     }
 
     public function isPlaying():Boolean {

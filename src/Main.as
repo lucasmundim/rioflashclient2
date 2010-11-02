@@ -233,7 +233,7 @@ package {
     }
 
     private function loadLesson():void {
-      lessonLoader = new LessonLoader(Configuration.getInstance().lessonXML);
+      lessonLoader = new LessonLoader();
       lessonLoader.load();
       EventBus.addListener(LessonEvent.RESOURCES_LOADED, onLessonResourcesLoaded);
     }

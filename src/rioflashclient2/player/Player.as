@@ -43,7 +43,6 @@ package rioflashclient2.player {
     public var video:Video;
     public var topics:Topics;
     private var seekDataStore:DefaultSeekDataStore;
-    private var originalVideoURL:String;
     private var duration:Number = 0;
     private var durationCached:Boolean = false;
 
@@ -70,13 +69,13 @@ package rioflashclient2.player {
     public function load(lesson:Lesson):void {
       this.video = (lesson.video() as Video);
       this.topics = (lesson.topics as Topics);
-      loadMedia(this.video.url());
+      loadMedia();
       (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
     }
 
-    public function loadMedia(url:String=""):void {
-      if (!originalVideoURL) {
-        originalVideoURL = url;
+    public function loadMedia(seekPosition:Number=0):void {
+      var url:String = Configuration.getInstance().resourceURL(this.video.file(), seekPosition);
+      if (seekPosition == 0) {
         logger.info('Loading video from url: ' + url);
       } else {
         logger.info('Server seeking to: ' + url);
@@ -203,10 +202,9 @@ package rioflashclient2.player {
 
     private function serverSeekTo(requestedSeekPosition:Number):void {
       if (seekDataStore.allowRandomSeek()) {
-        var seekPosition:Number = seekDataStore.getNearestKeyFramePosition(requestedSeekPosition)
+        var seekPosition:Number = seekDataStore.getNearestKeyFramePosition(requestedSeekPosition);
         logger.info('Server seeking to position {0} in seconds', seekDataStore.keyFrameTime());
-
-        loadMedia(appendQueryString(originalVideoURL, seekPosition));
+        loadMedia(seekPosition);
         EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.keyFrameTime()));
         play();
       } else {
@@ -316,12 +314,6 @@ package rioflashclient2.player {
 
     private function setupEventListeners():void {
       //stage.addEventListener(Event.RESIZE, resize);
-    }
-
-    private function appendQueryString(url:String, start:Number):String {
-      logger.debug("Seek requested to: " + start);
-      if (start == 0) return url;
-      return url + (url.indexOf("?") >= 0 ? "&" : "?") + "start=${start}".replace("${start}", start);
     }
   }
 }

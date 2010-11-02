@@ -78,7 +78,7 @@ package rioflashclient2.model {
       resolution_y = xml.resolution.r_y
       index = xml.related_media.rm_item.(rm_type == 'index').rm_filename;
       sync = xml.related_media.rm_item.(rm_type == 'sync').rm_filename;
-      _video = new Video(Configuration.getInstance().resourceURL(xml.related_media.rm_item.(rm_type == 'video').rm_filename));
+      _video = new Video(xml.related_media.rm_item.(rm_type == 'video').rm_filename);
 
       setupInputBusListeners();
     }

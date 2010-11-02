@@ -2,10 +2,6 @@ package rioflashclient2.configuration {
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
 
-  /**
-   * ...
-   * @author
-   */
   public class Configuration {
     /**
      * The environment that should be used to get configurations that may change
@@ -19,38 +15,32 @@ package rioflashclient2.configuration {
 
     /**
      * Defines the default configurations per environments.
-     *
-     * "http://edad.rnp.br/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml";
      */
     public var defaultConfigsPerEnvironments:Object = {
       development: {
-        lessonHost: 'http://roxo.no-ip.com:3001',
-        lessonBaseURI: '/redirect.rio'
+        // Configuration for development environment.
       },
       staging: {
-        lessonHost: 'http://edad.rnp.br',
-        lessonBaseURI: '/redirect.rio'
+        // Configuration for staging environment.
       },
       production: {
-        lessonHost: 'http://edad.rnp.br',
-        lessonBaseURI: '/redirect.rio'
+        // Configuration for production environment.
       }
     }
 
     /**
-     * The host used to get the lesson XML.
+     * The base rio server url.
+     * "http://edad.rnp.br/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml" becomes:
+     * "http://edad.rnp.br/redirect.rio?file=/ufrj/palestras/hucff/";
      */
-    public var lessonHost:String;
+    public var baseRioServerURL:String;
 
     /**
-    * The base lesson URI
-    */
-    public var lessonBaseURI:String;
-
-    /**
-    * The lesson XML file
-    */
-    public var lessonXML:String;
+     * The lesson xml file.
+     * "http://edad.rnp.br/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml" becomes:
+     * "palestra_nelson.xml";
+     */
+    public var lessonXML:String
 
     /**
      * Whether the player should begin playing right away or wait for user input.
@@ -108,25 +98,32 @@ package rioflashclient2.configuration {
      * @default playPauseButton|fullScreenButton|volume|progressInformationLabel
      */
     public var controlBarButtons:Array;
+    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
 
     /**
      * The number of seconds to buffer before start playing the video.
      */
     public var bufferTime:Number;
-    public var playerWidth:Number = 320;
-    public var playerHeight:Number = 240;
-    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume|progressInformationLabel';
 
-    private var rawParameters:Object;
-    private var logger:Logger = Log.getLogger('Configuration');
+    /**
+     * Default player width.
+     */
+    public var playerWidth:Number = 320;
+
+    /**
+     * Default player height.
+     */
+    public var playerHeight:Number = 240;
+
 
     private static var _instance:Configuration;
+    private var rawParameters:Object;
+    private var logger:Logger = Log.getLogger('Configuration');
 
     public static function getInstance():Configuration {
       if (_instance == null) {
         _instance = new Configuration();
       }
-
       return _instance;
     }
 
@@ -145,42 +142,21 @@ package rioflashclient2.configuration {
       setupAutoPlay();
       setupControlBar();
       setupBufferTime();
-      setupLessonXML();
+      setupBaseRioServerURL();
 
       logger.info("Configurations loaded.");
-    }
-    public function formatTime(time:Number):String {
-      var roundedTime:Number = Math.floor(time);
-      var formattedTime:Array = [];
-
-      if (roundedTime >= 3600) {
-        formattedTime.push(fillWithZero(Math.floor(roundedTime/3600)));    // hours
-      }
-
-      formattedTime.push(fillWithZero(Math.floor((roundedTime%3600)/60))); // minutes
-      formattedTime.push(fillWithZero(roundedTime%60));                    // seconds
-
-      return formattedTime.join(':');
-    }
-    public function environmentConfig(configName:String):String {
-      return defaultConfigsPerEnvironments[environment][configName];
     }
 
     private function setupEnvironment():void {
       environment = rawParameters.environment ? rawParameters.environment : 'production';
     }
-    private function fillWithZero(number:Number):String {
-      return number > 9 ? number.toString() : '0' + number;
-    }
+
     private function loadEnvironment():void {
       logger.info('Loading {0} environment configurations...', environment);
-
-      setupHosts();
     }
 
-    private function setupHosts():void {
-      lessonHost = environmentConfig('lessonHost');
-      lessonBaseURI = environmentConfig('lessonBaseURI');
+    public function environmentConfig(configName:String):String {
+      return defaultConfigsPerEnvironments[environment][configName];
     }
 
     private function setupAutoPlay():void {
@@ -201,13 +177,11 @@ package rioflashclient2.configuration {
       bufferTime = new Number(rawParameters.bufferTime) || 3;
     }
 
-    private function setupLessonXML():void {
-      lessonXML = rawParameters.xmlfile|| '/ufrj/palestras/hucff/palestra_nelson.xml';
-      //lessonXML = 'Aula_002.xml';
-      //lessonXML = '/ufrj/palestras/hucff/palestra_nelson.xml';
-      //lessonXML = '/ufjf/ciencias_exatas/dcc119/aula1/dcc119_aula1.xml';
-      //lessonXML = '/ufrj/exemplos/exemplo_workshop_abertura_se/exemplo_frutas.xml';
-      //lessonXML = 'iphone.xml';
+    private function setupBaseRioServerURL():void {
+      var xmlfile:String = rawParameters.xmlfile || 'http://edad.rnp.br/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml';
+      //xmlfile = "http://roxo.no-ip.com:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml";
+      baseRioServerURL = xmlfile.slice(0, xmlfile.lastIndexOf('/') + 1);
+      lessonXML = xmlfile.slice(xmlfile.lastIndexOf('/') + 1, xmlfile.length);
     }
 
     private function booleanValueOf(value:Object, defaultValue:Boolean):Boolean {
@@ -220,8 +194,30 @@ package rioflashclient2.configuration {
       }
     }
 
-    public function resourceURL(resource:String):String {
-      return Configuration.getInstance().lessonHost + Configuration.getInstance().lessonBaseURI + '?file=/ufrj/palestras/hucff/' + resource;
+    public function formatTime(time:Number):String {
+      var roundedTime:Number = Math.floor(time);
+      var formattedTime:Array = [];
+
+      if (roundedTime >= 3600) {
+        formattedTime.push(fillWithZero(Math.floor(roundedTime/3600)));    // hours
+      }
+
+      formattedTime.push(fillWithZero(Math.floor((roundedTime%3600)/60))); // minutes
+      formattedTime.push(fillWithZero(roundedTime%60));                    // seconds
+
+      return formattedTime.join(':');
+    }
+
+    private function fillWithZero(number:Number):String {
+      return number > 9 ? number.toString() : '0' + number;
+    }
+
+    public function resourceURL(resource:String, start:Number=0):String {
+      var url:String = baseRioServerURL + resource;
+      if (start != 0) {
+        url += '&start=' + start;
+      }
+      return url;
     }
   }
 }
