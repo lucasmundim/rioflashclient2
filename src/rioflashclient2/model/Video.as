@@ -5,7 +5,7 @@ package rioflashclient2.model {
   import flash.utils.Dictionary;
 
   public class Video {
-    public var _url:String;
+    public var _file:String;
 
     private var state:String = 'stopped';
 

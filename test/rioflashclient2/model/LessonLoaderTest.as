@@ -19,17 +19,9 @@ package rioflashclient2.model {
     
     [Before]
     public function setUp():void {
-      Configuration.getInstance().lessonHost = 'fixtures';
-      Configuration.getInstance().lessonBaseURI = '/xmls/';
       Log.loggerFactory = new EventfulLoggerFactory();
       lessonXML = 'palestra_nelson.xml';
-      lessonLoader = new LessonLoader(lessonXML);
-    }
-    
-    [After]
-    public function tearDown():void {
-      Configuration.getInstance().lessonHost = '';
-      Configuration.getInstance().lessonBaseURI = '';
+      lessonLoader = new LessonLoader();
     }
     
     [Test(async, timeout="3000")]
@@ -53,7 +45,7 @@ package rioflashclient2.model {
       Async.failOnEvent(this, EventBus.getInstance(), LessonEvent.LOADED);
       EventBus.getInstance().addEventListener(ErrorEvent.ERROR, function(e:Event):void {});
       lessonXML = 'inexistent_lesson_xml';
-      lessonLoader = new LessonLoader(lessonXML);
+      lessonLoader = new LessonLoader();
       lessonLoader.load();
     }
     
@@ -61,7 +53,7 @@ package rioflashclient2.model {
     public function shouldDispatchErrorEventToEventBusWhenLessonDataCannotBeLoaded():void {
       Async.proceedOnEvent(this, EventBus.getInstance(), ErrorEvent.ERROR);
       lessonXML = 'inexistent_lesson_xml';
-      lessonLoader = new LessonLoader(lessonXML);
+      lessonLoader = new LessonLoader();
       lessonLoader.load();
     }
     
@@ -70,7 +62,7 @@ package rioflashclient2.model {
       Async.failOnEvent(this, EventBus.getInstance(), LessonEvent.LOADED);
       EventBus.getInstance().addEventListener(ErrorEvent.ERROR, function(e:Event):void {});
       lessonXML = 'invalid_lesson_xml';
-      lessonLoader = new LessonLoader(lessonXML);
+      lessonLoader = new LessonLoader();
       lessonLoader.load();
     }
     
@@ -78,7 +70,7 @@ package rioflashclient2.model {
     public function shouldDispatchErrorEventToEventBusWhenLessonDataIsInvalid():void {
       Async.proceedOnEvent(this, EventBus.getInstance(), ErrorEvent.ERROR);
       lessonXML = 'invalid_lesson_xml';
-      lessonLoader = new LessonLoader(lessonXML);
+      lessonLoader = new LessonLoader();
       lessonLoader.load();
     }
   }
