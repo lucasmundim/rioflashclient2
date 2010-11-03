@@ -140,19 +140,7 @@
 
       currentProgress.width = e.currentTarget.mouseX;
 
-      if (isInBuffer(seekPercentage)) {
-        EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
-      } else {
-        EventBus.dispatch(new PlayerEvent(PlayerEvent.SERVER_SEEK, seekPercentage), EventBus.INPUT);
-      }
-    }
-
-    private function isInBuffer(seekPercentage:Number):Boolean {
-      return isAfterPlayahead(seekPercentage) && seekPercentage <= downloadProgressPercentage;
-    }
-
-    private function isAfterPlayahead(seekPercentage:Number): Boolean {
-      return (seekPercentage * duration) >= playaheadTime;
+      EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
     }
 
     private function calculatedSeekPercentageGivenX(x:Number):Number {

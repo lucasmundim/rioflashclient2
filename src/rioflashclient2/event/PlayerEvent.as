@@ -11,7 +11,6 @@ package rioflashclient2.event {
     public static const ENDED                       :String = "onVideoEnded";
 
     public static const SEEK                        :String = "onSeek";
-    public static const SERVER_SEEK                 :String = "onServerSeek";
     public static const TOPICS_SEEK                 :String = "onTopicsSeek";
 
     public static const DURATION_CHANGE            :String = "onDurationChange";

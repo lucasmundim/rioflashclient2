@@ -1,11 +1,11 @@
 package rioflashclient2.player {
   import caurina.transitions.Tweener;
-
+  
   import flash.events.ErrorEvent;
   import flash.events.Event;
-
+  
   import mx.collections.ArrayCollection;
-
+  
   import org.osmf.elements.VideoElement;
   import org.osmf.events.*;
   import org.osmf.events.LoadEvent;
@@ -25,7 +25,7 @@ package rioflashclient2.player {
   import org.osmf.traits.LoadTrait;
   import org.osmf.traits.MediaTraitType;
   import org.osmf.traits.TimeTrait;
-
+  
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
@@ -46,6 +46,10 @@ package rioflashclient2.player {
     private var seekDataStore:DefaultSeekDataStore;
     private var duration:Number = 0;
     private var durationCached:Boolean = false;
+    
+    private var playaheadTime:Number = 0;
+    private var _downloadProgressPercentage:Number;
+    private var bytesTotal:Number = 0;
 
     private var topicsTimelineMetadata:TimelineMetadata;
     [Bindable]
@@ -181,41 +185,90 @@ package rioflashclient2.player {
 
     private function onSeek(e:PlayerEvent):void {
       var seekPercentage:Number = (e.data as Number);
+      if (seekPercentage < 0.1) {
+        seekPercentage = 1 / duration;
+      }
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
-
-      logger.info('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
-
-      this.mediaPlayer.seek(seekPosition);
+      seekTo(seekPercentage, seekPosition);
     }
-
-    private function onServerSeek(e:PlayerEvent):void {
-      var seekPercentage:Number = (e.data as Number);
-      var requestedSeekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage)
-      logger.info('Server seek requested to position {0} in seconds, given percentual {1}.', requestedSeekPosition, seekPercentage);
-      serverSeekTo(requestedSeekPosition);
-    }
-
+    
     private function onTopicsSeek(e:PlayerEvent):void {
-      var requestedSeekPosition:Number = e.data;
-      logger.info('Server seek requested to position {0} in seconds.', requestedSeekPosition);
-      serverSeekTo(requestedSeekPosition);
-    }
+      var seekPosition:Number = e.data;
+      var seekPercentage:Number = seekPosition / duration; 
 
+      seekTo(seekPercentage, seekPosition);
+    }
+    
+    private function onSlideChanged(e:SlideEvent):void {
+      logger.info('Slide syncing to {0}', e.slide.time);
+      var seekPosition:Number = e.slide.time;
+      var seekPercentage:Number = seekPosition / duration; 
+      
+      seekTo(seekPercentage, seekPosition);
+    }
+    
+    private function seekTo(seekPercentage:Number, seekPosition:Number):void {
+      if (isInBuffer(seekPercentage)) {
+        logger.info('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+        this.mediaPlayer.seek(seekPosition);  
+      } else {
+        logger.info('Server seek requested to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+        serverSeekTo(seekPosition);
+      }
+    }
+    
     private function serverSeekTo(requestedSeekPosition:Number):void {
       if (seekDataStore.allowRandomSeek()) {
         var seekPosition:Number = seekDataStore.getNearestKeyFramePosition(requestedSeekPosition);
         logger.info('Server seeking to position {0} in seconds', seekDataStore.keyFrameTime());
         loadMedia(seekPosition);
-        EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.keyFrameTime()));
+        
+        if (requestedSeekPosition == 1) {
+          EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, 1));  
+        } else {
+          EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.keyFrameTime()));
+        }
+        
         play();
       } else {
         logger.info('ServerSeek not supported by media element');
       }
     }
-
-    private function onSlideChanged(e:SlideEvent):void {
-      logger.info('Slide syncing to {0}', e.slide.time);
-      serverSeekTo(e.slide.time);
+    
+    private function isInBuffer(seekPercentage:Number):Boolean {
+      return isAfterPlayahead(seekPercentage) && seekPercentage <= downloadProgressPercentage;
+    }
+    
+    private function isAfterPlayahead(seekPercentage:Number): Boolean {
+      return (seekPercentage * duration) >= playaheadTime;
+    }
+    
+    public function get downloadProgressPercentage():Number {
+      return _downloadProgressPercentage;
+    }
+    
+    public function set downloadProgressPercentage(percentage:Number):void {
+      _downloadProgressPercentage = percentage;
+    }
+    
+    private function onBytesLoadedChange(e:LoadEvent):void {
+      updateDownloadProgress(e.bytes);
+    }
+    
+    private function onBytesTotalChange(e:LoadEvent):void {
+      bytesTotal = e.bytes;
+    }
+    
+    private function updateDownloadProgress(bytesLoaded:Number):void {
+      if (bytesTotal > 0) {
+        downloadProgressPercentage = bytesLoaded / bytesTotal;
+      } else {
+        downloadProgressPercentage = 0;
+      }
+    }
+    
+    private function onPlayaheadTimeChanged(e:PlayerEvent):void {
+      playaheadTime = e.data;
     }
 
     private function onDurationChange(e:TimeEvent):void {
@@ -305,14 +358,16 @@ package rioflashclient2.player {
 
       EventBus.addListener(TimeEvent.COMPLETE, onVideoEnded);
       EventBus.addListener(TimeEvent.DURATION_CHANGE, onDurationChange);
+      EventBus.addListener(LoadEvent.BYTES_LOADED_CHANGE, onBytesLoadedChange);
+      EventBus.addListener(LoadEvent.BYTES_TOTAL_CHANGE, onBytesTotalChange);
 
       EventBus.addListener(PlayerEvent.VOLUME_CHANGE, onVolumeChange);
       EventBus.addListener(PlayerEvent.MUTE, onMute);
       EventBus.addListener(PlayerEvent.UNMUTE, onUnmute);
 
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
-      EventBus.addListener(PlayerEvent.SERVER_SEEK, onServerSeek);
       EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
+      EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onPlayaheadTimeChanged);
 
       EventBus.addListener(ErrorEvent.ERROR, onError);
       EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onCuePoint);

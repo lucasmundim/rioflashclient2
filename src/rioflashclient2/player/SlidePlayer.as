@@ -1,9 +1,9 @@
 package rioflashclient2.player {
 
   import caurina.transitions.Tweener;
-
+  
   import flash.events.Event;
-
+  
   import org.osmf.elements.DurationElement;
   import org.osmf.elements.SWFElement;
   import org.osmf.elements.SerialElement;
@@ -14,7 +14,7 @@ package rioflashclient2.player {
   import org.osmf.logging.Logger;
   import org.osmf.media.MediaPlayerSprite;
   import org.osmf.media.URLResource;
-
+  
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.elements.PreloadingProxyElement;
   import rioflashclient2.event.EventBus;
@@ -160,6 +160,12 @@ package rioflashclient2.player {
       logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
       seekTo(seekPosition);
     }
+    
+    private function onTopicsSeek(e:PlayerEvent):void {
+      var seekPosition:Number = e.data;
+      logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
+      seekTo(seekPosition);
+    }
 
     private function seekTo(requestedSeekPosition:Number):void {
       this.mediaPlayer.seek(requestedSeekPosition);
@@ -194,6 +200,7 @@ package rioflashclient2.player {
     private function setupBusListeners():void {
       EventBus.addListener(PlayerEvent.LOAD, onLoad);
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
       EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
       EventBus.addListener(PlayerEvent.PLAY, onPlay);

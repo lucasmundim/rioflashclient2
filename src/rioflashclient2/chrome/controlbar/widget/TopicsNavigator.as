@@ -94,7 +94,6 @@ package rioflashclient2.chrome.controlbar.widget {
       EventBus.addListener(LessonEvent.RESOURCES_LOADED, onLessonResourcesLoaded);
       EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onTopicCuePoint);
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
-      EventBus.addListener(PlayerEvent.SERVER_SEEK, onSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
       EventBus.addListener(SlideEvent.SLIDE_CHANGED, onSlideChanged, EventBus.INPUT);
     }
