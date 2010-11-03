@@ -1,9 +1,9 @@
 package rioflashclient2.event {
+
   import flash.events.Event;
 
   public class PlayerEvent extends Event {
     public static const LOAD                        :String = "onLoad";
-
     public static const PLAY                        :String = "onPlay";
     public static const PAUSE                       :String = "onPause";
     public static const STOP                        :String = "onStop";

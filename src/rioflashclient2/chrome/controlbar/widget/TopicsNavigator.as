@@ -7,17 +7,18 @@ package rioflashclient2.chrome.controlbar.widget {
   import flash.events.Event;
   import flash.events.MouseEvent;
 
+  import org.osmf.events.TimelineMetadataEvent;
+  import org.osmf.logging.Log;
+  import org.osmf.logging.Logger;
+  import org.osmf.metadata.CuePoint;
+
   import rioflashclient2.configuration.Configuration;
-  import rioflashclient2.model.Lesson;
-  import rioflashclient2.model.Topics;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.LessonEvent;
   import rioflashclient2.event.PlayerEvent;
-
-  import org.osmf.events.TimelineMetadataEvent;
-  import org.osmf.metadata.CuePoint;
-  import org.osmf.logging.Log;
-  import org.osmf.logging.Logger;
+  import rioflashclient2.event.SlideEvent;
+  import rioflashclient2.model.Lesson;
+  import rioflashclient2.model.Topics;
 
   public class TopicsNavigator extends Tree {
     private var logger:Logger = Log.getLogger('TopicsNavigator');
@@ -57,13 +58,17 @@ package rioflashclient2.chrome.controlbar.widget {
     }
 
     private function highlightTopic(time:Number):void {
-      this.selectedIndex = this.dataProvider.getItemIndex(this.findNode('time', Number(time).toString()))
+      this.selectedIndex = this.dataProvider.getItemIndex(this.findNode('time', time.toString()))
     }
 
     private function onSeek(e:PlayerEvent):void {
       var seekPercentage:Number = (e.data as Number);
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
       highlightTopic(findNearestTopic(seekPosition));
+    }
+
+    private function onSlideChanged(e:SlideEvent):void {
+      highlightTopic(findNearestTopic(e.slide.time));
     }
 
     private function findNearestTopic(seekPosition:Number):Number {
@@ -91,6 +96,7 @@ package rioflashclient2.chrome.controlbar.widget {
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.SERVER_SEEK, onSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
+      EventBus.addListener(SlideEvent.SLIDE_CHANGED, onSlideChanged, EventBus.INPUT);
     }
 
     private function onLessonResourcesLoaded(e:LessonEvent):void {

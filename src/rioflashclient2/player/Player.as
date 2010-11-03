@@ -4,37 +4,38 @@ package rioflashclient2.player {
   import flash.events.ErrorEvent;
   import flash.events.Event;
 
+  import mx.collections.ArrayCollection;
+
   import org.osmf.elements.VideoElement;
+  import org.osmf.events.*;
   import org.osmf.events.LoadEvent;
   import org.osmf.events.TimeEvent;
+  import org.osmf.events.TimelineMetadataEvent;
   import org.osmf.layout.ScaleMode;
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
+  import org.osmf.media.MediaElement;
   import org.osmf.media.MediaPlayerSprite;
   import org.osmf.media.URLResource;
+  import org.osmf.metadata.CuePoint;
+  import org.osmf.metadata.CuePointType;
+  import org.osmf.metadata.TimelineMarker;
+  import org.osmf.metadata.TimelineMetadata;
+  import org.osmf.net.NetLoader;
+  import org.osmf.traits.LoadTrait;
+  import org.osmf.traits.MediaTraitType;
+  import org.osmf.traits.TimeTrait;
 
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
+  import rioflashclient2.event.SlideEvent;
   import rioflashclient2.media.PlayerMediaFactory;
   import rioflashclient2.model.Lesson;
-  import rioflashclient2.model.Video;
   import rioflashclient2.model.Topics;
-  import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
-
-  import mx.collections.ArrayCollection;
-  import org.osmf.metadata.CuePoint;
-  import org.osmf.metadata.CuePointType;
-  import org.osmf.events.TimelineMetadataEvent;
-  import org.osmf.metadata.TimelineMetadata;
-  import org.osmf.metadata.TimelineMarker;
-  import org.osmf.traits.TimeTrait;
-  import org.osmf.traits.LoadTrait;
-  import org.osmf.traits.MediaTraitType;
-  import org.osmf.media.MediaElement;
-  import org.osmf.events.*;
+  import rioflashclient2.model.Video;
   import rioflashclient2.net.RioServerNetLoader;
-  import org.osmf.net.NetLoader;
+  import rioflashclient2.net.pseudostreaming.DefaultSeekDataStore;
 
   public class Player extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('Player');
@@ -212,6 +213,11 @@ package rioflashclient2.player {
       }
     }
 
+    private function onSlideChanged(e:SlideEvent):void {
+      logger.info('Slide syncing to {0}', e.slide.time);
+      serverSeekTo(e.slide.time);
+    }
+
     private function onDurationChange(e:TimeEvent):void {
       if (e.time && e.time != 0 && !durationCached) {
         cacheDuration(e.time);
@@ -310,6 +316,8 @@ package rioflashclient2.player {
 
       EventBus.addListener(ErrorEvent.ERROR, onError);
       EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onCuePoint);
+
+      EventBus.addListener(SlideEvent.SLIDE_CHANGED, onSlideChanged, EventBus.INPUT);
     }
 
     private function setupEventListeners():void {

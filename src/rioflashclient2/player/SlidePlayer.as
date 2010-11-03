@@ -19,6 +19,7 @@ package rioflashclient2.player {
   import rioflashclient2.elements.PreloadingProxyElement;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
+  import rioflashclient2.event.SlideEvent;
   import rioflashclient2.media.PlayerMediaFactory;
   import rioflashclient2.model.Lesson;
   import rioflashclient2.model.Slide;
@@ -27,8 +28,12 @@ package rioflashclient2.player {
 
   public class SlidePlayer extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('SlidePlayer');
-    private var duration:Number = 0;
+
     private var lesson:Lesson;
+    private var slides:Array;
+    private var duration:Number = 0;
+    private var videoPlayerCurrentTime:Number;
+
     public function SlidePlayer() {
       this.name = 'SlidePlayer';
 
@@ -46,10 +51,11 @@ package rioflashclient2.player {
     }
 
     public function load(lesson:Lesson):void {
-      loadMedia(lesson.slides);
+      slides = lesson.slides;
+      loadMedia();
     }
 
-    public function loadMedia(slides:Array):void {
+    public function loadMedia():void {
       var swfLoader:RioServerSWFLoader = new RioServerSWFLoader();
       var swfSequence:SerialElement = new SerialElement();
       swfSequence.addChild(new DurationElement(slides[0].time));
@@ -73,6 +79,60 @@ package rioflashclient2.player {
       this.media = swfSequence;
     }
 
+    private function onFirstSlide(e:SlideEvent):void {
+      slideSeekTo(0, e)
+    }
+
+    private function onLastSlide(e:SlideEvent):void {
+      slideSeekTo(slides.length - 1, e);
+    }
+
+    private function onPreviousSlide(e:SlideEvent):void {
+      var current:Number = currentSlide();
+      if (current > 0) {
+        current--;
+      }
+      slideSeekTo(current, e)
+    }
+
+    private function onNextSlide(e:SlideEvent):void {
+      var current:Number = currentSlide();
+      if (current < (slides.length - 1)) {
+        current++;
+      }
+      slideSeekTo(current, e);
+    }
+
+    private function onCurrentSlide(e:SlideEvent):void {
+      slideSeekTo(findNearestSlide(videoPlayerCurrentTime), e);
+    }
+
+    private function slideSeekTo(index:Number, e:SlideEvent):void {
+      var time:Number = slides[index].time
+
+      seekTo(time - 1); // Workaround
+      seekTo(time);
+
+      if (e.slide.sync) {
+        EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
+      }
+    }
+
+    private function currentSlide():Number {
+      return findNearestSlide(this.mediaPlayer.currentTime)
+    }
+
+    private function findNearestSlide(seekPosition:Number):Number {
+      var last:Number = 0;
+      for (var i:uint = 0; i < slides.length; i++) {
+        if (seekPosition < slides[i].time) {
+          return i - 1;
+        }
+        last = i;
+      }
+      return last;
+    }
+
     private function onLoad(e:PlayerEvent):void {
       lesson = e.data.lesson;
       duration = lesson.duration;
@@ -82,6 +142,10 @@ package rioflashclient2.player {
 
     private function onDurationChange(e:PlayerEvent):void {
       duration = e.data;
+    }
+
+    private function onCurrentTimeChange(e:TimeEvent):void {
+      videoPlayerCurrentTime = e.time;
     }
 
     private function onSeek(e:PlayerEvent):void {
@@ -131,10 +195,17 @@ package rioflashclient2.player {
       EventBus.addListener(PlayerEvent.LOAD, onLoad);
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
+      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.PAUSE, onPause);
       EventBus.addListener(PlayerEvent.STOP, onStop);
       EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onServerSeek);
+
+      EventBus.addListener(SlideEvent.FIRST_SLIDE, onFirstSlide, EventBus.INPUT);
+      EventBus.addListener(SlideEvent.PREV_SLIDE, onPreviousSlide, EventBus.INPUT);
+      EventBus.addListener(SlideEvent.NEXT_SLIDE, onNextSlide, EventBus.INPUT);
+      EventBus.addListener(SlideEvent.LAST_SLIDE, onLastSlide, EventBus.INPUT);
+      EventBus.addListener(SlideEvent.CURRENT_SLIDE, onCurrentSlide, EventBus.INPUT);
     }
     public function play():void {
       logger.info('SlidePlayer Playing...');
