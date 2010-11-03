@@ -88,7 +88,7 @@ package rioflashclient2.model {
     }
 
     private function onEnded(e:PlayerEvent):void {
-      if (equals(e.data.lesson.video)) {
+      if (equals(e.data.video)) {
         state = 'stopped';
       }
     }
