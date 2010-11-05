@@ -160,7 +160,7 @@ package rioflashclient2.configuration {
     }
 
     private function setupAutoPlay():void {
-      autoPlay = booleanValueOf(rawParameters.autoPlay, false);
+      autoPlay = booleanValueOf(rawParameters.autoPlay, true);
     }
 
     private function setupControlBar():void {
