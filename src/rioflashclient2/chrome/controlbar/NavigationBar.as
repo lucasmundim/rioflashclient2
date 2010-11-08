@@ -100,6 +100,7 @@ package rioflashclient2.chrome.controlbar {
       addChild(prev);
       addChild(last);
       addChild(first);
+      sync.selected = true;
       addChild(sync);
     }
 
