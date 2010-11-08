@@ -43,6 +43,7 @@ package rioflashclient2.chrome.controlbar.widget {
     }
 
     private function onClick(ev:ListEvent):void {
+      this.openAllNodes();
       EventBus.dispatch(new PlayerEvent(PlayerEvent.TOPICS_SEEK, ev.item.time), EventBus.INPUT);
     }
 
