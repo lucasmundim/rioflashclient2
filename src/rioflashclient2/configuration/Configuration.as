@@ -215,7 +215,7 @@ package rioflashclient2.configuration {
     public function resourceURL(resource:String, start:Number=0):String {
       var url:String = baseRioServerURL + resource;
       if (start != 0) {
-        url += '&start=' + start;
+        url += '?start=' + start;
       }
       return url;
     }
