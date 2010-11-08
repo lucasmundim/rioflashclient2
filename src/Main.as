@@ -76,6 +76,7 @@ package {
       this.rawParameters = LoaderInfo(root.loaderInfo).parameters;
       removeEventListener(Event.ADDED_TO_STAGE, init);
       addEventListener(Event.RESIZE, onResize);
+      stage.addEventListener(Event.RESIZE, onResize);
       setupLogger();
       setupDebugConsole();
       setupStage();
