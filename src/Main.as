@@ -109,7 +109,7 @@ package {
       header.txtHeader.width = stage.stageWidth;
       resizeHandle = new ResizeHandle();
       resizeHandle.x = DEFAULT_VIDEO_WIDTH;
-      resizeHandle.constrains(DEFAULT_VIDEO_WIDTH/2, resizeHandle.y, DEFAULT_VIDEO_WIDTH*2-DEFAULT_VIDEO_WIDTH, 0);
+      resizeHandle.constrains(DEFAULT_VIDEO_WIDTH/2, resizeHandle.y, (DEFAULT_VIDEO_WIDTH * 1.5), 0);
       resizeHandle.addEventListener(DragEvent.DRAG_END, resizeDragUpdateHandler);
       addChild(player);
       addChild(controlbar);
