@@ -84,7 +84,6 @@ package {
       setupStage();
       logger.info('Starting Application...');
       setupConfiguration();
-      setupErrorScreen();
       setupFullScreenManager();
       setupPlayer();
       setupSlidePlayer();
@@ -93,6 +92,7 @@ package {
       loadLesson();
       setupControlBar();
       drawLayout();
+      setupErrorScreen();
     }
 
     private function onEnterFullScreen(e:PlayerEvent):void {
