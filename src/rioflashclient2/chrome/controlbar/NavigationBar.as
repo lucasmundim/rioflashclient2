@@ -110,7 +110,7 @@ package rioflashclient2.chrome.controlbar {
       if (cuePoint.name.indexOf("Slide") != -1) {
         logger.info("Slide CuePoint reached=" + cuePoint.time);
         if (sync.selected) {
-          updateSlideInfo(cuePoint.name.substr(cuePoint.name.indexOf("_")+1, cuePoint.name.length));
+          updateSlideInfo(Number(cuePoint.name.substr(cuePoint.name.indexOf("_")+1, cuePoint.name.length)));
         }
       }
     }
