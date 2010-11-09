@@ -3,12 +3,12 @@ package rioflashclient2.event {
   import flash.events.Event;
 
   public class SlideEvent extends Event {
-    public static const NEXT_SLIDE      :String = "onNextSlide";
-    public static const PREV_SLIDE      :String = "onPrevSlide";
-    public static const LAST_SLIDE      :String = "onLastSlide";
-    public static const FIRST_SLIDE     :String = "onFirstSlide";
-    public static const CURRENT_SLIDE   :String = "onCurrentSlide";
-    public static const SLIDE_CHANGED   :String = "onSlideChanged";
+    public static const NEXT_SLIDE         :String = "onNextSlide";
+    public static const PREV_SLIDE         :String = "onPrevSlide";
+    public static const LAST_SLIDE         :String = "onLastSlide";
+    public static const FIRST_SLIDE        :String = "onFirstSlide";
+    public static const SLIDE_CHANGED      :String = "onSlideChanged";
+    public static const SLIDE_SYNC_CHANGED :String = "onSlideSyncChanged";
 
     public var slide:*;
 

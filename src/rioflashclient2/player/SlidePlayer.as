@@ -1,9 +1,9 @@
 package rioflashclient2.player {
 
   import caurina.transitions.Tweener;
-  
+
   import flash.events.Event;
-  
+
   import org.osmf.elements.DurationElement;
   import org.osmf.elements.SWFElement;
   import org.osmf.elements.SerialElement;
@@ -14,7 +14,7 @@ package rioflashclient2.player {
   import org.osmf.logging.Logger;
   import org.osmf.media.MediaPlayerSprite;
   import org.osmf.media.URLResource;
-  
+
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.elements.PreloadingProxyElement;
   import rioflashclient2.event.EventBus;
@@ -25,12 +25,15 @@ package rioflashclient2.player {
   import rioflashclient2.model.Slide;
   import rioflashclient2.model.Video;
   import rioflashclient2.net.RioServerSWFLoader;
+  import org.osmf.events.TimelineMetadataEvent;
+  import org.osmf.metadata.CuePoint;
 
   public class SlidePlayer extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('SlidePlayer');
 
     private var lesson:Lesson;
     private var slides:Array;
+    private var sync:Boolean = true;
     private var duration:Number = 0;
     private var videoPlayerCurrentTime:Number;
 
@@ -46,7 +49,6 @@ package rioflashclient2.player {
     private function init(e:Event=null):void {
       setupInterface();
       setupMediaPlayer();
-      setupBusDispatchers();
       setupBusListeners();
     }
 
@@ -58,7 +60,9 @@ package rioflashclient2.player {
     public function loadMedia():void {
       var swfLoader:RioServerSWFLoader = new RioServerSWFLoader();
       var swfSequence:SerialElement = new SerialElement();
+
       swfSequence.addChild(new DurationElement(slides[0].time));
+
       for( var i:uint = 0; i< slides.length; i++){
         var slide:Slide = slides[i];
         var slideURL:String = Configuration.getInstance().resourceURL(slide.relative_path);
@@ -76,15 +80,16 @@ package rioflashclient2.player {
         swfSequence.addChild(preloadElement);
         logger.info('Loading: ' + slideURL + ' with ' + slideDuration + 's');
       }
+
       this.media = swfSequence;
     }
 
     private function onFirstSlide(e:SlideEvent):void {
-      slideSeekTo(0, e)
+      slideSeekTo(0)
     }
 
     private function onLastSlide(e:SlideEvent):void {
-      slideSeekTo(slides.length - 1, e);
+      slideSeekTo(slides.length - 1);
     }
 
     private function onPreviousSlide(e:SlideEvent):void {
@@ -92,7 +97,7 @@ package rioflashclient2.player {
       if (current > 0) {
         current--;
       }
-      slideSeekTo(current, e)
+      slideSeekTo(current)
     }
 
     private function onNextSlide(e:SlideEvent):void {
@@ -100,22 +105,16 @@ package rioflashclient2.player {
       if (current < (slides.length - 1)) {
         current++;
       }
-      slideSeekTo(current, e);
+      slideSeekTo(current);
     }
 
-    private function onCurrentSlide(e:SlideEvent):void {
-      slideSeekTo(findNearestSlide(videoPlayerCurrentTime), e);
-    }
-
-    private function slideSeekTo(index:Number, e:SlideEvent):void {
+    private function slideSeekTo(index:Number):void {
       var time:Number = slides[index].time
 
       seekTo(time - 1); // Workaround
       seekTo(time);
 
-      if (e.slide.sync) {
-        EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
-      }
+      EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
     }
 
     private function currentSlide():Number {
@@ -148,6 +147,15 @@ package rioflashclient2.player {
       videoPlayerCurrentTime = e.time;
     }
 
+    private function onSlideSyncChanged(e:SlideEvent):void {
+      sync = e.slide.sync;
+      if (sync) {
+        slideSeekTo(findNearestSlide(videoPlayerCurrentTime));
+      } else {
+        pause();
+      }
+    }
+
     private function onSeek(e:PlayerEvent):void {
       var seekPercentage:Number = (e.data as Number);
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
@@ -160,11 +168,18 @@ package rioflashclient2.player {
       logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
       seekTo(seekPosition);
     }
-    
+
     private function onTopicsSeek(e:PlayerEvent):void {
       var seekPosition:Number = e.data;
       logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
       seekTo(seekPosition);
+    }
+
+    private function onSlideCuePoint(event:TimelineMetadataEvent):void {
+      var cuePoint:CuePoint = event.marker as CuePoint;
+      if (cuePoint.name.indexOf("Slide") != -1 && sync) {
+        seekTo(cuePoint.time);
+      }
     }
 
     private function seekTo(requestedSeekPosition:Number):void {
@@ -193,10 +208,6 @@ package rioflashclient2.player {
       }
     }
 
-    private function setupBusDispatchers():void {
-
-    }
-
     private function setupBusListeners():void {
       EventBus.addListener(PlayerEvent.LOAD, onLoad);
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
@@ -207,13 +218,15 @@ package rioflashclient2.player {
       EventBus.addListener(PlayerEvent.PAUSE, onPause);
       EventBus.addListener(PlayerEvent.STOP, onStop);
       EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onServerSeek);
+      EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onSlideCuePoint);
 
       EventBus.addListener(SlideEvent.FIRST_SLIDE, onFirstSlide, EventBus.INPUT);
       EventBus.addListener(SlideEvent.PREV_SLIDE, onPreviousSlide, EventBus.INPUT);
       EventBus.addListener(SlideEvent.NEXT_SLIDE, onNextSlide, EventBus.INPUT);
       EventBus.addListener(SlideEvent.LAST_SLIDE, onLastSlide, EventBus.INPUT);
-      EventBus.addListener(SlideEvent.CURRENT_SLIDE, onCurrentSlide, EventBus.INPUT);
+      EventBus.addListener(SlideEvent.SLIDE_SYNC_CHANGED, onSlideSyncChanged, EventBus.INPUT);
     }
+
     public function play():void {
       logger.info('SlidePlayer Playing...');
 
@@ -234,6 +247,7 @@ package rioflashclient2.player {
 
       this.mediaPlayer.pause();
     }
+
     public function show():void {
       visible = true;
     }
@@ -242,12 +256,14 @@ package rioflashclient2.player {
       visible = false;
       alpha = 0;
     }
+
     public function stop():void {
       logger.info('Stopping...');
 
       this.mediaPlayer.stop();
       fadeOut();
     }
+
     private function onPlay(e:PlayerEvent):void {
       play();
     }

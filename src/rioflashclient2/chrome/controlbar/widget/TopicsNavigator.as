@@ -25,6 +25,7 @@ package rioflashclient2.chrome.controlbar.widget {
     private var duration:Number = 0;
     private var lesson:Lesson;
     private var topics:Topics;
+    private var slideSync:Boolean = true;
 
     public function TopicsNavigator() {
       if (!!stage) init();
@@ -51,11 +52,17 @@ package rioflashclient2.chrome.controlbar.widget {
       duration = e.data;
     }
 
+    private function onSlideSyncChanged(e:SlideEvent):void {
+      slideSync = e.slide.sync;
+    }
+
     private function onTopicCuePoint(event:TimelineMetadataEvent):void
     {
       var cuePoint:CuePoint = event.marker as CuePoint;
-      logger.info("Topic CuePoint reached=" + cuePoint.time);
-      highlightTopic(cuePoint.time);
+      if (cuePoint.name == "Topic") {
+        logger.info("Topic CuePoint reached=" + cuePoint.time);
+        highlightTopic(cuePoint.time);
+      }
     }
 
     private function highlightTopic(time:Number):void {
@@ -69,7 +76,9 @@ package rioflashclient2.chrome.controlbar.widget {
     }
 
     private function onSlideChanged(e:SlideEvent):void {
-      highlightTopic(findNearestTopic(e.slide.time));
+      if (slideSync) {
+        highlightTopic(findNearestTopic(e.slide.time));
+      }
     }
 
     private function findNearestTopic(seekPosition:Number):Number {
@@ -97,6 +106,7 @@ package rioflashclient2.chrome.controlbar.widget {
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
       EventBus.addListener(SlideEvent.SLIDE_CHANGED, onSlideChanged, EventBus.INPUT);
+      EventBus.addListener(SlideEvent.SLIDE_SYNC_CHANGED, onSlideSyncChanged, EventBus.INPUT);
     }
 
     private function onLessonResourcesLoaded(e:LessonEvent):void {

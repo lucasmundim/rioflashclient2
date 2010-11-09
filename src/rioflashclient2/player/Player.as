@@ -1,11 +1,9 @@
 package rioflashclient2.player {
   import caurina.transitions.Tweener;
-  
+
   import flash.events.ErrorEvent;
   import flash.events.Event;
-  
-  import mx.collections.ArrayCollection;
-  
+
   import org.osmf.elements.VideoElement;
   import org.osmf.events.*;
   import org.osmf.events.LoadEvent;
@@ -25,13 +23,14 @@ package rioflashclient2.player {
   import org.osmf.traits.LoadTrait;
   import org.osmf.traits.MediaTraitType;
   import org.osmf.traits.TimeTrait;
-  
+
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.event.SlideEvent;
   import rioflashclient2.media.PlayerMediaFactory;
   import rioflashclient2.model.Lesson;
+  import rioflashclient2.model.Slide;
   import rioflashclient2.model.Topics;
   import rioflashclient2.model.Video;
   import rioflashclient2.net.RioServerNetLoader;
@@ -43,17 +42,19 @@ package rioflashclient2.player {
     public var lesson:Lesson;
     public var video:Video;
     public var topics:Topics;
+    private var slides:Array;
     private var seekDataStore:DefaultSeekDataStore;
     private var duration:Number = 0;
     private var durationCached:Boolean = false;
-    
+    private var slideSync:Boolean = true;
+
     private var playaheadTime:Number = 0;
     private var _downloadProgressPercentage:Number;
     private var bytesTotal:Number = 0;
 
     private var topicsTimelineMetadata:TimelineMetadata;
-    [Bindable]
-    private var _cuePointsCollection:ArrayCollection;
+    private var slidesTimelineMetadata:TimelineMetadata;
+
     private var netLoader:NetLoader;
 
     public function Player() {
@@ -74,6 +75,7 @@ package rioflashclient2.player {
     public function load(lesson:Lesson):void {
       this.video = (lesson.video() as Video);
       this.topics = (lesson.topics as Topics);
+      this.slides = lesson.slides;
       loadMedia();
       (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
     }
@@ -97,6 +99,10 @@ package rioflashclient2.player {
       topicsTimelineMetadata.addEventListener(TimelineMetadataEvent.MARKER_TIME_REACHED, EventBus.dispatch, false, 0, true);
       addTopicsMetadata(this.topics);
 
+      slidesTimelineMetadata = new TimelineMetadata(videoElement);
+      slidesTimelineMetadata.addEventListener(TimelineMetadataEvent.MARKER_TIME_REACHED, EventBus.dispatch, false, 0, true);
+      addSlidesMetadata(this.slides);
+
       if (durationCached) {
         (this.media as VideoElement).defaultDuration = duration;
         logger.info('Video duration restored from cached duration: ' + duration);
@@ -110,11 +116,18 @@ package rioflashclient2.player {
       }
     }
 
+    public function addSlidesMetadata(slides:Array):void {
+      for (var i:uint = 0; i < slides.length; i++) {
+        var cuePoint:CuePoint = new CuePoint(CuePointType.ACTIONSCRIPT, slides[i].time, "Slide_" + (i + 1), null);
+        slidesTimelineMetadata.addMarker(cuePoint);
+      }
+    }
+
     private function onCuePoint(event:TimelineMetadataEvent):void
     {
       var cuePoint:CuePoint = event.marker as CuePoint;
       var diff:Number = cuePoint.time - this.mediaPlayer.currentTime;
-      logger.info("CuePoint reached=" + cuePoint.time + ", currentTime:" + this.mediaPlayer.currentTime + ", diff="+diff);
+      logger.info("CuePoint type=" + cuePoint.name + " reached=" + cuePoint.time + ", currentTime:" + this.mediaPlayer.currentTime + ", diff="+diff);
     }
 
     public function onMetadata(info:Object):void
@@ -191,74 +204,80 @@ package rioflashclient2.player {
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
       seekTo(seekPercentage, seekPosition);
     }
-    
+
     private function onTopicsSeek(e:PlayerEvent):void {
       var seekPosition:Number = e.data;
-      var seekPercentage:Number = seekPosition / duration; 
+      var seekPercentage:Number = seekPosition / duration;
 
       seekTo(seekPercentage, seekPosition);
     }
-    
-    private function onSlideChanged(e:SlideEvent):void {
-      logger.info('Slide syncing to {0}', e.slide.time);
-      var seekPosition:Number = e.slide.time;
-      var seekPercentage:Number = seekPosition / duration; 
-      
-      seekTo(seekPercentage, seekPosition);
+
+    private function onSlideSyncChanged(e:SlideEvent):void {
+      slideSync = e.slide.sync;
     }
-    
+
+    private function onSlideChanged(e:SlideEvent):void {
+      if (slideSync) {
+        logger.info('Slide syncing to {0}', e.slide.time);
+        var seekPosition:Number = e.slide.time;
+        var seekPercentage:Number = seekPosition / duration;
+
+        seekTo(seekPercentage, seekPosition);
+      }
+    }
+
     private function seekTo(seekPercentage:Number, seekPosition:Number):void {
       if (isInBuffer(seekPercentage)) {
         logger.info('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
-        this.mediaPlayer.seek(seekPosition);  
+        this.mediaPlayer.seek(seekPosition);
       } else {
         logger.info('Server seek requested to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
         serverSeekTo(seekPosition);
       }
     }
-    
+
     private function serverSeekTo(requestedSeekPosition:Number):void {
       if (seekDataStore.allowRandomSeek()) {
         var seekPosition:Number = seekDataStore.getNearestKeyFramePosition(requestedSeekPosition);
         logger.info('Server seeking to position {0} in seconds', seekDataStore.keyFrameTime());
         loadMedia(seekPosition);
-        
+
         if (requestedSeekPosition == 1) {
-          EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, 1));  
+          EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, 1));
         } else {
           EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.keyFrameTime()));
         }
-        
+
         play();
       } else {
         logger.info('ServerSeek not supported by media element');
       }
     }
-    
+
     private function isInBuffer(seekPercentage:Number):Boolean {
       return isAfterPlayahead(seekPercentage) && seekPercentage <= downloadProgressPercentage;
     }
-    
+
     private function isAfterPlayahead(seekPercentage:Number): Boolean {
       return (seekPercentage * duration) >= playaheadTime;
     }
-    
+
     public function get downloadProgressPercentage():Number {
       return _downloadProgressPercentage;
     }
-    
+
     public function set downloadProgressPercentage(percentage:Number):void {
       _downloadProgressPercentage = percentage;
     }
-    
+
     private function onBytesLoadedChange(e:LoadEvent):void {
       updateDownloadProgress(e.bytes);
     }
-    
+
     private function onBytesTotalChange(e:LoadEvent):void {
       bytesTotal = e.bytes;
     }
-    
+
     private function updateDownloadProgress(bytesLoaded:Number):void {
       if (bytesTotal > 0) {
         downloadProgressPercentage = bytesLoaded / bytesTotal;
@@ -266,7 +285,7 @@ package rioflashclient2.player {
         downloadProgressPercentage = 0;
       }
     }
-    
+
     private function onPlayaheadTimeChanged(e:PlayerEvent):void {
       playaheadTime = e.data;
     }
@@ -373,10 +392,7 @@ package rioflashclient2.player {
       EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onCuePoint);
 
       EventBus.addListener(SlideEvent.SLIDE_CHANGED, onSlideChanged, EventBus.INPUT);
-    }
-
-    private function setupEventListeners():void {
-      //stage.addEventListener(Event.RESIZE, resize);
+      EventBus.addListener(SlideEvent.SLIDE_SYNC_CHANGED, onSlideSyncChanged, EventBus.INPUT);
     }
   }
 }
