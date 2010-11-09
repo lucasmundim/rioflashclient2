@@ -16,8 +16,10 @@ package {
   import flash.display.StageScaleMode;
   import flash.events.Event;
   import flash.utils.setTimeout;
+  import flash.text.TextFieldAutoSize;
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
+  import flash.text.TextFormat;
 
   import rioflashclient2.assets.Header;
   import rioflashclient2.chrome.controlbar.ControlBar;
@@ -107,6 +109,8 @@ package {
       header.bg.width =  stage.stageWidth;
       header.txtHeader.text ="Carregando aula...";
       header.txtHeader.width = stage.stageWidth;
+      header.txtHeader.autoSize = TextFieldAutoSize.LEFT;
+      header.txtHeader.defaultTextFormat = new TextFormat(new Arial20().fontName, 20, 0xFFFFFF);
       resizeHandle = new ResizeHandle();
       resizeHandle.x = DEFAULT_VIDEO_WIDTH;
       resizeHandle.constrains(DEFAULT_VIDEO_WIDTH/2, resizeHandle.y, (DEFAULT_VIDEO_WIDTH * 1.5), 0);
