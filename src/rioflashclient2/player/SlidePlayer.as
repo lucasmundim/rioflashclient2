@@ -150,7 +150,9 @@ package rioflashclient2.player {
     private function onSlideSyncChanged(e:SlideEvent):void {
       sync = e.slide.sync;
       if (sync) {
-        slideSeekTo(findNearestSlide(videoPlayerCurrentTime));
+        var time:Number = slides[findNearestSlide(videoPlayerCurrentTime)].time
+        seekTo(time - 1); // Workaround
+        seekTo(time);
       } else {
         pause();
       }
