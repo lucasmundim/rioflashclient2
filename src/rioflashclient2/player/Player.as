@@ -198,7 +198,7 @@ package rioflashclient2.player {
 
     private function onSeek(e:PlayerEvent):void {
       var seekPercentage:Number = (e.data as Number);
-      if (seekPercentage < 0.1) {
+      if (seekPercentage <= 0) {
         seekPercentage = 1 / duration;
       }
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
