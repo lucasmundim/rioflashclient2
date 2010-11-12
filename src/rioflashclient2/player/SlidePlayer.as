@@ -160,6 +160,9 @@ package rioflashclient2.player {
 
     private function onSeek(e:PlayerEvent):void {
       var seekPercentage:Number = (e.data as Number);
+      if (seekPercentage <= 0) {
+        seekPercentage = 1 / duration;
+      }
       var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
       logger.info('Slide Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
       seekTo(seekPosition);
