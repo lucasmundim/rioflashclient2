@@ -182,14 +182,16 @@ package rioflashclient2.player {
 
     private function onSlideCuePoint(event:TimelineMetadataEvent):void {
       var cuePoint:CuePoint = event.marker as CuePoint;
-      if (cuePoint.name.indexOf("Slide") != -1 && sync) {
+      if (cuePoint.name.indexOf("Slide") != -1) {
         seekTo(cuePoint.time);
       }
     }
 
     private function seekTo(requestedSeekPosition:Number):void {
-      this.mediaPlayer.seek(requestedSeekPosition);
-      play();
+      if (sync) {
+        this.mediaPlayer.seek(requestedSeekPosition);
+        play();
+      }
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
