@@ -13,6 +13,7 @@ package rioflashclient2.chrome.controlbar {
   import org.osmf.logging.Logger;
   import org.osmf.events.TimelineMetadataEvent;
   import org.osmf.metadata.CuePoint;
+  import org.osmf.events.TimeEvent;
 
   import rioflashclient2.assets.ControlBarBackground;
   import rioflashclient2.assets.NavigationFinishButton;
@@ -40,6 +41,8 @@ package rioflashclient2.chrome.controlbar {
 
     private var sync:CheckBox = new CheckBox();
     private var slideInfo:Label = new Label();
+    private var duration:Number = 0;
+    private var videoPlayerCurrentTime:Number;
 
     private static const PADDING:Number = 5;
 
@@ -87,18 +90,71 @@ package rioflashclient2.chrome.controlbar {
 
     private function setupBusListeners():void {
       EventBus.addListener(SlideEvent.SLIDE_CHANGED, onSlideChanged, EventBus.INPUT);
+      EventBus.addListener(SlideEvent.SLIDE_SYNC_CHANGED, onSlideSyncChanged, EventBus.INPUT);
+
       EventBus.addListener(PlayerEvent.LOAD, onLoad);
+      EventBus.addListener(PlayerEvent.SEEK, onSeek);
+      EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
+      EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
+
+      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
       EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onSlideCuePoint);
     }
 
     private function onLoad(e:PlayerEvent):void {
-
       load(e.data.lesson);
     }
 
     public function load(lesson:Lesson):void {
       this.lesson = lesson;
       slides = lesson.slides;
+    }
+
+    private function onSeek(e:PlayerEvent):void {
+      if (sync.selected) {
+        var seekPercentage:Number = (e.data as Number);
+        if (seekPercentage <= 0) {
+          seekPercentage = 1 / duration;
+        }
+        var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
+        updateSlideInfo(findNearestSlide(seekPosition) + 1);
+      }
+    }
+
+    private function onTopicsSeek(e:PlayerEvent):void {
+      if (sync.selected) {
+        var seekPosition:Number = e.data;
+        updateSlideInfo(findNearestSlide(seekPosition));
+      }
+    }
+
+    private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
+      return seekPercentage * duration;
+    }
+
+    private function onDurationChange(e:PlayerEvent):void {
+      duration = e.data;
+    }
+
+    private function onCurrentTimeChange(e:TimeEvent):void {
+      videoPlayerCurrentTime = e.time;
+    }
+
+    private function onSlideSyncChanged(e:SlideEvent):void {
+      if (e.slide.sync) {
+        updateSlideInfo(findNearestSlide(videoPlayerCurrentTime) + 1);
+      }
+    }
+
+    private function findNearestSlide(seekPosition:Number):Number {
+      var last:Number = 0;
+      for (var i:uint = 0; i < slides.length; i++) {
+        if (seekPosition < slides[i].time) {
+          return i - 1;
+        }
+        last = i;
+      }
+      return last;
     }
 
     private function onSlideChanged(e:SlideEvent):void {
