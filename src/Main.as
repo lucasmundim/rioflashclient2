@@ -108,7 +108,6 @@ package {
         resizePlayerToFullScreen();
         isAppMode = false;
       }
-      
     }
 
     private function onExitFullScreen(e:PlayerEvent):void {
