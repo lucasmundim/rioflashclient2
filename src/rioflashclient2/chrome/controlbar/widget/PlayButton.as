@@ -22,11 +22,11 @@
     }
     
     private function onOver(e:MouseEvent):void {
-      Tweener.addTween(this, { time: 1, alpha: 0.4 });
+      //Tweener.addTween(this, { time: 1, alpha: 0.4 });
     }
     
     private function onOut(e:MouseEvent):void {
-      Tweener.addTween(this, { time: 1, alpha: 1 });
+      //Tweener.addTween(this, { time: 1, alpha: 1 });
     }
     
     private function setupEventListeners():void {

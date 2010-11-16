@@ -56,12 +56,12 @@
     /**
      * The left and right padding of the control bar.
      */
-    public static const SIDE_PADDING:Number = 0;
+    public static const SIDE_PADDING:Number = 10;
     
     /**
      * The spacement between buttons in the control bar.
      */
-    public static const BUTTON_SPACEMENT:Number = 0;
+    public static const BUTTON_SPACEMENT:Number = 7;
     
     /**
      * The amout of time, in miliseconds, that should pass before the control
@@ -195,8 +195,10 @@
     }
     
     private function positionProgressBar():void {
-      progressBar.x = 0;
-      progressBar.y = HEIGHT - progressBar.background.height;
+      progressBar.x = playPauseButton.x + playPauseButton.width + 10;
+      progressBar.y = playPauseButton.y + 10;
+      progressBar.maskBufferAnimation.width =  playPauseButton.x + playPauseButton.width + progressInformationLabel.x - 10;;
+    	progressBar.background.width =  progressBar.maskBufferAnimation.width;
     }
     
     private function showControlBar(e:MouseEvent=null):void {
@@ -291,11 +293,11 @@
     }
     
     public function fadeIn():void {
-      Tweener.addTween(this, { time: 2, alpha: 1, onStart: show });
+     // Tweener.addTween(this, { time: 2, alpha: 1, onStart: show });
     }
     
     public function fadeOut():void {
-      Tweener.addTween(this, { time: 2, alpha: 0, onComplete: hide });
+    //  Tweener.addTween(this, { time: 2, alpha: 0, onComplete: hide });
     }
     
     public function show():void {
@@ -326,10 +328,10 @@
       return buttonsToLayout.indexOf(this[buttonName]) != -1;
     }
 	
-	public function setSize(newWidth:Number = 320, newHeight:Number = 37):void{
-		background.width = newWidth;
-		progressBar.maskBufferAnimation.width =  background.width;
-		progressBar.background.width =  background.width;
-	}
+  	public function setSize(newWidth:Number = 320, newHeight:Number = 37):void{
+  		background.width = newWidth;
+  		progressBar.maskBufferAnimation.width =  playPauseButton.x + playPauseButton.width + progressInformationLabel.x - 10;;
+  		progressBar.background.width =  progressBar.maskBufferAnimation.width;
+  	}
   }
 }

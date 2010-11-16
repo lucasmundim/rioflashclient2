@@ -43,7 +43,7 @@
     
     private function setupInterface():void {
       buttonMode = true;
-      background.alpha = 0;
+      //background.alpha = 0;
     }
     
     public function setPlayingState():void {
@@ -57,11 +57,13 @@
     }
     
     private function onMouseOver(e:MouseEvent):void {
-      Tweener.addTween(background, { time: 0.5, alpha: 1 });
+      //Tweener.addTween(background, { time: 0.5, alpha: 1 });
+      gotoAndStop(currentState+"_over");
     }
     
     private function onMouseOut(e:MouseEvent):void {
-      Tweener.addTween(background, { time: 0.5, alpha: 0 });
+      //Tweener.addTween(background, { time: 0.5, alpha: 0 });
+      gotoAndStop(currentState);
     }
     
     private function onClick(e:MouseEvent=null):void {

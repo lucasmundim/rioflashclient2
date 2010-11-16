@@ -139,7 +139,7 @@
       var seekPercentage:Number = calculatedSeekPercentageGivenX(e.currentTarget.mouseX);
 
       currentProgress.width = e.currentTarget.mouseX;
-
+      bullet.x = currentProgress.x + currentProgress.width;
       EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
     }
 

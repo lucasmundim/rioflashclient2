@@ -25,9 +25,11 @@
     public function FullScreenButton() {
       if (!!stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
+      
     }
 
     private function init(e:Event=null):void {
+      stop();
       setupEventListeners();
       setupBusListeners();
       setupInterface();
@@ -47,7 +49,7 @@
 
     private function setupInterface():void {
       buttonMode = true;
-      background.alpha = 0;
+      //background.alpha = 0;
     }
 
     public function setFullScreenState():void {
@@ -61,11 +63,13 @@
     }
 
     private function onMouseOver(e:MouseEvent):void {
-      Tweener.addTween(background, { time: 0.5, alpha: 1 });
+      gotoAndStop(currentState+"_over");
+     // Tweener.addTween(background, { time: 0.5, alpha: 1 });
     }
 
     private function onMouseOut(e:MouseEvent):void {
-      Tweener.addTween(background, { time: 0.5, alpha: 0 });
+      gotoAndStop(currentState);
+     // Tweener.addTween(background, { time: 0.5, alpha: 0 });
     }
 
     private function onClick(e:MouseEvent):void {

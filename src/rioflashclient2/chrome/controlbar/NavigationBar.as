@@ -75,6 +75,7 @@ package rioflashclient2.chrome.controlbar {
       var list:Array = [next, prev, first, last];
       for(var i:uint = 0; i < list.length; i++){
         list[i].buttonMode = true;
+        list[i].stop();
         list[i].addEventListener(MouseEvent.ROLL_OVER, onOver);
         list[i].addEventListener(MouseEvent.ROLL_OUT, onOut);
         list[i].addEventListener(MouseEvent.MOUSE_OVER, onOver);
@@ -172,7 +173,9 @@ package rioflashclient2.chrome.controlbar {
     }
 
     private function updateSlideInfo(value:Number):void {
-      slideInfo.text = value + "/" + slides.length;
+      var actualSlide:String = value <= 9 ? "0"+value : value;
+      var totalSlides:String = slides.length <= 9 ? "0"+slides.length : slides.length;
+      slideInfo.text = actualSlide + "/" + totalSlides;
       resizeAndPosition();
     }
 
@@ -203,32 +206,36 @@ package rioflashclient2.chrome.controlbar {
       addChild(first);
       sync.selected = true;
       addChild(sync);
-      slideInfo.text = "";
-      slideInfo.autoSize = TextFieldAutoSize.LEFT;
+      slideInfo.text = "00/00";
+      slideInfo.width = 50;
+      slideInfo.setStyle("align", "center");
+      //slideInfo.autoSize = TextFieldAutoSize.LEFT;
       addChild(slideInfo);
     }
 
     private function onOver(e:MouseEvent):void {
-      Tweener.addTween(e.target, { time: 1, alpha: 0.4 });
+      e.target.gotoAndStop(2);
+      //Tweener.addTween(e.target, { time: 1, alpha: 0.4 });
     }
 
     private function onOut(e:MouseEvent):void {
-      Tweener.addTween(e.target, { time: 1, alpha: 1 });
+      e.target.gotoAndStop(1);
+      //Tweener.addTween(e.target, { time: 1, alpha: 1 });
     }
 
     private function resizeAndPosition():void
     {
-      sync.y = 10;
       first.y = prev.y = last.y = next.y = 8;
+      slideInfo.y = sync.y = 10;
+      first.x = 20;
       prev.x = first.x + first.width + PADDING;
-      next.x = prev.x + first.width + PADDING;
+      slideInfo.x = prev.x + prev.width + (PADDING*4);
+      slideInfo.setStyle("color", "0x666666");
+      next.x = slideInfo.x + slideInfo.width + PADDING;
       last.x = next.x + next.width + PADDING;
       sync.label = "Sincronizar";
-      sync.setStyle("color", "0xFFFFFF");
+      sync.setStyle("color", "0x666666");
       sync.x = background.width - sync.width;
-      slideInfo.y = 10;
-      slideInfo.x = background.width - sync.width - slideInfo.width - 10;
-      slideInfo.setStyle("color", "0xFFFFFF");
     }
   }
 }
