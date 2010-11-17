@@ -12,20 +12,16 @@
   import flash.events.MouseEvent;
   import flash.ui.Keyboard;
 
-  /**
-   * ...
-   * @author
-   */
   public class FullScreenButton extends FullScreenButtonAsset{
-    private var currentState:String;
+    protected var currentState:String;
 
-    private var fullScreenState:String = 'fullscreen';
-    private var normalState:String = 'normal';
+    protected var fullScreenState:String = 'fullscreen';
+    protected var normalState:String = 'normal';
 
     public function FullScreenButton() {
       if (!!stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
-      
+
     }
 
     private function init(e:Event=null):void {
@@ -49,7 +45,6 @@
 
     private function setupInterface():void {
       buttonMode = true;
-      //background.alpha = 0;
     }
 
     public function setFullScreenState():void {
@@ -64,15 +59,13 @@
 
     private function onMouseOver(e:MouseEvent):void {
       gotoAndStop(currentState+"_over");
-     // Tweener.addTween(background, { time: 0.5, alpha: 1 });
     }
 
     private function onMouseOut(e:MouseEvent):void {
       gotoAndStop(currentState);
-     // Tweener.addTween(background, { time: 0.5, alpha: 0 });
     }
 
-    private function onClick(e:MouseEvent):void {
+    protected function onClick(e:MouseEvent):void {
       if (currentState == fullScreenState) {
         EventBus.dispatch(new PlayerEvent(PlayerEvent.EXIT_FULL_SCREEN), EventBus.INPUT);
       } else {

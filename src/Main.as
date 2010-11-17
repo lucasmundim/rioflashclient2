@@ -15,26 +15,27 @@ package {
   import flash.display.StageAlign;
   import flash.display.StageScaleMode;
   import flash.events.Event;
-  import flash.utils.setTimeout;
   import flash.text.TextFieldAutoSize;
+  import flash.text.TextFormat;
+  import flash.utils.setTimeout;
+
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
-  import flash.text.TextFormat;
 
   import rioflashclient2.assets.Header;
   import rioflashclient2.chrome.controlbar.ControlBar;
   import rioflashclient2.chrome.controlbar.NavigationBar;
+  import rioflashclient2.chrome.controlbar.widget.ApplicationFullScreenButton;
   import rioflashclient2.chrome.controlbar.widget.ResizeHandle;
   import rioflashclient2.chrome.controlbar.widget.TopicsNavigator;
-  import rioflashclient2.chrome.controlbar.widget.FullScreenStage;
   import rioflashclient2.chrome.screen.DebugConsole;
   import rioflashclient2.chrome.screen.ErrorScreen;
   import rioflashclient2.chrome.screen.FullScreenManager;
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.event.DragEvent;
   import rioflashclient2.event.EventBus;
-  import rioflashclient2.event.LoggerEvent;
   import rioflashclient2.event.LessonEvent;
+  import rioflashclient2.event.LoggerEvent;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.logging.EventfulLogger;
   import rioflashclient2.logging.EventfulLoggerFactory;
@@ -69,8 +70,9 @@ package {
     private var header:Header;
     private var newWidthVideo:Number;
     private var newHeightVideo:Number;
-    private var fullScreenApp:FullScreenStage;
-    private var isAppMode:Boolean;
+    private var fullScreenMode:String = "application";
+    private var applicationFullScreenButton:ApplicationFullScreenButton;
+
     public function Main():void {
       if (stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -81,7 +83,6 @@ package {
       removeEventListener(Event.ADDED_TO_STAGE, init);
       addEventListener(Event.RESIZE, onResize);
       stage.addEventListener(Event.RESIZE, onResize);
-      isAppMode = true;
       setupLogger();
       setupDebugConsole();
       setupStage();
@@ -99,38 +100,25 @@ package {
     }
 
     private function onEnterFullScreen(e:PlayerEvent):void {
-      
-      if(e.data == "application"){
-        showElements();
-        resizeElements();
-      }else{
-        hideElements();
-        resizePlayerToFullScreen();
-        isAppMode = false;
-      }
+      fullScreenMode = e.data.mode;
+      resizeElements(fullScreenMode);
     }
 
     private function onExitFullScreen(e:PlayerEvent):void {
-      isAppMode = true;
-      showElements();
-      resizeElements();
+      fullScreenMode = "application";
+      resizeElements(fullScreenMode);
     }
-    private function resizePlayerToFullScreen():void{
-      player.x = 0;
-      player.y = 0;
-      player.setSize(stage.stageWidth, stage.stageHeight-controlbar.height);
-      controlbar.setSize(stage.stageWidth);
-      controlbar.y = stage.stageHeight-controlbar.height;
-      controlbar.resizeAndPosition();
-    }
-    private function hideElements():void{
-      slidePlayer.visible = resizeHandle.visible = 
+
+    private function hideElements():void {
+      slidePlayer.visible = resizeHandle.visible =
       topicsTree.visible = navigationBar.visible = header.visible = false;
     }
-    private function showElements():void{
-      slidePlayer.visible = resizeHandle.visible = 
+
+    private function showElements():void {
+      slidePlayer.visible = resizeHandle.visible =
       topicsTree.visible = navigationBar.visible = header.visible = true;
     }
+
     private function drawLayout():void {
       navigationBar = new NavigationBar();
       header = new Header();
@@ -139,10 +127,10 @@ package {
       header.txtHeader.width = stage.stageWidth;
       header.txtHeader.autoSize = TextFieldAutoSize.LEFT;
       header.txtHeader.defaultTextFormat = new TextFormat(new Arial20().fontName, 14, 0x333333);
-      fullScreenApp = new FullScreenStage();
-      fullScreenApp.x = header.x + header.width - fullScreenApp.width - 10;
-      fullScreenApp.y = header.height/2 - fullScreenApp.height/2;
-      header.addChild(fullScreenApp);
+      applicationFullScreenButton = new ApplicationFullScreenButton();
+      applicationFullScreenButton.x = header.x + header.width - applicationFullScreenButton.width - 10;
+      applicationFullScreenButton.y = header.height/2 - applicationFullScreenButton.height/2;
+      header.addChild(applicationFullScreenButton);
       resizeHandle = new ResizeHandle();
       resizeHandle.x = DEFAULT_VIDEO_WIDTH;
       resizeHandle.constrains(DEFAULT_VIDEO_WIDTH/2, resizeHandle.y, (DEFAULT_VIDEO_WIDTH * 1.5), 0);
@@ -160,56 +148,75 @@ package {
     }
 
     private function onResize(e:Event):void {
-      if(isAppMode) {
+      if (fullScreenMode == "application") {
         showElements();
-        resizeElements();
+        resizeElements(fullScreenMode);
       }
     }
 
     private function resizeDragUpdateHandler(event:DragEvent = null):void {
-      resizeElements();
+      resizeElements(fullScreenMode);
     }
 
-    private function resizeElements():void {
-      header.bg.width = stage.stageWidth;
-      header.txtHeader.width = stage.stageWidth - 50;
-      fullScreenApp.x = header.x + header.width - fullScreenApp.width - 10;
-      resizeHandle.setSize(0, stage.stageHeight);
-      resizePlayer();
-      resizeControlBar()
-      resizeTopicsTree();
-      resizeSlideAndNavigation();
+    private function resizeElements(mode:String):void {
+      if (mode == "video") {
+        hideElements();
+        resizePlayerToFullScreen();
+        resizeControlBarToFullScreen();
+      } else {
+        showElements();
+        header.bg.width = stage.stageWidth;
+        header.txtHeader.width = stage.stageWidth - 50;
+        applicationFullScreenButton.x = header.x + header.bg.width - applicationFullScreenButton.width - 10;
+        resizeHandle.setSize(0, stage.stageHeight);
+        resizePlayer();
+        resizeControlBar()
+        resizeTopicsTree();
+        resizeSlideAndNavigation();
+      }
     }
 
     private function resizePlayer():void {
-      newWidthVideo = resizeHandle.getX()||DEFAULT_VIDEO_WIDTH;
-      newHeightVideo = DEFAULT_VIDEO_HEIGHT*newWidthVideo/DEFAULT_VIDEO_WIDTH;
-      player.y = header.y+header.height;
+      newWidthVideo = resizeHandle.getX() || DEFAULT_VIDEO_WIDTH;
+      newHeightVideo = DEFAULT_VIDEO_HEIGHT * newWidthVideo / DEFAULT_VIDEO_WIDTH;
+      player.y = header.y + header.height;
       player.setSize(newWidthVideo, newHeightVideo);
     }
 
-    private function resizeSlideAndNavigation():void {
-      var posXHandler:Number = resizeHandle.getX() + resizeHandle.width;
-      var diffStage:Number = stage.stageWidth - (resizeHandle.getX()+resizeHandle.width);
-      slidePlayer.y = header.y+header.height;
-      slidePlayer.x = posXHandler;
-      slidePlayer.width = diffStage;
-      navigationBar.setSize(diffStage);
-      navigationBar.x = posXHandler;
-      navigationBar.y = stage.stageHeight-navigationBar.height;
+    private function resizePlayerToFullScreen():void {
+      player.x = 0;
+      player.y = 0;
+      player.setSize(stage.stageWidth, stage.stageHeight - controlbar.height);
     }
 
     private function resizeControlBar():void {
-      controlbar.setSize(resizeHandle.getX()||DEFAULT_VIDEO_WIDTH);
-      controlbar.y = player.y + (newHeightVideo||DEFAULT_VIDEO_HEIGHT);
+      controlbar.setSize(resizeHandle.getX() || DEFAULT_VIDEO_WIDTH);
+      controlbar.y = player.y + (newHeightVideo || DEFAULT_VIDEO_HEIGHT);
+      controlbar.resizeAndPosition();
+    }
+
+    private function resizeControlBarToFullScreen():void {
+      controlbar.setSize(stage.stageWidth);
+      controlbar.y = stage.stageHeight - controlbar.height;
       controlbar.resizeAndPosition();
     }
 
     private function resizeTopicsTree():void {
-      var videoHeight:Number = newHeightVideo||DEFAULT_VIDEO_HEIGHT;
-      var heightTopics:Number = stage.stageHeight-(videoHeight+37);
+      var videoHeight:Number = newHeightVideo || DEFAULT_VIDEO_HEIGHT;
+      var heightTopics:Number = stage.stageHeight - (videoHeight + 37);
       topicsTree.setSize(resizeHandle.getX(), heightTopics);
       topicsTree.y = controlbar.y + controlbar.height;
+    }
+
+    private function resizeSlideAndNavigation():void {
+      var posXHandler:Number = resizeHandle.getX() + resizeHandle.width;
+      var diffStage:Number = stage.stageWidth - (resizeHandle.getX() + resizeHandle.width);
+      slidePlayer.y = header.y + header.height;
+      slidePlayer.x = posXHandler;
+      slidePlayer.width = diffStage;
+      navigationBar.setSize(diffStage);
+      navigationBar.x = posXHandler;
+      navigationBar.y = stage.stageHeight - navigationBar.height;
     }
 
     private function setupSlidePlayer():void {
@@ -246,7 +253,7 @@ package {
     private function setupFullScreenManager():void {
       fullScreenManager = new FullScreenManager(stage);
       EventBus.addListener(PlayerEvent.ENTER_FULL_SCREEN, onEnterFullScreen, EventBus.INPUT);
-      EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, onExitFullScreen, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.EXIT_FULL_SCREEN, onExitFullScreen);
     }
 
     private function setupPlayer():void {

@@ -64,41 +64,41 @@ package rioflashclient2.configuration {
      * Also notice that right aligned buttons should be ordered in the reverse
      * order in which they will actually appear. For example, using this:
      *
-     *   playPauseButton|volume|progressInformationLabel|fullScreenButton
+     *   playPauseButton|volume|progressInformationLabel|videoFullScreenButton
      *
      * Would render buttons as this:
      *
-     *   playPauseButton   -----------------------  fullScreenButton  |  progressInformationLabel  |  volume
+     *   playPauseButton   -----------------------  videoFullScreenButton  |  progressInformationLabel  |  volume
      *
      * While this:
      *
-     *   playPauseButton|fullScreenButton|volume|progressInformationLabel
+     *   playPauseButton|videoFullScreenButton|volume|progressInformationLabel
      *
      * Would render as:
      *
-     *   playPauseButton   -----------------------  progressInformationLabel  | volume  |  fullScreenButton
+     *   playPauseButton   -----------------------  progressInformationLabel  | volume  |  videoFullScreenButton
      *
      * Only the order between buttons that have the same alignment will affect
      * rendering. You could do this:
      *
-     *   fullScreenButton|volume|playPauseButton|progressInformationLabel
+     *   videoFullScreenButton|volume|playPauseButton|progressInformationLabel
      *
      * And it would still render correctly:
      *
-     *   playPauseButton   -----------------------  progressInformationLabel  | volume  |  fullScreenButton
+     *   playPauseButton   -----------------------  progressInformationLabel  | volume  |  videoFullScreenButton
      *
      * You may skip any button if you don't want it to be displayed:
      *
-     *   playPauseButton|fullScreenButton
+     *   playPauseButton|videoFullScreenButton
      *
      * Would render:
      *
-     *   playPauseButton   -----------------------  fullScreenButton
+     *   playPauseButton   -----------------------  videoFullScreenButton
      *
-     * @default playPauseButton|fullScreenButton|volume|progressInformationLabel
+     * @default playPauseButton|videoFullScreenButton|volume|progressInformationLabel
      */
     public var controlBarButtons:Array;
-    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|fullScreenButton|volume';
+    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|videoFullScreenButton|volume';
 
     /**
      * The number of seconds to buffer before start playing the video.
