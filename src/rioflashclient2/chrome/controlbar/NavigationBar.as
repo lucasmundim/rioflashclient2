@@ -173,8 +173,8 @@ package rioflashclient2.chrome.controlbar {
     }
 
     private function updateSlideInfo(value:Number):void {
-      var actualSlide:String = value <= 9 ? "0"+value : value;
-      var totalSlides:String = slides.length <= 9 ? "0"+slides.length : slides.length;
+      var actualSlide:String = value <= 9 ? "0" + value.toString() : value.toString();
+      var totalSlides:String = slides.length <= 9 ? "0" + slides.length.toString() : slides.length.toString();
       slideInfo.text = actualSlide + "/" + totalSlides;
       resizeAndPosition();
     }
