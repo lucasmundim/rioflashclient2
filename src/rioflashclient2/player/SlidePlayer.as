@@ -238,7 +238,6 @@ package rioflashclient2.player {
 
     public function play():void {
       logger.info('SlidePlayer Playing...');
-      fadeIn();
       this.mediaPlayer.play();
     }
 
