@@ -125,7 +125,7 @@ package rioflashclient2.chrome.controlbar {
     private function onTopicsSeek(e:PlayerEvent):void {
       if (sync.selected) {
         var seekPosition:Number = e.data;
-        updateSlideInfo(findNearestSlide(seekPosition));
+        updateSlideInfo(findNearestSlide(seekPosition) + 1);
       }
     }
 
