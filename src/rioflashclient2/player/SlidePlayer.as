@@ -63,7 +63,7 @@ package rioflashclient2.player {
 
       swfSequence.addChild(new DurationElement(slides[0].time));
 
-      for( var i:uint = 0; i< slides.length; i++){
+      for ( var i:uint = 0; i< slides.length; i++) {
         var slide:Slide = slides[i];
         var slideURL:String = Configuration.getInstance().resourceURL(slide.relative_path);
         var swfElement:SWFElement = new SWFElement(new URLResource(slideURL), swfLoader);

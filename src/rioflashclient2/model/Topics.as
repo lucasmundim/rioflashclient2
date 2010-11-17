@@ -14,7 +14,7 @@ package rioflashclient2.model {
       var item:XML = <node />
 
       if (xml.hasOwnProperty("text")) {
-        item.@label = Configuration.getInstance().formatTime(xml.time) + " - " + xml.text;;
+        item.@label = Configuration.getInstance().formatTime(xml.time) + " - " + xml.text;
         item.@time = xml.time;
         topicTimes.push(xml.time);
       } else {

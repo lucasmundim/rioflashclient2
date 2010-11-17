@@ -73,7 +73,7 @@ package rioflashclient2.chrome.controlbar {
 
     private function setupEventListeners():void {
       var list:Array = [next, prev, first, last];
-      for(var i:uint = 0; i < list.length; i++){
+      for (var i:uint = 0; i < list.length; i++) {
         list[i].buttonMode = true;
         list[i].stop();
         list[i].addEventListener(MouseEvent.ROLL_OVER, onOver);
