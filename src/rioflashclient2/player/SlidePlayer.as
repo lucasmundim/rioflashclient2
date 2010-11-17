@@ -110,10 +110,7 @@ package rioflashclient2.player {
 
     private function slideSeekTo(index:Number):void {
       var time:Number = slides[index].time
-
-      seekTo(time - 1); // Workaround
       seekTo(time);
-
       EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
     }
 
@@ -151,7 +148,6 @@ package rioflashclient2.player {
       sync = e.slide.sync;
       if (sync) {
         var time:Number = slides[findNearestSlide(videoPlayerCurrentTime)].time
-        seekTo(time - 1); // Workaround
         seekTo(time);
       } else {
         pause();
@@ -169,29 +165,34 @@ package rioflashclient2.player {
     }
 
     private function onServerSeek(e:PlayerEvent):void {
-      var seekPosition:Number = (e.data as Number);
-      logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
-      seekTo(seekPosition);
+      if (sync) {
+        var seekPosition:Number = (e.data as Number);
+        logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
+        seekTo(seekPosition);
+      }
     }
 
     private function onTopicsSeek(e:PlayerEvent):void {
-      var seekPosition:Number = e.data;
-      logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
-      seekTo(seekPosition);
+      if (sync) {
+        var seekPosition:Number = e.data;
+        logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
+        seekTo(seekPosition);
+      }
     }
 
     private function onSlideCuePoint(event:TimelineMetadataEvent):void {
-      var cuePoint:CuePoint = event.marker as CuePoint;
-      if (cuePoint.name.indexOf("Slide") != -1) {
-        seekTo(cuePoint.time);
+      if (sync) {
+        var cuePoint:CuePoint = event.marker as CuePoint;
+        if (cuePoint.name.indexOf("Slide") != -1) {
+          seekTo(cuePoint.time);
+        }
       }
     }
 
     private function seekTo(requestedSeekPosition:Number):void {
-      if (sync) {
-        this.mediaPlayer.seek(requestedSeekPosition);
-        play();
-      }
+      this.mediaPlayer.seek(requestedSeekPosition - 1); // Workaround for serial element blank screen seek problem
+      this.mediaPlayer.seek(requestedSeekPosition);
+      play();
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
@@ -220,11 +221,12 @@ package rioflashclient2.player {
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
-      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.PAUSE, onPause);
       EventBus.addListener(PlayerEvent.STOP, onStop);
       EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onServerSeek);
+
+      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
       EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onSlideCuePoint);
 
       EventBus.addListener(SlideEvent.FIRST_SLIDE, onFirstSlide, EventBus.INPUT);
@@ -236,7 +238,6 @@ package rioflashclient2.player {
 
     public function play():void {
       logger.info('SlidePlayer Playing...');
-
       fadeIn();
       this.mediaPlayer.play();
     }
@@ -251,7 +252,6 @@ package rioflashclient2.player {
 
     public function pause():void {
       logger.info('Paused...');
-
       this.mediaPlayer.pause();
     }
 
@@ -266,7 +266,6 @@ package rioflashclient2.player {
 
     public function stop():void {
       logger.info('Stopping...');
-
       this.mediaPlayer.stop();
       fadeOut();
     }
