@@ -209,22 +209,18 @@ package rioflashclient2.chrome.controlbar {
       slideInfo.text = "00/00";
       slideInfo.width = 50;
       slideInfo.setStyle("align", "center");
-      //slideInfo.autoSize = TextFieldAutoSize.LEFT;
       addChild(slideInfo);
     }
 
     private function onOver(e:MouseEvent):void {
       e.target.gotoAndStop(2);
-      //Tweener.addTween(e.target, { time: 1, alpha: 0.4 });
     }
 
     private function onOut(e:MouseEvent):void {
       e.target.gotoAndStop(1);
-      //Tweener.addTween(e.target, { time: 1, alpha: 1 });
     }
 
-    private function resizeAndPosition():void
-    {
+    private function resizeAndPosition():void {
       first.y = prev.y = last.y = next.y = 8;
       slideInfo.y = sync.y = 10;
       first.x = 20;
