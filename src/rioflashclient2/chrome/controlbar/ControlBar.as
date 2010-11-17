@@ -193,9 +193,9 @@
     }
 
     private function positionProgressBar():void {
-      progressBar.x = playPauseButton.x + playPauseButton.width + 10;
-      progressBar.y = playPauseButton.y + 10;
-      progressBar.maskBufferAnimation.width =  playPauseButton.x + playPauseButton.width + progressInformationLabel.x - 10;
+      progressBar.x = playPauseButton.x + playPauseButton.width + 20;
+      progressBar.y = playPauseButton.y + 8;
+      progressBar.maskBufferAnimation.width = progressInformationLabel.x - playPauseButton.x - playPauseButton.width - 30;
       progressBar.background.width =  progressBar.maskBufferAnimation.width;
     }
 
@@ -328,8 +328,7 @@
 
     public function setSize(newWidth:Number = 320, newHeight:Number = 37):void {
       background.width = newWidth;
-      progressBar.maskBufferAnimation.width = playPauseButton.x + playPauseButton.width + progressInformationLabel.x - 10;
-      progressBar.background.width =  progressBar.maskBufferAnimation.width;
+      positionProgressBar();
     }
   }
 }

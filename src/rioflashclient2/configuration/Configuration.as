@@ -98,7 +98,7 @@ package rioflashclient2.configuration {
      * @default playPauseButton|videoFullScreenButton|volume|progressInformationLabel
      */
     public var controlBarButtons:Array;
-    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|videoFullScreenButton|volume';
+    private static const DEFAULT_CONTROL_BAR_BUTTONS_LAYOUT:String = 'playPauseButton|videoFullScreenButton|volume|progressInformationLabel';
 
     /**
      * The number of seconds to buffer before start playing the video.

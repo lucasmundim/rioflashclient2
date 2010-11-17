@@ -28,7 +28,7 @@
       setupEventListeners();
       setupBusListeners();
       progressiveMode(); //OnDemand
-
+      bullet.y = 5;
       background.visible = true;
 
       reset();
@@ -71,7 +71,7 @@
     }
 
     private function setupEventListeners():void {
-      stage.addEventListener(Event.RESIZE, resize);
+      stage.addEventListener(Event.RESIZE, onResize);
 
       addEventListener(MouseEvent.CLICK, onSeek);
       addEventListener(MouseEvent.MOUSE_DOWN, onStartDrag);
@@ -136,10 +136,16 @@
     }
 
     private function onSeek(e:MouseEvent):void {
-      var seekPercentage:Number = calculatedSeekPercentageGivenX(e.currentTarget.mouseX);
+      var position:Number = e.currentTarget.mouseX;
 
-      currentProgress.width = e.currentTarget.mouseX;
-      bullet.x = currentProgress.x + currentProgress.width;
+      if (e.currentTarget.toString() == "[object Stage]") {
+        position -= x;
+      }
+
+      var seekPercentage:Number = calculatedSeekPercentageGivenX(position);
+      currentProgress.width = position;
+      bullet.x = position;
+
       EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
     }
 
@@ -166,7 +172,7 @@
       downloadProgressPercentage = 0;
     }
 
-    private function resize(e:Event):void {
+    private function onResize(e:Event):void {
       maskBufferAnimation.width = Configuration.getInstance().playerWidth;
       background.width = Configuration.getInstance().playerWidth;
 

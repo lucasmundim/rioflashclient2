@@ -7,6 +7,7 @@ package rioflashclient2.chrome.controlbar.widget {
   import flash.text.TextField;
   import flash.text.TextFormat;
   import flash.text.TextFormatAlign;
+  import flash.text.TextFieldAutoSize;
 
   import org.osmf.events.TimeEvent;
 
@@ -122,7 +123,7 @@ package rioflashclient2.chrome.controlbar.widget {
     private function setupTimeInformationField():void {
       timeInformationField = new TextField();
       timeInformationField.y = TOP_PADDING;
-      timeInformationField.width = 100;
+      timeInformationField.autoSize = TextFieldAutoSize.LEFT;
       timeInformationField.height = 26;
       timeInformationField.selectable = false;
       timeInformationField.defaultTextFormat = format;
@@ -130,7 +131,7 @@ package rioflashclient2.chrome.controlbar.widget {
     }
 
     public function get offsetLeft():Number {
-      return -10;
+      return 0;
     }
 
     public function get offsetTop():Number {
