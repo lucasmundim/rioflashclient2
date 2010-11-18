@@ -93,6 +93,7 @@ package rioflashclient2.player {
       netLoader = new RioServerNetLoader();
       var videoElement:VideoElement = new VideoElement(null, netLoader);
       videoElement.resource = new URLResource(url);
+      videoElement.smoothing = true;
       this.media = videoElement;
 
       topicsTimelineMetadata = new TimelineMetadata(videoElement);
