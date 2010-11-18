@@ -211,12 +211,14 @@ package {
     private function resizeSlideAndNavigation():void {
       var posXHandler:Number = resizeHandle.getX() + resizeHandle.width;
       var diffStage:Number = stage.stageWidth - (resizeHandle.getX() + resizeHandle.width);
-      slidePlayer.y = header.y + header.height;
-      slidePlayer.x = posXHandler;
-      slidePlayer.width = diffStage;
+
       navigationBar.setSize(diffStage);
       navigationBar.x = posXHandler;
       navigationBar.y = stage.stageHeight - navigationBar.height;
+
+      slidePlayer.setSize(diffStage, (stage.stageHeight - header.height - navigationBar.height))
+      slidePlayer.x = posXHandler;
+      slidePlayer.y = header.y + header.height;
     }
 
     private function setupSlidePlayer():void {

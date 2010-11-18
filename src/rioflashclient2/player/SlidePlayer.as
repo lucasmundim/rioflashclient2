@@ -14,6 +14,11 @@ package rioflashclient2.player {
   import org.osmf.logging.Logger;
   import org.osmf.media.MediaPlayerSprite;
   import org.osmf.media.URLResource;
+  import org.osmf.events.TimelineMetadataEvent;
+  import org.osmf.metadata.CuePoint;
+  import org.osmf.layout.LayoutMetadata;
+  import org.osmf.layout.HorizontalAlign;
+  import org.osmf.layout.VerticalAlign;
 
   import rioflashclient2.configuration.Configuration;
   import rioflashclient2.elements.PreloadingProxyElement;
@@ -25,8 +30,7 @@ package rioflashclient2.player {
   import rioflashclient2.model.Slide;
   import rioflashclient2.model.Video;
   import rioflashclient2.net.RioServerSWFLoader;
-  import org.osmf.events.TimelineMetadataEvent;
-  import org.osmf.metadata.CuePoint;
+
 
   public class SlidePlayer extends MediaPlayerSprite {
     private var logger:Logger = Log.getLogger('SlidePlayer');
@@ -60,6 +64,7 @@ package rioflashclient2.player {
     public function loadMedia():void {
       var swfLoader:RioServerSWFLoader = new RioServerSWFLoader();
       var swfSequence:SerialElement = new SerialElement();
+      var layoutData:LayoutMetadata = layoutMetadata(width, height);
 
       swfSequence.addChild(new DurationElement(slides[0].time));
 
@@ -67,6 +72,7 @@ package rioflashclient2.player {
         var slide:Slide = slides[i];
         var slideURL:String = Configuration.getInstance().resourceURL(slide.relative_path);
         var swfElement:SWFElement = new SWFElement(new URLResource(slideURL), swfLoader);
+        swfElement.metadata.addValue(LayoutMetadata.LAYOUT_NAMESPACE, layoutData);
 
         var slideDuration:Number;
         if (i < (slides.length - 1)) {
@@ -81,7 +87,33 @@ package rioflashclient2.player {
         logger.info('Loading: ' + slideURL + ' with ' + slideDuration + 's');
       }
 
+      swfSequence.metadata.addValue(LayoutMetadata.LAYOUT_NAMESPACE, layoutData);
       this.media = swfSequence;
+    }
+
+    public function setSize(newWidth:Number = 320, newHeight:Number = 240):void {
+      this.width = newWidth;
+      this.height = newHeight;
+      this.mediaContainer.width = newWidth;
+      this.mediaContainer.height = newHeight;
+
+      if (this.media != null) {
+        var layoutData:LayoutMetadata = layoutMetadata(newWidth, newHeight);
+        for ( var i:uint = 0; i< (this.media as SerialElement).numChildren; i++) {
+          (this.media as SerialElement).getChildAt(i).metadata.addValue(LayoutMetadata.LAYOUT_NAMESPACE, layoutData);
+        }
+        this.media.metadata.addValue(LayoutMetadata.LAYOUT_NAMESPACE, layoutData);
+      }
+    }
+
+    private function layoutMetadata(newWidth:Number, newHeight:Number):LayoutMetadata {
+      var layoutData:LayoutMetadata = new LayoutMetadata();
+      layoutData.scaleMode = ScaleMode.LETTERBOX;
+      layoutData.horizontalAlign = HorizontalAlign.LEFT;
+      layoutData.verticalAlign = VerticalAlign.TOP;
+      layoutData.width = newWidth;
+      layoutData.height = newHeight;
+      return layoutData;
     }
 
     private function onFirstSlide(e:SlideEvent):void {
@@ -201,7 +233,6 @@ package rioflashclient2.player {
 
     private function setupInterface():void {
       this.scaleMode = ScaleMode.LETTERBOX;
-
       resize();
     }
 
