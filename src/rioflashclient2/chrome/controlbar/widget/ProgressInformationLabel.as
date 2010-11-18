@@ -113,7 +113,7 @@ package rioflashclient2.chrome.controlbar.widget {
 
     private function setupFormat():void {
       format = new TextFormat();
-      format.color = 0xFFFFFF;
+      format.color = 0x333333;
       format.align = TextFormatAlign.RIGHT;
       format.font = "Arial";
       format.size = 10;
@@ -128,6 +128,7 @@ package rioflashclient2.chrome.controlbar.widget {
       timeInformationField.selectable = false;
       timeInformationField.defaultTextFormat = format;
       timeInformationField.antiAliasType = AntiAliasType.ADVANCED;
+
     }
 
     public function get offsetLeft():Number {

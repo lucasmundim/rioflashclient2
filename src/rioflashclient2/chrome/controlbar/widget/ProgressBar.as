@@ -143,8 +143,8 @@
       }
 
       var seekPercentage:Number = calculatedSeekPercentageGivenX(position);
-      currentProgress.width = position;
-      bullet.x = position;
+      currentProgress.width = Math.min(position, background.width);
+      bullet.x = currentProgress.width;
 
       EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
     }
@@ -182,6 +182,7 @@
 
     private function resizeCurrentProgress():void {
       currentProgress.width = currentProgressPercentage * background.width;
+      bullet.x = currentProgress.width;
     }
 
     private function resizeDownloadProgress():void {
