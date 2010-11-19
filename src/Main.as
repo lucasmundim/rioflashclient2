@@ -203,7 +203,7 @@ package {
 
     private function resizeTopicsTree():void {
       var videoHeight:Number = newHeightVideo || DEFAULT_VIDEO_HEIGHT;
-      var heightTopics:Number = stage.stageHeight - (videoHeight + 37);
+      var heightTopics:Number = stage.stageHeight - (header.height + videoHeight + controlbar.height);
       topicsTree.setSize(resizeHandle.getX(), heightTopics);
       topicsTree.y = controlbar.y + controlbar.height;
     }
