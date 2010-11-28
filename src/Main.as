@@ -170,7 +170,7 @@ package {
         applicationFullScreenButton.x = header.x + header.bg.width - applicationFullScreenButton.width - 10;
         resizeHandle.setSize(0, stage.stageHeight);
         resizePlayer();
-        resizeControlBar()
+        resizeControlBar();
         resizeTopicsTree();
         resizeSlideAndNavigation();
       }
@@ -192,13 +192,11 @@ package {
     private function resizeControlBar():void {
       controlbar.setSize(resizeHandle.getX() || DEFAULT_VIDEO_WIDTH);
       controlbar.y = player.y + (newHeightVideo || DEFAULT_VIDEO_HEIGHT);
-      controlbar.resizeAndPosition();
     }
 
     private function resizeControlBarToFullScreen():void {
       controlbar.setSize(stage.stageWidth);
       controlbar.y = stage.stageHeight - controlbar.height;
-      controlbar.resizeAndPosition();
     }
 
     private function resizeTopicsTree():void {

@@ -27,21 +27,19 @@
   import rioflashclient2.event.PlayerEvent;
 
   public class ControlBar extends MovieClip {
+    private var logger:Logger = Log.getLogger('ControlBar');
+
+    private var buttonsToLayout:Array = [];
+    private var displayed:Boolean = false;
+    private var keepDisplaying:Boolean = false;
+    private var autoHideTimer:Timer;
+
     public var background:ControlBarBackground = new ControlBarBackground();
     public var playPauseButton:PlayPauseButton = new PlayPauseButton();
     public var progressBar:ProgressBar = new ProgressBar();
     public var volume:Volume = new Volume();
     public var videoFullScreenButton:VideoFullScreenButton = new VideoFullScreenButton();
     public var progressInformationLabel:ProgressInformationLabel = new ProgressInformationLabel();
-
-    private var buttonsToLayout:Array = [];
-    private var _basicWidth:Number = 320;
-    private var displayed:Boolean = false;
-    private var keepDisplaying:Boolean = false;
-
-    private var autoHideTimer:Timer;
-
-    private var logger:Logger = Log.getLogger('ControlBar');
 
     /**
      * The height of the control bar. This is fixed because the control bar
@@ -62,7 +60,7 @@
     /**
      * The spacement between buttons in the control bar.
      */
-    public static const BUTTON_SPACEMENT:Number = 7;
+    public static const BUTTON_SPACEMENT:Number = 10;
 
     /**
      * The amout of time, in miliseconds, that should pass before the control
@@ -89,18 +87,17 @@
       resizeAndPosition();
     }
 
-    private function initialSetup():void {
-      //this.autoHideTimer = new Timer(IDLE_TIME_BEFORE_AUTO_HIDE);
-    }
-
     private function setupBackground():void {
       addChild(background);
+    }
+
+    private function initialSetup():void {
+      //this.autoHideTimer = new Timer(IDLE_TIME_BEFORE_AUTO_HIDE);
     }
 
     private function setupControls():void {
       renderButtons();
       renderProgressBar();
-      positionControls();
     }
 
     private function renderButtons():void {
@@ -125,7 +122,6 @@
 
     private function setupEventListeners():void {
       stage.addEventListener(FullScreenEvent.FULL_SCREEN, fullScreenChanged);
-      stage.addEventListener(Event.RESIZE, resizeAndPosition);
       //autoHideTimer.addEventListener(TimerEvent.TIMER, hideControlBar);
     }
 
@@ -136,7 +132,7 @@
       EventBus.addListener(ErrorEvent.ERROR, onError);
     }
 
-    public function resizeAndPosition(e:Event=null):void {
+    private function resizeAndPosition():void {
       positionControls();
       position();
     }
@@ -192,11 +188,15 @@
       }
     }
 
+    public function setSize(newWidth:Number = 320, newHeight:Number = 37):void {
+      background.width = newWidth;
+      resizeAndPosition();
+    }
+
     private function positionProgressBar():void {
-      progressBar.x = playPauseButton.x + playPauseButton.width + 20;
+      progressBar.x = playPauseButton.x + playPauseButton.width + BUTTON_SPACEMENT + BUTTON_SPACEMENT;
       progressBar.y = playPauseButton.y + 8;
-      progressBar.maskBufferAnimation.width = progressInformationLabel.x - playPauseButton.x - playPauseButton.width - 30;
-      progressBar.background.width =  progressBar.maskBufferAnimation.width;
+      progressBar.background.width = progressInformationLabel.x - progressBar.x - BUTTON_SPACEMENT;
     }
 
     private function showControlBar(e:MouseEvent=null):void {
@@ -324,11 +324,6 @@
 
     private function hasButton(buttonName:String):Boolean {
       return buttonsToLayout.indexOf(this[buttonName]) != -1;
-    }
-
-    public function setSize(newWidth:Number = 320, newHeight:Number = 37):void {
-      background.width = newWidth;
-      positionProgressBar();
     }
   }
 }

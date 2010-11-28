@@ -9,6 +9,7 @@ package rioflashclient2.player {
   import org.osmf.events.LoadEvent;
   import org.osmf.events.TimeEvent;
   import org.osmf.events.TimelineMetadataEvent;
+  import org.osmf.events.MediaPlayerStateChangeEvent;
   import org.osmf.layout.ScaleMode;
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
@@ -230,6 +231,8 @@ package rioflashclient2.player {
     private function seekTo(seekPercentage:Number, seekPosition:Number):void {
       if (isInBuffer(seekPercentage)) {
         logger.info('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+        var seekTrait:SeekTrait = SeekTrait(this.media.getTrait(MediaTraitType.SEEK));
+        trace('Can seek: ', seekTrait.canSeekTo(seekPosition));
         this.mediaPlayer.seek(seekPosition);
       } else {
         logger.info('Server seek requested to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
@@ -256,7 +259,25 @@ package rioflashclient2.player {
     }
 
     private function isInBuffer(seekPercentage:Number):Boolean {
-      return isAfterPlayahead(seekPercentage) && seekPercentage <= downloadProgressPercentage;
+      var bufferStart:Number = playaheadTime;
+      var bufferEnd:Number = downloadProgressPercentage * (duration - playaheadTime);
+      var bufferPercentage:Number = (bufferStart + bufferEnd) / duration;
+
+      trace("duration: ", duration);
+      trace("playaheadTime: ", playaheadTime);
+      trace("bufferStart: ", bufferStart);
+      trace("downloadProgressPercentage: ", downloadProgressPercentage);
+      trace("bufferEnd: ", bufferEnd);
+      trace("bytesTotal: ", bytesTotal);
+      var loadTrait:LoadTrait = LoadTrait(this.media.getTrait(MediaTraitType.LOAD));
+      var loadedPercentage:Number = loadTrait.bytesLoaded/loadTrait.bytesTotal;
+
+
+
+      trace('Loaded Percentage: ', loadedPercentage);
+      trace("isAfterPlayahead: ", isAfterPlayahead(seekPercentage));
+      trace("isBeforeBuffer: ", seekPercentage <= bufferPercentage);
+      return isAfterPlayahead(seekPercentage) && seekPercentage <= bufferPercentage;
     }
 
     private function isAfterPlayahead(seekPercentage:Number): Boolean {
@@ -368,6 +389,11 @@ package rioflashclient2.player {
       this.mediaPlayer.addEventListener(TimeEvent.DURATION_CHANGE, EventBus.dispatch);
       this.mediaPlayer.addEventListener(LoadEvent.BYTES_LOADED_CHANGE, EventBus.dispatch);
       this.mediaPlayer.addEventListener(LoadEvent.BYTES_TOTAL_CHANGE, EventBus.dispatch);
+      this.mediaPlayer.addEventListener(MediaPlayerStateChangeEvent.MEDIA_PLAYER_STATE_CHANGE, onStateChange);
+    }
+
+    private function onStateChange(event:MediaPlayerStateChangeEvent):void {
+      logger.info('Media Player State Change: {0}', event.state);
     }
 
     private function setupBusListeners():void {

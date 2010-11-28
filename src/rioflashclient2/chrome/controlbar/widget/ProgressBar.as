@@ -27,10 +27,29 @@
     private function init(e:Event=null):void {
       setupEventListeners();
       setupBusListeners();
-      progressiveMode(); //OnDemand
-      bullet.y = 5;
-      background.visible = true;
+      initialSetup();
+    }
 
+    private function setupEventListeners():void {
+      stage.addEventListener(Event.RESIZE, onResize);
+      addEventListener(MouseEvent.CLICK, onSeek);
+      addEventListener(MouseEvent.MOUSE_DOWN, onStartDrag);
+    }
+
+    private function setupBusListeners():void {
+      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
+      EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
+
+      EventBus.addListener(LoadEvent.BYTES_LOADED_CHANGE, onBytesLoadedChange);
+      EventBus.addListener(LoadEvent.BYTES_TOTAL_CHANGE, onBytesTotalChange);
+
+      EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onPlayaheadTimeChanged);
+      EventBus.addListener(PlayerEvent.NEED_TO_KEEP_PLAYAHEAD_TIME, onNeedToKeepPlayaheadTime);
+    }
+
+    private function initialSetup():void {
+      progressiveMode(); //OnDemand
+      background.visible = true;
       reset();
     }
 
@@ -70,26 +89,15 @@
       downloadProgress.visible = true;
     }
 
-    private function setupEventListeners():void {
-      stage.addEventListener(Event.RESIZE, onResize);
-
-      addEventListener(MouseEvent.CLICK, onSeek);
-      addEventListener(MouseEvent.MOUSE_DOWN, onStartDrag);
-    }
-
-    private function setupBusListeners():void {
-      EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
-      EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
-
-      EventBus.addListener(LoadEvent.BYTES_LOADED_CHANGE, onBytesLoadedChange);
-      EventBus.addListener(LoadEvent.BYTES_TOTAL_CHANGE, onBytesTotalChange);
-
-      EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onPlayaheadTimeChanged);
-      EventBus.addListener(PlayerEvent.NEED_TO_KEEP_PLAYAHEAD_TIME, onNeedToKeepPlayaheadTime);
-    }
-
     private function onPlayaheadTimeChanged(e:PlayerEvent):void {
       playaheadTime = e.data;
+      setupForServerSeek();
+    }
+
+    private function setupForServerSeek():void {
+      currentProgress.x = background.width * (playaheadTime / duration);
+      downloadProgress.x = currentProgress.x;
+      reset();
     }
 
     private function onNeedToKeepPlayaheadTime(e:PlayerEvent):void {
@@ -97,8 +105,7 @@
     }
 
     private function onCurrentTimeChange(e:TimeEvent):void {
-      var elapsedTime:Number = 0;
-      elapsedTime = e.time;
+      var elapsedTime:Number = e.time;
 
       if (needToKeepPlayaheadTime) {
         elapsedTime += playaheadTime;
@@ -112,8 +119,8 @@
     }
 
     private function updateCurrentProgress(currentTime:Number):void {
-      if (duration > 0) {
-        currentProgressPercentage = currentTime / duration;
+      if (duration > 0 && currentTime && currentTime > 0) {
+        currentProgressPercentage = (currentTime - playaheadTime) / (duration - playaheadTime);
       } else {
         currentProgressPercentage = 0;
       }
@@ -137,15 +144,13 @@
 
     private function onSeek(e:MouseEvent):void {
       var position:Number = e.currentTarget.mouseX;
-
       if (e.currentTarget.toString() == "[object Stage]") {
         position -= x;
       }
-
+      trace("position: ", position);
+      trace("currentTarget: ", e.currentTarget.toString());
       var seekPercentage:Number = calculatedSeekPercentageGivenX(position);
-      currentProgress.width = Math.min(position, background.width);
-      bullet.x = currentProgress.width;
-
+      trace("seekPercentage: ", seekPercentage);
       EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
     }
 
@@ -156,14 +161,12 @@
     private function onStartDrag(e:MouseEvent):void {
       stage.addEventListener(MouseEvent.MOUSE_MOVE, onSeek);
       stage.addEventListener(MouseEvent.MOUSE_UP, onStopDrag);
-
       EventBus.dispatch(new PlayerEvent(PlayerEvent.PAUSE), EventBus.INPUT);
     }
 
     private function onStopDrag(e:MouseEvent):void {
       stage.removeEventListener(MouseEvent.MOUSE_MOVE, onSeek);
       stage.removeEventListener(MouseEvent.MOUSE_UP, onStopDrag);
-
       EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY), EventBus.INPUT);
     }
 
@@ -173,20 +176,39 @@
     }
 
     private function onResize(e:Event):void {
-      maskBufferAnimation.width = Configuration.getInstance().playerWidth;
-      background.width = Configuration.getInstance().playerWidth;
-
       resizeCurrentProgress();
       resizeDownloadProgress();
     }
 
     private function resizeCurrentProgress():void {
-      currentProgress.width = currentProgressPercentage * background.width;
-      bullet.x = currentProgress.width;
+      var adjust:Number = (playaheadTime / duration) * background.width;
+      if (!isNaN(adjust)) {
+        currentProgress.width = currentProgressPercentage * (background.width - adjust);
+      } else {
+        currentProgress.width = 0;
+      }
+      currentProgress.x = adjust;
+      bullet.x = currentProgress.x + currentProgress.width;
     }
 
     private function resizeDownloadProgress():void {
-      downloadProgress.width = downloadProgressPercentage * background.width;
+      var bufferStart:Number = (playaheadTime / duration) * background.width;
+      var bufferEnd:Number = downloadProgressPercentage * (background.width - bufferStart);
+      
+      /*trace("duration: ", duration);
+            trace("playaheadTime: ", playaheadTime);
+            trace("background.width: ", background.width);
+            trace("bufferStart: ", bufferStart);
+            trace("downloadProgressPercentage: ", downloadProgressPercentage);
+            trace("bufferEnd: ", bufferEnd);*/
+      
+      downloadProgress.x = bufferStart;
+      
+      if (!isNaN(bufferStart)) {
+        downloadProgress.width = bufferEnd;
+      } else {
+        downloadProgress.width = 0;
+      }
     }
   }
 }
