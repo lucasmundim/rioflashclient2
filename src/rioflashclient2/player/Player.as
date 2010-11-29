@@ -1,20 +1,22 @@
 package rioflashclient2.player {
   import caurina.transitions.Tweener;
-
+  
   import flash.events.ErrorEvent;
   import flash.events.Event;
-
+  
+  import org.osmf.elements.ProxyElement;
   import org.osmf.elements.VideoElement;
   import org.osmf.events.*;
   import org.osmf.events.LoadEvent;
+  import org.osmf.events.MediaPlayerStateChangeEvent;
   import org.osmf.events.TimeEvent;
   import org.osmf.events.TimelineMetadataEvent;
-  import org.osmf.events.MediaPlayerStateChangeEvent;
   import org.osmf.layout.ScaleMode;
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
   import org.osmf.media.MediaElement;
   import org.osmf.media.MediaPlayerSprite;
+  import org.osmf.media.MediaPlayerState;
   import org.osmf.media.URLResource;
   import org.osmf.metadata.CuePoint;
   import org.osmf.metadata.CuePointType;
@@ -23,9 +25,11 @@ package rioflashclient2.player {
   import org.osmf.net.NetLoader;
   import org.osmf.traits.LoadTrait;
   import org.osmf.traits.MediaTraitType;
+  import org.osmf.traits.SeekTrait;
   import org.osmf.traits.TimeTrait;
-
+  
   import rioflashclient2.configuration.Configuration;
+  import rioflashclient2.elements.PseudoStreamingProxyElement;
   import rioflashclient2.event.EventBus;
   import rioflashclient2.event.PlayerEvent;
   import rioflashclient2.event.SlideEvent;
@@ -78,7 +82,12 @@ package rioflashclient2.player {
       this.topics = (lesson.topics as Topics);
       this.slides = lesson.slides;
       loadMedia();
-      (this.media as VideoElement).client.addHandler("onMetaData", onMetadata);
+      ((this.media as PseudoStreamingProxyElement).proxiedElement as VideoElement).client.addHandler("onMetaData", onMetadata);
+    }
+    
+    private function onTraitAdd(event:MediaElementEvent):void
+    {
+      logger.debug('Trait added: ' + event.traitType);
     }
 
     public function loadMedia(seekPosition:Number=0):void {
@@ -89,13 +98,14 @@ package rioflashclient2.player {
         logger.info('Server seeking to: ' + url);
       }
 
-      //this.resource = new URLResource(url);
-
       netLoader = new RioServerNetLoader();
       var videoElement:VideoElement = new VideoElement(null, netLoader);
       videoElement.resource = new URLResource(url);
       videoElement.smoothing = true;
-      this.media = videoElement;
+      videoElement.addEventListener(MediaElementEvent.TRAIT_ADD, onTraitAdd);
+      
+      var pseudoStreamingProxyElement:PseudoStreamingProxyElement = new PseudoStreamingProxyElement(videoElement, this.video.file());
+      this.media = pseudoStreamingProxyElement;
 
       topicsTimelineMetadata = new TimelineMetadata(videoElement);
       topicsTimelineMetadata.addEventListener(TimelineMetadataEvent.MARKER_TIME_REACHED, EventBus.dispatch, false, 0, true);
@@ -106,7 +116,7 @@ package rioflashclient2.player {
       addSlidesMetadata(this.slides);
 
       if (durationCached) {
-        (this.media as VideoElement).defaultDuration = duration;
+        ((this.media as PseudoStreamingProxyElement).proxiedElement as VideoElement).defaultDuration = duration;
         logger.info('Video duration restored from cached duration: ' + duration);
       }
     }
@@ -142,20 +152,17 @@ package rioflashclient2.player {
 
     public function play():void {
       logger.info('Playing...');
-
       fadeIn();
       this.mediaPlayer.play();
     }
 
     public function pause():void {
       logger.info('Paused...');
-
       this.mediaPlayer.pause();
     }
 
     public function stop():void {
       logger.info('Stopping...');
-
       this.mediaPlayer.stop();
       fadeOut();
     }
@@ -193,7 +200,6 @@ package rioflashclient2.player {
 
     private function onVideoEnded(e:TimeEvent):void {
       logger.debug('Video ended.');
-
       EventBus.dispatch(new PlayerEvent(PlayerEvent.ENDED, { video: video }));
       stop();
     }
@@ -231,12 +237,17 @@ package rioflashclient2.player {
     private function seekTo(seekPercentage:Number, seekPosition:Number):void {
       if (isInBuffer(seekPercentage)) {
         logger.info('Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
-        var seekTrait:SeekTrait = SeekTrait(this.media.getTrait(MediaTraitType.SEEK));
-        trace('Can seek: ', seekTrait.canSeekTo(seekPosition));
+        var seekTrait:SeekTrait = SeekTrait(((this.media as PseudoStreamingProxyElement).proxiedElement as VideoElement).getTrait(MediaTraitType.SEEK));
         this.mediaPlayer.seek(seekPosition);
       } else {
         logger.info('Server seek requested to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
-        serverSeekTo(seekPosition);
+        this.mediaPlayer.seek(seekPosition);
+        var requestedSeekPosition:Number = seekDataStore.getNearestKeyFramePosition(seekPosition);
+        if (requestedSeekPosition == 1) {
+          EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, 1));
+        } else {
+          EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAYAHEAD_TIME_CHANGED, seekDataStore.keyFrameTime()));
+        }
       }
     }
 
@@ -262,21 +273,8 @@ package rioflashclient2.player {
       var bufferStart:Number = playaheadTime;
       var bufferEnd:Number = downloadProgressPercentage * (duration - playaheadTime);
       var bufferPercentage:Number = (bufferStart + bufferEnd) / duration;
-
-      trace("duration: ", duration);
-      trace("playaheadTime: ", playaheadTime);
-      trace("bufferStart: ", bufferStart);
-      trace("downloadProgressPercentage: ", downloadProgressPercentage);
-      trace("bufferEnd: ", bufferEnd);
-      trace("bytesTotal: ", bytesTotal);
       var loadTrait:LoadTrait = LoadTrait(this.media.getTrait(MediaTraitType.LOAD));
       var loadedPercentage:Number = loadTrait.bytesLoaded/loadTrait.bytesTotal;
-
-
-
-      trace('Loaded Percentage: ', loadedPercentage);
-      trace("isAfterPlayahead: ", isAfterPlayahead(seekPercentage));
-      trace("isBeforeBuffer: ", seekPercentage <= bufferPercentage);
       return isAfterPlayahead(seekPercentage) && seekPercentage <= bufferPercentage;
     }
 
@@ -330,7 +328,7 @@ package rioflashclient2.player {
     }
 
     private function loadDurationFromCache():void {
-      (this.media as VideoElement).defaultDuration = duration;
+      ((this.media as PseudoStreamingProxyElement).proxiedElement as VideoElement).defaultDuration = duration;
     }
 
     private function onError(e:ErrorEvent):void {
@@ -394,6 +392,10 @@ package rioflashclient2.player {
 
     private function onStateChange(event:MediaPlayerStateChangeEvent):void {
       logger.info('Media Player State Change: {0}', event.state);
+      if (event.state == MediaPlayerState.PLAYING) {
+        var loadTrait:LoadTrait = LoadTrait(((this.media as PseudoStreamingProxyElement).proxiedElement as VideoElement).getTrait(MediaTraitType.LOAD));
+        EventBus.dispatch(new LoadEvent(LoadEvent.BYTES_TOTAL_CHANGE, false, false, null, loadTrait.bytesTotal));
+      }
     }
 
     private function setupBusListeners():void {
