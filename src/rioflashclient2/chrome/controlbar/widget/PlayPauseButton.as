@@ -35,7 +35,7 @@
     private function setupBusListeners():void {
       EventBus.addListener(PlayerEvent.PLAY, onPlay);
       EventBus.addListener(PlayerEvent.PAUSE, onPause);
-      EventBus.addListener(PlayerEvent.STOP, onStop);
+      EventBus.addListener(PlayerEvent.ENDED, onEnded);
     }
 
     private function setupInterface():void {
@@ -75,8 +75,8 @@
     private function onPause(e:PlayerEvent):void {
       setPausedState();
     }
-    
-    private function onStop(e:PlayerEvent):void {
+
+    private function onEnded(e:PlayerEvent):void {
       setPausedState();
     }
 

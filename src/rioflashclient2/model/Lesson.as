@@ -110,6 +110,7 @@ package rioflashclient2.model {
       EventBus.addListener(PlayerEvent.PLAY, onInputPlay, EventBus.INPUT);
       EventBus.addListener(PlayerEvent.PAUSE, onInputPause, EventBus.INPUT);
       EventBus.addListener(PlayerEvent.STOP, onInputStop, EventBus.INPUT);
+      EventBus.addListener(PlayerEvent.STOP, onInputStop);
 
       EventBus.addListener(PlayerEvent.SEEK, EventBus.dispatch, EventBus.INPUT);
       EventBus.addListener(PlayerEvent.TOPICS_SEEK, EventBus.dispatch, EventBus.INPUT);

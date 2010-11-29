@@ -52,6 +52,7 @@ package rioflashclient2.player {
     private var duration:Number = 0;
     private var durationCached:Boolean = false;
     private var slideSync:Boolean = true;
+    private var videoEnded:Boolean = false;
 
     private var playaheadTime:Number = 0;
     private var _downloadProgressPercentage:Number;
@@ -135,6 +136,9 @@ package rioflashclient2.player {
     public function play():void {
       logger.info('Playing...');
       fadeIn();
+      if (videoEnded) {
+        this.mediaPlayer.seek(playaheadTime);
+      }
       this.mediaPlayer.play();
     }
 
@@ -181,8 +185,9 @@ package rioflashclient2.player {
     }
 
     private function onVideoEnded(e:TimeEvent):void {
-      logger.debug('Video ended.');
+      logger.info('Video ended.');
       EventBus.dispatch(new PlayerEvent(PlayerEvent.ENDED, { video: video }));
+      videoEnded = true;
       stop();
     }
 
