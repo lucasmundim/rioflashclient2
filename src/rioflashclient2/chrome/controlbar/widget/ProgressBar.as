@@ -147,10 +147,7 @@
       if (e.currentTarget.toString() == "[object Stage]") {
         position -= x;
       }
-      trace("position: ", position);
-      trace("currentTarget: ", e.currentTarget.toString());
       var seekPercentage:Number = calculatedSeekPercentageGivenX(position);
-      trace("seekPercentage: ", seekPercentage);
       EventBus.dispatch(new PlayerEvent(PlayerEvent.SEEK, seekPercentage), EventBus.INPUT);
     }
 
@@ -194,16 +191,7 @@
     private function resizeDownloadProgress():void {
       var bufferStart:Number = (playaheadTime / duration) * background.width;
       var bufferEnd:Number = downloadProgressPercentage * (background.width - bufferStart);
-      
-      /*trace("duration: ", duration);
-            trace("playaheadTime: ", playaheadTime);
-            trace("background.width: ", background.width);
-            trace("bufferStart: ", bufferStart);
-            trace("downloadProgressPercentage: ", downloadProgressPercentage);
-            trace("bufferEnd: ", bufferEnd);*/
-      
       downloadProgress.x = bufferStart;
-      
       if (!isNaN(bufferStart)) {
         downloadProgress.width = bufferEnd;
       } else {
