@@ -6,7 +6,8 @@
 
   import flash.events.Event;
   import flash.events.MouseEvent;
-
+  import flash.events.TimerEvent;
+  import flash.utils.Timer;
   import org.osmf.events.LoadEvent;
   import org.osmf.events.TimeEvent;
 
@@ -18,7 +19,7 @@
 
     private var duration:Number = 0;
     private var bytesTotal:Number = 0;
-
+    private var timeUpdate:Timer;
     public function ProgressBar() {
       if (!!stage) init();
       else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -51,15 +52,21 @@
       progressiveMode(); //OnDemand
       background.visible = true;
       reset();
+      timeUpdate = new Timer(100);
+      timeUpdate.addEventListener(TimerEvent.TIMER, setupTimeUpdate);
+      timeUpdate.start();
     }
-
+    private function setupTimeUpdate(e:TimerEvent):void{
+      resizeCurrentProgress();
+      resizeDownloadProgress();
+    }
     public function get currentProgressPercentage():Number {
       return _currentProgressPercentage;
     }
 
     public function set currentProgressPercentage(percentage:Number):void {
       _currentProgressPercentage = percentage;
-      resizeCurrentProgress();
+     
     }
 
     public function get downloadProgressPercentage():Number {
@@ -68,7 +75,7 @@
 
     public function set downloadProgressPercentage(percentage:Number):void {
       _downloadProgressPercentage = percentage;
-      resizeDownloadProgress();
+     
     }
 
     public function get needToKeepPlayaheadTime():Boolean {
