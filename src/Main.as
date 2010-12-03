@@ -43,7 +43,7 @@ package {
   import rioflashclient2.player.Player;
   import rioflashclient2.player.SlidePlayer;
   import rioflashclient2.user.VolumeSettings;
-  import flash.text.TextFormat;
+
   [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
   public class Main extends Sprite {
     public static const DEFAULT_VIDEO_WIDTH:Number = 320;
@@ -287,10 +287,8 @@ package {
     }
 
     private function onLessonResourcesLoaded(e:LessonEvent):void {
-      var tformat:TextFormat = new TextFormat();
-      tformat.bold = true;
-      header.txtHeader.defaultTextFormat = tformat;
-      header.txtHeader.text = "Disciplina: " + e.lesson.grad_program + " - Aula: " + e.lesson.course + " - Professor: " + e.lesson.professor;
+      header.txtHeader.condenseWhite = true;
+      header.txtHeader.htmlText = "<b>Disciplina:</b>" + e.lesson.grad_program + " - <b>Aula:</b> " + e.lesson.course + " - <b>Professor: </b>" + e.lesson.professor;
     }
   }
 }
