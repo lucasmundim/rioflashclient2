@@ -103,11 +103,11 @@ package rioflashclient2.player {
       var pseudoStreamingProxyElement:PseudoStreamingProxyElement = new PseudoStreamingProxyElement(videoElement, this.video.file());
       this.media = pseudoStreamingProxyElement;
 
-      topicsTimelineMetadata = new TimelineMetadata(videoElement);
+      topicsTimelineMetadata = new TimelineMetadata(pseudoStreamingProxyElement);
       topicsTimelineMetadata.addEventListener(TimelineMetadataEvent.MARKER_TIME_REACHED, EventBus.dispatch, false, 0, true);
       addTopicsMetadata(this.topics);
 
-      slidesTimelineMetadata = new TimelineMetadata(videoElement);
+      slidesTimelineMetadata = new TimelineMetadata(pseudoStreamingProxyElement);
       slidesTimelineMetadata.addEventListener(TimelineMetadataEvent.MARKER_TIME_REACHED, EventBus.dispatch, false, 0, true);
       addSlidesMetadata(this.slides);
     }
