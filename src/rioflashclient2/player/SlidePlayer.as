@@ -5,7 +5,7 @@ package rioflashclient2.player {
   import caurina.transitions.Tweener;
 
   import flash.events.Event;
-  import flash.display.Sprite;
+  import flash.display.MovieClip;
 
   import org.osmf.events.TimeEvent;
   import org.osmf.logging.Log;
@@ -21,7 +21,7 @@ package rioflashclient2.player {
   import rioflashclient2.model.Slide;
   import rioflashclient2.model.Video;
 
-  public class SlidePlayer extends Sprite {
+  public class SlidePlayer extends MovieClip {
     private var logger:Logger = Log.getLogger('SlidePlayer');
 
     private var lesson:Lesson;
@@ -59,33 +59,34 @@ package rioflashclient2.player {
       for ( var i:uint = 0; i< slides.length; i++) {
         var slide:Slide = slides[i];
         var slideURL:String = Configuration.getInstance().resourceURL(slide.relative_path);
-        loader.add(slideURL, { id: ("slide_" + i), priority: (slides.length - i) });
-        loader.get("slide_" + i).addEventListener(BulkLoader.COMPLETE, onSingleItemLoaded);
+        loader.add(slideURL, { id: ("slide_" + i), priority: (slides.length - i), type: "movieclip" });
+        loader.get("slide_" + i).addEventListener(Event.COMPLETE, onSingleItemLoaded);
       }
+      loader.get("slide_0").addEventListener(Event.COMPLETE, onFirstItemLoaded);
       loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
       loader.addEventListener(BulkLoader.PROGRESS, onAllProgress);
-      loader.start(3);
+      loader.start(1);
     }
 
     public function showSlide(num:Number):void {
-      addChild(loader.getMovieClip("slide_" + num));
+      addChild(loader.getContent("slide_" + num).parent);
     }
 
     public function onSingleItemLoaded(e:Event):void {
       trace("carregou");
     }
 
+    public function onFirstItemLoaded(e:Event):void {
+      trace("carregou o primeiro");
+      showSlide(0);
+    }
+
     public function onAllItemsLoaded(e:Event) : void {
-      //loader.getMovieClip("slides-" + i);
       trace("foi tudo");
     }
 
     public function onAllProgress(e:BulkProgressEvent) : void {
       trace("Loaded" , e.itemsLoaded," of ",  e.itemsTotal);
-      if (e.itemsLoaded == 1 && !firstLoaded) {
-        showSlide(0);
-        firstLoaded = true;
-      }
     }
 
     public function setSize(newWidth:Number = 320, newHeight:Number = 240):void {
@@ -186,13 +187,14 @@ package rioflashclient2.player {
       if (sync) {
         var cuePoint:CuePoint = event.marker as CuePoint;
         if (cuePoint.name.indexOf("Slide") != -1) {
-          seekTo(cuePoint.time);
+          var slideNumber:Number = Number(cuePoint.name.substring(cuePoint.name.indexOf("_") + 1, cuePoint.name.length)) -1;
+          seekTo(slideNumber);
         }
       }
     }
 
     private function seekTo(requestedSeekPosition:Number):void {
-
+      showSlide(requestedSeekPosition);
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
