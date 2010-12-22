@@ -28,7 +28,7 @@ package rioflashclient2.player {
 
     private var lesson:Lesson;
     private var slides:Array;
-    private var currentSlide:Number = 0;
+    private var currentSlideIndex:Number = 0;
     private var container:MovieClip;
     private var sync:Boolean = true;
     private var duration:Number = 0;
@@ -47,7 +47,6 @@ package rioflashclient2.player {
       setupBusListeners();
       container = new MovieClip();
       addChild(container);
-      resize();
     }
 
     private function onLoad(e:PlayerEvent):void {
@@ -77,12 +76,6 @@ package rioflashclient2.player {
 
     public function onFirstItemLoaded(e:Event):void {
       showSlide(0);
-      var sl:Loader = container.getChildByName("slide_0");
-      if (sl.width > sl.height) {
-        resizeContainer(measuredWidth, (sl.height * measuredWidth / sl.width));
-      } else {
-        resizeContainer((sl.width * measuredHeight / sl.height), measuredHeight);
-      }
     }
 
     public function onAllItemsLoaded(e:Event) : void {
@@ -102,14 +95,14 @@ package rioflashclient2.player {
     }
 
     private function onPreviousSlide(e:SlideEvent):void {
-      if (currentSlide > 0) {
-        changeSlideTo(currentSlide - 1);
+      if (currentSlideIndex > 0) {
+        changeSlideTo(currentSlideIndex - 1);
       }
     }
 
     private function onNextSlide(e:SlideEvent):void {
-      if (currentSlide < (slides.length - 1)) {
-        changeSlideTo(currentSlide + 1);
+      if (currentSlideIndex < (slides.length - 1)) {
+        changeSlideTo(currentSlideIndex + 1);
       }
     }
 
@@ -180,49 +173,55 @@ package rioflashclient2.player {
       EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
     }
 
-    public function showSlide(index:Number):void {
-      var sl:Loader = container.getChildByName("slide_" + currentSlide);
-      if (sl) {
-        container.removeChild(sl);
-      }
-      currentSlide = index;
-      container.addChild(slide(index));
+    private function currentSlide():Loader {
+      return container.getChildByName("slide_" + currentSlideIndex);
     }
 
-    private function slide(index:Number):Loader {
-      var sl:Loader = loader.getContent("slide_" + index).parent
-      sl.name = "slide_" + index;
-      return sl;
+    public function showSlide(index:Number):void {
+      var slide:Loader = currentSlide();
+      if (slide) {
+        container.removeChild(slide);
+      }
+      currentSlideIndex = index;
+      container.addChild(slideLoader(index));
+      resizeContainer();
+    }
+
+    private function slideLoader(index:Number):Loader {
+      var name:String = "slide_" + index;
+      var slide:Loader = loader.getContent(name).parent
+      slide.name = name;
+      return slide;
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
       return seekPercentage * duration;
     }
 
-    public function setSize(newWidth:Number = 320, newHeight:Number = 240):void {
+    public function setSize(newWidth:Number, newHeight:Number):void {
       this.width = newWidth;
       this.height = newHeight;
-      resizeContainer(newWidth, newHeight);
+      resizeContainer();
     }
 
-    private function resizeContainer(newWidth:Number, newHeight:Number):void {
-      var sl:Loader = container.getChildByName("slide_" + currentSlide);
-      if (sl) {
-        if (sl.width > sl.height) {
-          this.container.height = (sl.height) * newWidth / (sl.width);
-          this.container.width = newWidth;
+    private function resizeContainer():void {
+      var slide:Loader = currentSlide();
+      if (slide) {
+        if (slide.width > slide.height) {
+          this.container.height = (slide.height) * this.width / (slide.width);
+          this.container.width = this.width;
 
           if (measuredHeight < this.container.height) {
-            this.container.width =  (sl.width) * newHeight / (sl.height);
-            this.container.height = measuredHeight;
+            this.container.width =  (slide.width) * this.height / (slide.height);
+            this.container.height = this.height;
           }
         } else {
-          this.container.width = (sl.width) * newHeight / (sl.height);
-          this.container.height = newHeight;
+          this.container.width = (slide.width) * this.height / (slide.height);
+          this.container.height = this.height;
 
           if (measuredWidth < this.container.width) {
-            this.container.height = (sl.height) * newWidth / (sl.width);
-            this.container.width = measuredWidth;
+            this.container.height = (slide.height) * this.width / (slide.width);
+            this.container.width = this.width;
           }
         }
       }
@@ -246,11 +245,6 @@ package rioflashclient2.player {
     override public function get height():Number
     {
       return measuredHeight;
-    }
-
-    private function resize():void {
-      //this.container.width = 320;
-      //this.container.height = 240;
     }
 
     private function setupBusListeners():void {
