@@ -6,6 +6,7 @@ package rioflashclient2.player {
 
   import flash.events.Event;
   import flash.display.MovieClip;
+  import flash.display.Loader;
 
   import org.osmf.events.TimeEvent;
   import org.osmf.logging.Log;
@@ -23,14 +24,18 @@ package rioflashclient2.player {
 
   public class SlidePlayer extends MovieClip {
     private var logger:Logger = Log.getLogger('SlidePlayer');
+    private var loader:BulkLoader;
 
     private var lesson:Lesson;
     private var slides:Array;
+    private var currentSlide:Number = 0;
+    private var container:MovieClip;
     private var sync:Boolean = true;
     private var duration:Number = 0;
     private var videoPlayerCurrentTime:Number;
-    public var loader:BulkLoader;
-    private var firstLoaded:Boolean = false;
+
+    private var measuredWidth:Number;
+    private var measuredHeight:Number;
 
     public function SlidePlayer() {
       this.name = 'SlidePlayer';
@@ -39,22 +44,20 @@ package rioflashclient2.player {
     }
 
     private function init(e:Event=null):void {
-      setupInterface();
       setupBusListeners();
+      container = new MovieClip();
+      addChild(container);
+      resize();
     }
 
     private function onLoad(e:PlayerEvent):void {
       lesson = e.data.lesson;
-      duration = lesson.duration;
-      load(e.data.lesson);
-    }
-
-    public function load(lesson:Lesson):void {
       slides = lesson.slides;
-      loadMedia();
+      duration = lesson.duration;
+      load();
     }
 
-    public function loadMedia():void {
+    public function load():void {
       loader = new BulkLoader('slides');
       for ( var i:uint = 0; i< slides.length; i++) {
         var slide:Slide = slides[i];
@@ -68,17 +71,18 @@ package rioflashclient2.player {
       loader.start(1);
     }
 
-    public function showSlide(num:Number):void {
-      addChild(loader.getContent("slide_" + num).parent);
-    }
-
     public function onSingleItemLoaded(e:Event):void {
       trace("carregou");
     }
 
     public function onFirstItemLoaded(e:Event):void {
-      trace("carregou o primeiro");
       showSlide(0);
+      var sl:Loader = container.getChildByName("slide_0");
+      if (sl.width > sl.height) {
+        resizeContainer(measuredWidth, (sl.height * measuredWidth / sl.width));
+      } else {
+        resizeContainer((sl.width * measuredHeight / sl.height), measuredHeight);
+      }
     }
 
     public function onAllItemsLoaded(e:Event) : void {
@@ -86,46 +90,27 @@ package rioflashclient2.player {
     }
 
     public function onAllProgress(e:BulkProgressEvent) : void {
-      trace("Loaded" , e.itemsLoaded," of ",  e.itemsTotal);
-    }
-
-    public function setSize(newWidth:Number = 320, newHeight:Number = 240):void {
-      /*this.width = newWidth;
-            this.height = newHeight;*/
+      //trace("Loaded" , e.itemsLoaded," of ",  e.itemsTotal);
     }
 
     private function onFirstSlide(e:SlideEvent):void {
-      slideSeekTo(0)
+      changeSlideTo(0)
     }
 
     private function onLastSlide(e:SlideEvent):void {
-      slideSeekTo(slides.length - 1);
+      changeSlideTo(slides.length - 1);
     }
 
     private function onPreviousSlide(e:SlideEvent):void {
-      var current:Number = currentSlide();
-      if (current > 0) {
-        current--;
+      if (currentSlide > 0) {
+        changeSlideTo(currentSlide - 1);
       }
-      slideSeekTo(current)
     }
 
     private function onNextSlide(e:SlideEvent):void {
-      var current:Number = currentSlide();
-      if (current < (slides.length - 1)) {
-        current++;
+      if (currentSlide < (slides.length - 1)) {
+        changeSlideTo(currentSlide + 1);
       }
-      slideSeekTo(current);
-    }
-
-    private function slideSeekTo(index:Number):void {
-      var time:Number = slides[index].time
-      //seekTo(time);
-      EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
-    }
-
-    private function currentSlide():Number {
-      //return findNearestSlide(this.mediaPlayer.currentTime)
     }
 
     private function findNearestSlide(seekPosition:Number):Number {
@@ -151,27 +136,19 @@ package rioflashclient2.player {
       sync = e.slide.sync;
       if (sync) {
         var time:Number = slides[findNearestSlide(videoPlayerCurrentTime)].time
-        seekTo(time);
-      } else {
-        pause();
+        showSlideByPosition(time);
       }
     }
 
     private function onSeek(e:PlayerEvent):void {
-      var seekPercentage:Number = (e.data as Number);
-      if (seekPercentage <= 0) {
-        seekPercentage = 1 / duration;
-      }
-      var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
-      logger.info('Slide Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
-      seekTo(seekPosition);
-    }
-
-    private function onServerSeek(e:PlayerEvent):void {
       if (sync) {
-        var seekPosition:Number = (e.data as Number);
-        logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
-        seekTo(seekPosition);
+        var seekPercentage:Number = (e.data as Number);
+        if (seekPercentage <= 0) {
+          seekPercentage = 1 / duration;
+        }
+        var seekPosition:Number = calculatedSeekPositionGivenPercentage(seekPercentage);
+        logger.info('Slide Seeking to position {0} in seconds, given percentual {1}.', seekPosition, seekPercentage);
+        showSlideByPosition(seekPosition);
       }
     }
 
@@ -179,7 +156,7 @@ package rioflashclient2.player {
       if (sync) {
         var seekPosition:Number = e.data;
         logger.info('Slide Seeking to position {0} in seconds.', seekPosition);
-        seekTo(seekPosition);
+        showSlideByPosition(seekPosition);
       }
     }
 
@@ -188,25 +165,92 @@ package rioflashclient2.player {
         var cuePoint:CuePoint = event.marker as CuePoint;
         if (cuePoint.name.indexOf("Slide") != -1) {
           var slideNumber:Number = Number(cuePoint.name.substring(cuePoint.name.indexOf("_") + 1, cuePoint.name.length)) -1;
-          seekTo(slideNumber);
+          showSlide(slideNumber);
         }
       }
     }
 
-    private function seekTo(requestedSeekPosition:Number):void {
-      showSlide(requestedSeekPosition);
+    private function showSlideByPosition(requestedPosition:Number):void {
+      showSlide(findNearestSlide(requestedPosition));
+    }
+
+    private function changeSlideTo(index:Number):void {
+      var time:Number = slides[index].time
+      showSlide(index);
+      EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
+    }
+
+    public function showSlide(index:Number):void {
+      var sl:Loader = container.getChildByName("slide_" + currentSlide);
+      if (sl) {
+        container.removeChild(sl);
+      }
+      currentSlide = index;
+      container.addChild(slide(index));
+    }
+
+    private function slide(index:Number):Loader {
+      var sl:Loader = loader.getContent("slide_" + index).parent
+      sl.name = "slide_" + index;
+      return sl;
     }
 
     private function calculatedSeekPositionGivenPercentage(seekPercentage:Number):Number {
       return seekPercentage * duration;
     }
 
-    private function setupInterface():void {
-      resize();
+    public function setSize(newWidth:Number = 320, newHeight:Number = 240):void {
+      this.width = newWidth;
+      this.height = newHeight;
+      resizeContainer(newWidth, newHeight);
     }
 
-    private function resize(e:Event=null):void {
+    private function resizeContainer(newWidth:Number, newHeight:Number):void {
+      var sl:Loader = container.getChildByName("slide_" + currentSlide);
+      if (sl) {
+        if (sl.width > sl.height) {
+          this.container.height = (sl.height) * newWidth / (sl.width);
+          this.container.width = newWidth;
 
+          if (measuredHeight < this.container.height) {
+            this.container.width =  (sl.width) * newHeight / (sl.height);
+            this.container.height = measuredHeight;
+          }
+        } else {
+          this.container.width = (sl.width) * newHeight / (sl.height);
+          this.container.height = newHeight;
+
+          if (measuredWidth < this.container.width) {
+            this.container.height = (sl.height) * newWidth / (sl.width);
+            this.container.width = measuredWidth;
+          }
+        }
+      }
+    }
+
+    override public function set width(value:Number):void
+    {
+      measuredWidth = value;
+    }
+
+    override public function get width():Number
+    {
+      return measuredWidth;
+    }
+
+    override public function set height(value:Number):void
+    {
+      measuredHeight = value;
+    }
+
+    override public function get height():Number
+    {
+      return measuredHeight;
+    }
+
+    private function resize():void {
+      //this.container.width = 320;
+      //this.container.height = 240;
     }
 
     private function setupBusListeners():void {
@@ -214,7 +258,6 @@ package rioflashclient2.player {
       EventBus.addListener(PlayerEvent.SEEK, onSeek);
       EventBus.addListener(PlayerEvent.TOPICS_SEEK, onTopicsSeek);
       EventBus.addListener(PlayerEvent.DURATION_CHANGE, onDurationChange);
-      EventBus.addListener(PlayerEvent.PLAYAHEAD_TIME_CHANGED, onServerSeek);
 
       EventBus.addListener(TimeEvent.CURRENT_TIME_CHANGE, onCurrentTimeChange);
       EventBus.addListener(TimelineMetadataEvent.MARKER_TIME_REACHED, onSlideCuePoint);
