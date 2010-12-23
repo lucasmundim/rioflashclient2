@@ -109,6 +109,7 @@ package rioflashclient2.chrome.controlbar {
     public function load(lesson:Lesson):void {
       this.lesson = lesson;
       slides = lesson.slides;
+      updateSlideInfo(1);
     }
 
     private function onSeek(e:PlayerEvent):void {
