@@ -28,11 +28,14 @@ package rioflashclient2.player {
 
     private var lesson:Lesson;
     private var slides:Array;
-    private var currentSlideIndex:Number = 0;
+    private var currentSlideIndex:Number;
     private var container:MovieClip;
     private var sync:Boolean = true;
     private var duration:Number = 0;
     private var videoPlayerCurrentTime:Number;
+    private var requestedIndex:Number;
+    private var loading:Boolean = false;
+    private var dataLoaded:Boolean = false;
 
     private var measuredWidth:Number;
     private var measuredHeight:Number;
@@ -50,9 +53,11 @@ package rioflashclient2.player {
     }
 
     private function onLoad(e:PlayerEvent):void {
+      trace("loading slides");
       lesson = e.data.lesson;
       slides = lesson.slides;
       duration = lesson.duration;
+      dataLoaded = true;
       load();
     }
 
@@ -67,19 +72,22 @@ package rioflashclient2.player {
       loader.get("slide_0").addEventListener(Event.COMPLETE, onFirstItemLoaded);
       loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
       loader.addEventListener(BulkLoader.PROGRESS, onAllProgress);
+
+      trace("starting loading slides");
       loader.start(1);
     }
 
     public function onSingleItemLoaded(e:Event):void {
-      trace("carregou");
+      trace("1 more slide loaded");
     }
 
     public function onFirstItemLoaded(e:Event):void {
-      showSlide(0);
+      trace("first slide loaded");
+      addToContainer(0, true);
     }
 
     public function onAllItemsLoaded(e:Event) : void {
-      trace("foi tudo");
+      trace("all slides loaded");
     }
 
     public function onAllProgress(e:BulkProgressEvent) : void {
@@ -87,22 +95,30 @@ package rioflashclient2.player {
     }
 
     private function onFirstSlide(e:SlideEvent):void {
-      changeSlideTo(0)
+      if (dataLoaded) {
+        showSlide(0)
+      }
     }
 
     private function onLastSlide(e:SlideEvent):void {
-      changeSlideTo(slides.length - 1);
+      if (dataLoaded) {
+        showSlide(slides.length - 1);
+      }
     }
 
     private function onPreviousSlide(e:SlideEvent):void {
-      if (currentSlideIndex > 0) {
-        changeSlideTo(currentSlideIndex - 1);
+      if (dataLoaded) {
+        if (currentSlideIndex > 0) {
+          showSlide(currentSlideIndex - 1);
+        }
       }
     }
 
     private function onNextSlide(e:SlideEvent):void {
-      if (currentSlideIndex < (slides.length - 1)) {
-        changeSlideTo(currentSlideIndex + 1);
+      if (dataLoaded) {
+        if (currentSlideIndex < (slides.length - 1)) {
+          showSlide(currentSlideIndex + 1);
+        }
       }
     }
 
@@ -155,6 +171,7 @@ package rioflashclient2.player {
 
     private function onSlideCuePoint(event:TimelineMetadataEvent):void {
       if (sync) {
+        trace("slide cuepoint")
         var cuePoint:CuePoint = event.marker as CuePoint;
         if (cuePoint.name.indexOf("Slide") != -1) {
           var slideNumber:Number = Number(cuePoint.name.substring(cuePoint.name.indexOf("_") + 1, cuePoint.name.length)) -1;
@@ -167,28 +184,80 @@ package rioflashclient2.player {
       showSlide(findNearestSlide(requestedPosition));
     }
 
-    private function changeSlideTo(index:Number):void {
-      var time:Number = slides[index].time
-      showSlide(index);
-      EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
-    }
-
     private function currentSlide():Loader {
       return container.getChildByName("slide_" + currentSlideIndex);
     }
 
     public function showSlide(index:Number):void {
+      trace("START show slide");
+      if (currentSlideIndex != index && !loading) {
+        trace("will load slide");
+
+        clearContainer();
+
+        if (slideLoader(index)) {
+          trace("already loaded");
+
+          addToContainer(index);
+        } else {
+          trace("not loaded, loading");
+
+          if (sync) {
+            EventBus.dispatch(new PlayerEvent(PlayerEvent.PAUSE));
+          }
+
+          requestedIndex = index;
+          loading = true;
+          loader.get("slide_" + index).addEventListener(Event.COMPLETE, onRequestedSlideLoaded);
+        }
+      }
+      trace("END show slide")
+    }
+
+    private function addToContainer(index:Number, ignoreEvent:Boolean = false):void {
+      trace("START add to container");
+      clearContainer();
+      currentSlideIndex = index;
+      container.addChild(slideLoader(index));
+      resizeContainer();
+      if (!ignoreEvent) {
+        dispatchSlideChanged(index);
+      }
+      trace("END add to container");
+    }
+
+    private function dispatchSlideChanged(index:Number):void {
+      trace("dispatching slide changed")
+      var time:Number = slides[index].time;
+      EventBus.dispatch(new SlideEvent(SlideEvent.SLIDE_CHANGED, { slide: index, time: time }), EventBus.INPUT);
+    }
+
+    private function onRequestedSlideLoaded(e:Event):void {
+      trace("START requested slide loaded")
+      loading = false;
+      addToContainer(requestedIndex);
+      if (sync) {
+        EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY));
+      }
+      trace("END requested slide loaded")
+    }
+
+    private function clearContainer():void {
+      trace("START clear container");
       var slide:Loader = currentSlide();
       if (slide) {
         container.removeChild(slide);
       }
-      currentSlideIndex = index;
-      container.addChild(slideLoader(index));
-      resizeContainer();
+      trace("END clear container");
     }
 
     private function slideLoader(index:Number):Loader {
       var name:String = "slide_" + index;
+
+      if (loader.getContent(name) == null) {
+        return null;
+      }
+
       var slide:Loader = loader.getContent(name).parent
       slide.name = name;
       return slide;
@@ -205,6 +274,7 @@ package rioflashclient2.player {
     }
 
     private function resizeContainer():void {
+      trace("START resize container");
       var slide:Loader = currentSlide();
       if (slide) {
         if (slide.width > slide.height) {
@@ -225,6 +295,7 @@ package rioflashclient2.player {
           }
         }
       }
+      trace("END resize container");
     }
 
     override public function set width(value:Number):void
