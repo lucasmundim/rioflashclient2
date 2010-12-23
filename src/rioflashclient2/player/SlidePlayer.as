@@ -78,6 +78,7 @@ package rioflashclient2.player {
     }
 
     public function onSingleItemLoaded(e:Event):void {
+      trace(e.target.id);
       trace("1 more slide loaded");
     }
 
@@ -86,12 +87,12 @@ package rioflashclient2.player {
       addToContainer(0, true);
     }
 
-    public function onAllItemsLoaded(e:Event) : void {
+    public function onAllItemsLoaded(e:BulkProgressEvent) : void {
       trace("all slides loaded");
     }
 
     public function onAllProgress(e:BulkProgressEvent) : void {
-      //trace("Loaded" , e.itemsLoaded," of ",  e.itemsTotal);
+      //trace(e.loadingStatus());
     }
 
     private function onFirstSlide(e:SlideEvent):void {
