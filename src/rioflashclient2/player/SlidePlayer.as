@@ -208,11 +208,23 @@ package rioflashclient2.player {
           }
 
           requestedIndex = index;
+          repriorizeByIndex(requestedIndex);
           loading = true;
           loader.get("slide_" + index).addEventListener(Event.COMPLETE, onRequestedSlideLoaded);
         }
       }
       trace("END show slide")
+    }
+
+    private function repriorizeByIndex(index:Number):void {
+      loader.pauseAll();
+      for ( var i:uint = index; i< slides.length; i++) {
+        loader.changeItemPriority("slide_" + i, (slides.length - i + index));
+      }
+      for ( var j:uint = 0; j< index; j++) {
+        loader.changeItemPriority("slide_" + j, (slides.length - j - index));
+      }
+      loader.resumeAll();
     }
 
     private function addToContainer(index:Number, ignoreEvent:Boolean = false):void {
