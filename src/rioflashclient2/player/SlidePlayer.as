@@ -70,6 +70,7 @@ package rioflashclient2.player {
         loader.get("slide_" + i).addEventListener(Event.COMPLETE, onSingleItemLoaded);
       }
       loader.get("slide_0").addEventListener(Event.COMPLETE, onFirstItemLoaded);
+      loader.get("slide_1").addEventListener(Event.COMPLETE, onSecondItemLoaded);
       loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
       loader.addEventListener(BulkLoader.PROGRESS, onAllProgress);
 
@@ -85,6 +86,11 @@ package rioflashclient2.player {
     public function onFirstItemLoaded(e:Event):void {
       trace("first slide loaded");
       addToContainer(0, true);
+    }
+
+    public function onSecondItemLoaded(e:Event):void {
+      trace("second slide loaded, starting to play");
+      lesson.video().play();
     }
 
     public function onAllItemsLoaded(e:BulkProgressEvent) : void {
