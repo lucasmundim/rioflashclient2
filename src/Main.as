@@ -44,7 +44,7 @@ package {
   import rioflashclient2.player.SlidePlayer;
   import rioflashclient2.user.VolumeSettings;
 
-  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
+  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="800", height="600")]
   public class Main extends Sprite {
     public static const DEFAULT_VIDEO_WIDTH:Number = 320;
     public static const DEFAULT_VIDEO_HEIGHT:Number = 240;

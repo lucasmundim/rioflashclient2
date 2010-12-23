@@ -10,8 +10,8 @@ project_model :model do |m|
   m.language                = 'as3'
   m.compiler_gem_name       = 'sprout-flex4sdk-tool'
   m.background_color        = '#FFFFFF'
-  m.width                   = 640
-  m.height                  = 360
+  m.width                   = 800
+  m.height                  = 600
   # m.use_fdb               = true
   # m.use_fcsh              = true
   # m.preprocessor          = 'cpp -D__DEBUG=false -P - - | tail -c +3'
@@ -26,7 +26,7 @@ project_model :model do |m|
   # m.compiler_gem_version  = '>= 4.0.0'
   # m.source_path           << "#{m.lib_dir}/somelib"
   # m.libraries             << :corelib
-  
+
   m.source_path             << "#{m.lib_dir}/bulkloader-rev-282"
   m.library_path            << 'assets/player_assets.swc'
   m.library_path            << 'lib/OSMF.swc'
@@ -59,7 +59,7 @@ namespace :test do
     root_dir = File.expand_path(File.dirname(__FILE__))
     source_dir = File.join(root_dir, 'test', 'fixtures')
     symlink = File.join(root_dir, 'bin')
-    
+
     FileUtils.ln_sf source_dir, symlink
   end
 
