@@ -192,7 +192,7 @@ package rioflashclient2.player {
     }
 
     private function currentSlide():Loader {
-      return container.getChildByName("slide_" + currentSlideIndex);
+      return container.getChildByName("slide_" + currentSlideIndex) as Loader;
     }
 
     public function showSlide(index:Number):void {
