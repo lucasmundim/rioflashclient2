@@ -1,0 +1,317 @@
+﻿player_assets.swf Movie Report
+-------------------------------
+
+Metadata
+--------
+Bytes         Value
+----------    -----
+       579    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"> <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/"> <xmp:CreatorTool>Adobe Flash CS4 Professional</xmp:CreatorTool> <xmp:CreateDate>2010-04-08T12:26:50-07:00</xmp:CreateDate> <xmp:MetadataDate>2011-01-10T01:45:51-02:00</xmp:MetadataDate> <xmp:ModifyDate>2011-01-10T01:45:51-02:00</xmp:ModifyDate> </rdf:Description> <rdf:Description rdf:about="" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/" xmlns:stRef="http://ns.adobe.com/xap/1.0/sType/ResourceRef#"> <xmpMM:InstanceID>xmp.iid:F97F117407206811808380A611D339F4</xmpMM:InstanceID> <xmpMM:DocumentID>xmp.did:F97F117407206811808380A611D339F4</xmpMM:DocumentID> <xmpMM:OriginalDocumentID>xmp.did:EC60D38A4443DF11A16AD7DBF51874B5</xmpMM:OriginalDocumentID> <xmpMM:DerivedFrom rdf:parseType="Resource"> <stRef:instanceID>xmp.iid:F77F117407206811808380A611D339F4</stRef:instanceID> <stRef:documentID>xmp.did:6749797BD5A0DF118F3DAE1E1166889C</stRef:documentID> <stRef:originalDocumentID>xmp.did:EC60D38A4443DF11A16AD7DBF51874B5</stRef:originalDocumentID> </xmpMM:DerivedFrom> </rdf:Description> <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/"> <dc:format>application/x-shockwave-flash</dc:format> </rdf:Description> </rdf:RDF> 
+
+Frame #    Frame Bytes    Total Bytes    Scene
+-------    -----------    -----------    -----
+      1         473556         473556    Scene 1 (AS 3.0 Classes Export Frame)
+
+Scene      Shape Bytes    Text Bytes    ActionScript Bytes
+-------    -----------    ----------    ------------------
+Scene 1              0            76                 80598
+
+Symbol                                   Shape Bytes    Text Bytes    ActionScript Bytes
+-------------------------------------    -----------    ----------    ------------------
+HorizontalHandleIcon                               0             0                     0
+icon_handler                                       0             0                     0
+bar                                               22             0                     0
+bt_hit                                             0             0                     0
+bar_mc                                           339             0                     0
+BorderPane                                         0             0                     0
+ScrollBar                                          0             0                     0
+Component_avatar                                  18             0                     0
+control_bg                                        15             0                     0
+CheckBox                                           0             0                     0
+CheckBox_upIcon                                    0             0                     0
+CheckBox_overIcon                                  0             0                     0
+CheckBox_downIcon                                  0             0                     0
+CheckBox_disabledIcon                             80             0                     0
+CheckBox_selectedUpIcon                           60             0                     0
+CheckBox_selectedOverIcon                         61             0                     0
+CheckBox_selectedDownIcon                         61             0                     0
+CheckBox_selectedDisabledIcon                     62             0                     0
+focusRectSkin                                     57             0                     0
+CheckBox_selectedIcon                             20             0                     0
+List_skin                                         57             0                     0
+ScrollTrack_skin                                  43             0                     0
+ScrollArrowUp_downSkin                            62             0                     0
+ScrollArrowDown_downSkin                          61             0                     0
+ScrollThumb_downSkin                              92             0                     0
+ScrollArrowDown_overSkin                          62             0                     0
+ScrollThumb_overSkin                              91             0                     0
+ScrollArrowUp_overSkin                            62             0                     0
+ScrollArrowUp_upSkin                               0             0                     0
+ScrollThumb_upSkin                                92             0                     0
+ScrollArrowDown_upSkin                            62             0                     0
+ScrollArrowDown_disabledSkin                       0             0                     0
+ScrollArrowUp_disabledSkin                        62             0                     0
+ScrollBar_thumbIcon                               42             0                     0
+ScrollArrowDown_icon                               0             0                     0
+arrowIcon                                         24             0                     0
+ScrollArrowUp_icon                                 0             0                     0
+TreeCellRenderer_closedBranchIcon                 60             0                     0
+TreeCellRenderer_disabledSkin                     31             0                     0
+TreeCellRenderer_downSkin                         44             0                     0
+TreeCellRenderer_leafIcon                         23             0                     0
+TreeCellRenderer_openBranchIcon                   47             0                     0
+TreeCellRenderer_overSkin                          0             0                     0
+TreeCellRenderer_selectedDisabledSkin             66             0                     0
+TreeCellRenderer_selectedDownSkin                 44             0                     0
+TreeCellRenderer_selectedOverSkin                 44             0                     0
+TreeCellRenderer_selectedUpSkin                   34             0                     0
+TreeCellRenderer_upSkin                           53             0                     0
+finish_navigation_button                           0             0                     0
+first_navigation_button                            0             0                     0
+fullscreen_button                                  0             0                     0
+HBoxPane                                           0             0                     0
+Header                                             0            82                     0
+bgheader                                           0             0                     0
+Label                                              0             0                     0
+message_screen                                     0           252                     0
+errorScreenBackground                             18             0                     0
+next_navigation_button                             0             0                     0
+play_overlay                                       0             0                     0
+mc_nd                                              0             0                     0
+mc_bt_gr_play_seta                                16             0                     0
+nbPlay_mc                                          0             0                     0
+play_pause_button                                  0             0                     0
+play_stop_button                                   0             0                     0
+prev_navigation_button                             0             0                     0
+progress_bar                                       0             0                     0
+bullet                                             0             0                     0
+mc_progress_bar                                    0             0                     0
+mask_buffer_animation                             17             0                     0
+buffer                                             0             0                     0
+sbarra_mc                                         77             0                     0
+backgroundProgressBar                              0             0                     0
+reconnect                                          0            44                     0
+spinner                                           55             0                     0
+mc_load_brilho                                    53             0                     0
+Tree                                               0             0                     0
+volume_bar                                        17             0                     0
+mc_bt_volume_barra                                 0             0                     0
+mc_bt_volume_icone                                28             0                     0
+background                                        28             0                     0
+VBoxPane                                          36            35                     0
+alta_btn                                           0             0                     0
+auto_btn                                           0             0                     0
+baixa_btn                                          0             0                     0
+box_streams_quality                                0             0                     0
+buffer-linha                                       0             0                     0
+buffer_modulo                                      0             0                     0
+mc_nd copy                                         0             0                     0
+fullscreen_bar                                     0             0                     0
+fullscreen_button                                  0             0                     0
+mc_icone_atencao                                   0             0                     0
+mc_icone_atencao_base                              0             0                     0
+mc_icone_atencao_exclamacao                        0             0                     0
+mc_bt_base                                         0             0                     0
+mc_bt_base_tela_cheia                              0             0                     0
+mc_bt_fecha_tela_cheia                             0             0                     0
+mc_bt_gr_base                                      0             0                     0
+mc_bt_gr_brilho                                    0             0                     0
+mc_bt_pause_tracos                                 0             0                     0
+mc_bt_play_seta                                    0             0                     0
+mc_bt_stop_quadrado                                0             0                     0
+mc_bt_tela_cheia_seta                              0             0                     0
+mc_volume_drag                                    22             0                     0
+mc_volume_bar_fill                                16             0                     0
+mc_buffer_bar                                      0             0                     0
+mc_controller                                      0             0                     0
+mc_ico_pip                                         0             0                     0
+mc_ico_restaurar                                   0             0                     0
+mc_load_mask                                       0             0                     0
+mc_seek_bar                                        0             0                     0
+mc_seek_mask                                       0             0                     0
+mc_seek_mask_body                                  0             0                     0
+mc_seek_mask_corner                                0             0                     0
+mc_sombra_down                                     0             0                     0
+mc_volume_fill                                     0             0                     0
+media_btn                                          0             0                     0
+Path                                               0             0                     0
+quality                                            0             0                     0
+reconnect_mc                                       0             0                     0
+alpha                                              0             0                     0
+CheckBox                                           0             0                     0
+errorScreenSeparatorLine                           0             0                     0
+finish_navigation_button                           0             0                     0
+full_mc                                            0             0                     0
+next_navigation_button                             0             0                     0
+NavigationBar                                      0             0                     0
+ops                                                0             0                     0
+over_mc                                            0             0                     0
+overbutton_mc                                      0             0                     0
+overQualidade_btn                                  0             0                     0
+qualidade_mc                                       0             0                     0
+retrying                                           0             0                     0
+teste                                              0             0                     0
+waiting_room_message                               0             0                     0
+fl.core.ComponentShim                              0             0                     0
+TreeComponentShim                                  0             0                     0
+LayoutContainersComponentShim                      0             0                     0
+fl.controls.Button                                 0             0                     0
+fl.controls.List                                   0             0                     0
+
+Font Name            Bytes         Characters
+-----------------    ----------    ----------
+Helvetica                101220     !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƂƃƆƉƋƌƍƎƏƐƑƒƖƗƚƛƝƞƟƠơƦƧƨƩƮƯưƱƵƶƷƸƹƻǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯǰǱǲǳǴǵǷǸǹǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟȠȦȧȨȩȪȫȬȭȮȯȰȱȲȳȷȸȹȺȻȼȽȾɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏɐɑɔɛɡɪɵʃʊˆˇˉˊˋˍː˘˙˚˛˜˝ʹ͵ͺͻͼͽ;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϲЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяѐёђѓєѕіїјљњћќѝўџѢѣѤѥѦѧѨѩѪѫѬѭѰѱѲѳѴѵѶѷѸѹҐґҒғҖҗҘҙҚқҜҝҠҡҢңҤҥҪҫҬҭҮүҰұҲҳҴҵҶҷҸҹҺһҼҽҾҿӀӁӂӇӈ฿ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿẀẁẂẃẄẅẆẇẈẉẊẋẌẍẎẏẐẑẒẓẔẕẖẗẘẙẚẛẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹἀἁἂἃἄἅἆἇἈἉἊἋἌἍἎἏἐἑἒἓἔἕἘἙἚἛἜἝἠἡἢἣἤἥἦἧἨἩἪἫἬἭἮἯἰἱἲἳἴἵἶἷἸἹἺἻἼἽἾἿὀὁὂὃὄὅὈὉὊὋὌὍὐὑὒὓὔὕὖὗὙὛὝὟὠὡὢὣὤὥὦὧὨὩὪὫὬὭὮὯὰάὲέὴήὶίὸόὺύὼώᾀᾁᾂᾃᾄᾅᾆᾇᾈᾉᾊᾋᾌᾍᾎᾏᾐᾑᾒᾓᾔᾕᾖᾗᾘᾙᾚᾛᾜᾝᾞᾟᾠᾡᾢᾣᾤᾥᾦᾧᾨᾩᾪᾫᾬᾭᾮᾯᾰᾱᾲᾳᾴᾶᾷᾸᾹᾺΆᾼ᾽ι᾿῀῁ῂῃῄῆῇῈΈῊΉῌ῍῎῏ῐῑῒΐῖῗῘῙῚΊ῝῞῟ῠῡῢΰῤῥῦῧῨῩῪΎῬ῭΅`ῲῳῴῶῷῸΌῺΏῼ´῾           ​‌‍‎‏‐‑‒–—―‖‗‘’‚‛“”„‟†‡•‣․‥…‧  ‪‫‬‭‮ ‰‱′″‴‵‶‷‸‹›※‼‽‾‿⁀⁁⁂⁃⁄⁅⁆⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁒⁓⁔⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞ ⁠⁡⁢⁣⁪⁫⁬⁭⁮⁯⁴ⁿ₁₂₃₄₠₡₢₣₤₥₦₧₨₩₫€₭₮₱₲₳₴₵℀℁ℂ℃℄℅℆℉ℍ№℗ℙℚ℠℡™Ω℧℩KÅℲ℺℻⅁⅂⅃⅄⅋⅍ⅎ⅟ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫⅬⅭⅮⅯⅰⅱⅲⅳⅴⅵⅶⅷⅸⅹⅺⅻⅼⅽⅾⅿↃ∂∇∏∑√∞∫≠≤≥─━│┃┌┏┐┓└┗┘┛█♪꜀꜁꜂꜃꜄꜅꜆꜇꜈꜉꜊꜋꜌꜍꜎꜏꜐꜑꜒꜓꜔꜕꜖ꜗꜘꜙꜚ꜠꜡ﾡﾤﾧ
+Arial-BoldMT Bold        134967     !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯǰǱǲǳǴǵǶǷǸǹǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏɐɑɔɛɡɪɵʃʊˆˇˉˊˋˍː˘˙˚˛˜˝ʹ͵ͺͻͼͽ;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϐϑϒϓϔϕϖϗϘϙϚϛϜϝϞϟϠϡϢϣϤϥϦϧϨϩϪϫϬϭϮϯϰϱϲЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяѐёђѓєѕіїјљњћќѝўџѠѡѢѣѤѥѦѧѨѩѪѫѬѭѮѯѰѱѲѳѴѵѶѷѸѹѺѻѼѽѾѿҀҁ҂҃҄҅҆҈҉ҊҋҌҍҎҏҐґҒғҔҕҖҗҘҙҚқҜҝҞҟҠҡҢңҤҥҦҧҨҩҪҫҬҭҮүҰұҲҳҴҵҶҷҸҹҺһҼҽҾҿӀӁӂӃӄӅӆӇӈӉӊӋӌӍӎְֱֲֳִֵֶַָֹֺֻּֽ־ֿ׀ׁׂ׃ׅׄ׆ׇאבגדהוזחטיךכלםמןנסעףפץצקרשתװױײ׳״؀؁؂؃؋،؍؎؏ؐؑؒؓؔؕ؛؞؟ءآأؤإئابةتثجحخدذرزسشصضطظعغـفقكلمنهوىيًٌٍَُِّْٕٖٜٓٔٗ٘ٙٚٛٝٞ٠١٢٣٤٥٦٧٨٩٪٫٬٭ٮٯٰٱٲٳٴٵٶٷٸٹٺٻټٽپٿڀځڂڃڄڅچڇڈډڊڋڌڍڎڏڐڑڒړڔڕږڗژڙښڛڜڝڞڟڠڡڢڣڤڥڦڧڨکڪګڬڭڮگڰڱڲڳڴڵڶڷڸڹںڻڼڽھڿۀہۂۃۄۅۆۇۈۉۊۋیۍێۏېۑےۓ۔ەۖۗۘۙۚۛۜ۝۞ۣ۟۠ۡۢۤۥۦۧۨ۩۪ۭ۫۬ۮۯ۰۱۲۳۴۵۶۷۸۹ۺۻۼ۽۾ۿḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿẀẁẂẃẄẅẆẇẈẉẊẋẌẍẎẏẐẑẒẓẔẕẖẗẘẙẚẛẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹἀἁἂἃἄἅἆἇἈἉἊἋἌἍἎἏἐἑἒἓἔἕἘἙἚἛἜἝἠἡἢἣἤἥἦἧἨἩἪἫἬἭἮἯἰἱἲἳἴἵἶἷἸἹἺἻἼἽἾἿὀὁὂὃὄὅὈὉὊὋὌὍὐὑὒὓὔὕὖὗὙὛὝὟὠὡὢὣὤὥὦὧὨὩὪὫὬὭὮὯὰάὲέὴήὶίὸόὺύὼώᾀᾁᾂᾃᾄᾅᾆᾇᾈᾉᾊᾋᾌᾍᾎᾏᾐᾑᾒᾓᾔᾕᾖᾗᾘᾙᾚᾛᾜᾝᾞᾟᾠᾡᾢᾣᾤᾥᾦᾧᾨᾩᾪᾫᾬᾭᾮᾯᾰᾱᾲᾳᾴᾶᾷᾸᾹᾺΆᾼ᾽ι᾿῀῁ῂῃῄῆῇῈΈῊΉῌ῍῎῏ῐῑῒΐῖῗῘῙῚΊ῝῞῟ῠῡῢΰῤῥῦῧῨῩῪΎῬ῭΅`ῲῳῴῶῷῸΌῺΏῼ´῾           ​‌‍‎‏‒–—―‖‗‘’‚‛“”„‟†‡•…‪‫‬‭‮‰′″‴‹›‼‾⁄⁞⁪⁫⁬⁭⁮⁯ⁿ₠₡₢₣₤₥₦₧₨₩₪₫€₭₮₯₰₱₲₳₴₵℅ℓ№℗™Ω℮⅍ⅎ⅓⅔⅛⅜⅝⅞←↑→↓↔↕∂∏∑∕√∞∟∩∫≠≡≤≥─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬▄█▌▒▓■□▲▼○●♀♂♠♣♥♪♯ꜗꜘꜙꜚ꜠꜡יִﬞײַﬠﬡﬢﬣﬤﬥﬦﬧﬨ﬩שׁשׂשּׁשּׂאַאָאּבּגּדּהּוּזּטּיּךּכּלּמּנּסּףּפּצּקּרּשּתּוֹבֿכֿפֿﭏﭐﭑﭒﭓﭔﭕﭖﭗﭘﭙﭚﭛﭜﭝﭞﭟﭠﭡﭢﭣﭤﭥﭦﭧﭨﭩﭪﭫﭬﭭﭮﭯﭰﭱﭲﭳﭴﭵﭶﭷﭸﭹﭺﭻﭼﭽﭾﭿﮀﮁﮂﮃﮄﮅﮆﮇﮈﮉﮊﮋﮌﮍﮎﮏﮐﮑﮒﮓﮔﮕﮖﮗﮘﮙﮚﮛﮜﮝﮞﮟﮠﮡﮢﮣﮤﮥﮦﮧﮨﮩﮪﮫﮬﮭﮮﮯﮰﮱﯓﯔﯕﯖﯗﯘﯙﯚﯛﯜﯝﯞﯟﯠﯡﯢﯣﯤﯥﯦﯧﯨﯩﯼﯽﯾﯿﱞﱟﱠﱡﱢ﴾﴿ﷲ﷼ﺀﺁﺂﺃﺄﺅﺆﺇﺈﺉﺊﺋﺌﺍﺎﺏﺐﺑﺒﺓﺔﺕﺖﺗﺘﺙﺚﺛﺜﺝﺞﺟﺠﺡﺢﺣﺤﺥﺦﺧﺨﺩﺪﺫﺬﺭﺮﺯﺰﺱﺲﺳﺴﺵﺶﺷﺸﺹﺺﺻﺼﺽﺾﺿﻀﻁﻂﻃﻄﻅﻆﻇﻈﻉﻊﻋﻌﻍﻎﻏﻐﻑﻒﻓﻔﻕﻖﻗﻘﻙﻚﻛﻜﻝﻞﻟﻠﻡﻢﻣﻤﻥﻦﻧﻨﻩﻪﻫﻬﻭﻮﻯﻰﻱﻲﻳﻴﻵﻶﻷﻸﻹﻺﻻﻼ￼
+ArialMT                  136052     !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠơƢƣƤƥƦƧƨƩƪƫƬƭƮƯưƱƲƳƴƵƶƷƸƹƺƻƼƽƾƿǀǁǂǃǄǅǆǇǈǉǊǋǌǍǎǏǐǑǒǓǔǕǖǗǘǙǚǛǜǝǞǟǠǡǢǣǤǥǦǧǨǩǪǫǬǭǮǯǰǱǲǳǴǵǶǷǸǹǺǻǼǽǾǿȀȁȂȃȄȅȆȇȈȉȊȋȌȍȎȏȐȑȒȓȔȕȖȗȘșȚțȜȝȞȟȠȡȢȣȤȥȦȧȨȩȪȫȬȭȮȯȰȱȲȳȴȵȶȷȸȹȺȻȼȽȾȿɀɁɂɃɄɅɆɇɈɉɊɋɌɍɎɏɐɑɔɛɡɪɵʃʊˆˇˉˊˋˍː˘˙˚˛˜˝ʹ͵ͺͻͼͽ;΄΅Ά·ΈΉΊΌΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώϐϑϒϓϔϕϖϗϘϙϚϛϜϝϞϟϠϡϢϣϤϥϦϧϨϩϪϫϬϭϮϯϰϱϲЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяѐёђѓєѕіїјљњћќѝўџѠѡѢѣѤѥѦѧѨѩѪѫѬѭѮѯѰѱѲѳѴѵѶѷѸѹѺѻѼѽѾѿҀҁ҂҃҄҅҆҈҉ҊҋҌҍҎҏҐґҒғҔҕҖҗҘҙҚқҜҝҞҟҠҡҢңҤҥҦҧҨҩҪҫҬҭҮүҰұҲҳҴҵҶҷҸҹҺһҼҽҾҿӀӁӂӃӄӅӆӇӈӉӊӋӌӍӎְֱֲֳִֵֶַָֹֺֻּֽ־ֿ׀ׁׂ׃ׅׄ׆ׇאבגדהוזחטיךכלםמןנסעףפץצקרשתװױײ׳״؀؁؂؃؋،؍؎؏ؐؑؒؓؔؕ؛؞؟ءآأؤإئابةتثجحخدذرزسشصضطظعغـفقكلمنهوىيًٌٍَُِّْٕٖٜٓٔٗ٘ٙٚٛٝٞ٠١٢٣٤٥٦٧٨٩٪٫٬٭ٮٯٰٱٲٳٴٵٶٷٸٹٺٻټٽپٿڀځڂڃڄڅچڇڈډڊڋڌڍڎڏڐڑڒړڔڕږڗژڙښڛڜڝڞڟڠڡڢڣڤڥڦڧڨکڪګڬڭڮگڰڱڲڳڴڵڶڷڸڹںڻڼڽھڿۀہۂۃۄۅۆۇۈۉۊۋیۍێۏېۑےۓ۔ەۖۗۘۙۚۛۜ۝۞ۣ۟۠ۡۢۤۥۦۧۨ۩۪ۭ۫۬ۮۯ۰۱۲۳۴۵۶۷۸۹ۺۻۼ۽۾ۿḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿẀẁẂẃẄẅẆẇẈẉẊẋẌẍẎẏẐẑẒẓẔẕẖẗẘẙẚẛẠạẢảẤấẦầẨẩẪẫẬậẮắẰằẲẳẴẵẶặẸẹẺẻẼẽẾếỀềỂểỄễỆệỈỉỊịỌọỎỏỐốỒồỔổỖỗỘộỚớỜờỞởỠỡỢợỤụỦủỨứỪừỬửỮữỰựỲỳỴỵỶỷỸỹἀἁἂἃἄἅἆἇἈἉἊἋἌἍἎἏἐἑἒἓἔἕἘἙἚἛἜἝἠἡἢἣἤἥἦἧἨἩἪἫἬἭἮἯἰἱἲἳἴἵἶἷἸἹἺἻἼἽἾἿὀὁὂὃὄὅὈὉὊὋὌὍὐὑὒὓὔὕὖὗὙὛὝὟὠὡὢὣὤὥὦὧὨὩὪὫὬὭὮὯὰάὲέὴήὶίὸόὺύὼώᾀᾁᾂᾃᾄᾅᾆᾇᾈᾉᾊᾋᾌᾍᾎᾏᾐᾑᾒᾓᾔᾕᾖᾗᾘᾙᾚᾛᾜᾝᾞᾟᾠᾡᾢᾣᾤᾥᾦᾧᾨᾩᾪᾫᾬᾭᾮᾯᾰᾱᾲᾳᾴᾶᾷᾸᾹᾺΆᾼ᾽ι᾿῀῁ῂῃῄῆῇῈΈῊΉῌ῍῎῏ῐῑῒΐῖῗῘῙῚΊ῝῞῟ῠῡῢΰῤῥῦῧῨῩῪΎῬ῭΅`ῲῳῴῶῷῸΌῺΏῼ´῾           ​‌‍‎‏‒–—―‖‗‘’‚‛“”„‟†‡•…‪‫‬‭‮‰′″‴‹›‼‾⁄⁞⁪⁫⁬⁭⁮⁯ⁿ₠₡₢₣₤₥₦₧₨₩₪₫€₭₮₯₰₱₲₳₴₵℅ℓ№℗™Ω℮⅍ⅎ⅓⅔⅛⅜⅝⅞←↑→↓↔↕∂∏∑∕√∞∟∩∫≠≡≤≥─│┌┐└┘├┤┬┴┼═║╒╓╔╕╖╗╘╙╚╛╜╝╞╟╠╡╢╣╤╥╦╧╨╩╪╫╬▄█▌▒▓■□▲▼○●♀♂♠♣♥♪♯ꜗꜘꜙꜚ꜠꜡יִﬞײַﬠﬡﬢﬣﬤﬥﬦﬧﬨ﬩שׁשׂשּׁשּׂאַאָאּבּגּדּהּוּזּטּיּךּכּלּמּנּסּףּפּצּקּרּשּתּוֹבֿכֿפֿﭏﭐﭑﭒﭓﭔﭕﭖﭗﭘﭙﭚﭛﭜﭝﭞﭟﭠﭡﭢﭣﭤﭥﭦﭧﭨﭩﭪﭫﭬﭭﭮﭯﭰﭱﭲﭳﭴﭵﭶﭷﭸﭹﭺﭻﭼﭽﭾﭿﮀﮁﮂﮃﮄﮅﮆﮇﮈﮉﮊﮋﮌﮍﮎﮏﮐﮑﮒﮓﮔﮕﮖﮗﮘﮙﮚﮛﮜﮝﮞﮟﮠﮡﮢﮣﮤﮥﮦﮧﮨﮩﮪﮫﮬﮭﮮﮯﮰﮱﯓﯔﯕﯖﯗﯘﯙﯚﯛﯜﯝﯞﯟﯠﯡﯢﯣﯤﯥﯦﯧﯨﯩﯼﯽﯾﯿﱞﱟﱠﱡﱢ﴾﴿ﷲ﷼ﺀﺁﺂﺃﺄﺅﺆﺇﺈﺉﺊﺋﺌﺍﺎﺏﺐﺑﺒﺓﺔﺕﺖﺗﺘﺙﺚﺛﺜﺝﺞﺟﺠﺡﺢﺣﺤﺥﺦﺧﺨﺩﺪﺫﺬﺭﺮﺯﺰﺱﺲﺳﺴﺵﺶﺷﺸﺹﺺﺻﺼﺽﺾﺿﻀﻁﻂﻃﻄﻅﻆﻇﻈﻉﻊﻋﻌﻍﻎﻏﻐﻑﻒﻓﻔﻕﻖﻗﻘﻙﻚﻛﻜﻝﻞﻟﻠﻡﻢﻣﻤﻥﻦﻧﻨﻩﻪﻫﻬﻭﻮﻯﻰﻱﻲﻳﻴﻵﻶﻷﻸﻹﻺﻻﻼ￼
+
+ActionScript Bytes    Location
+------------------    --------
+               299    Scene 1:Frame 1:fl.managers.IFocusManagerComponent
+               447    Scene 1:Frame 1:fl.managers.IFocusManager
+               337    Scene 1:Frame 1:fl.core.InvalidationType
+               343    Scene 1:Frame 1:fl.controls.listClasses.ICellRenderer
+               281    Scene 1:Frame 1:fl.data.SimpleCollectionItem
+               490    Scene 1:Frame 1:com.yahoo.astra.fl.controls.treeClasses.TNode
+              1416    Scene 1:Frame 1:fl.managers.StyleManager
+               238    Scene 1:Frame 1:fl.controls.ScrollBarDirection
+               233    Scene 1:Frame 1:fl.controls.ScrollPolicy
+               268    Scene 1:Frame 1:fl.controls.ButtonLabelPlacement
+               386    Scene 1:Frame 1:com.yahoo.astra.utils.NumberUtil
+               880    Scene 1:Frame 1:com.yahoo.astra.fl.utils.UIComponentUtil
+               863    Scene 1:Frame 1:com.yahoo.astra.layout.LayoutManager
+               345    Scene 1:Frame 1:fl.events.DataChangeType
+               446    Scene 1:Frame 1:fl.controls.listClasses.ListData
+               231    Scene 1:Frame 1:com.yahoo.astra.layout.modes.VerticalAlignment
+               235    Scene 1:Frame 1:com.yahoo.astra.layout.modes.HorizontalAlignment
+               236    Scene 1:Frame 1:fl.managers.IFocusManagerGroup
+               578    Scene 1:Frame 1:com.yahoo.astra.utils.InstanceFactory
+               267    Scene 1:Frame 1:com.yahoo.astra.layout.modes.BorderConstraints
+               515    Scene 1:Frame 1:com.yahoo.astra.utils.DisplayObjectUtil
+              1618    Scene 1:Frame 1:com.yahoo.astra.layout.modes.PercentageSizeUtil
+               343    Scene 1:Frame 1:com.yahoo.astra.layout.modes.LayoutModeUtil
+               111    Scene 1:Frame 1:Arial
+               112    Scene 1:Frame 1:Arial15
+               112    Scene 1:Frame 1:Arial20
+               111    Scene 1:Frame 1:VAG20
+               111    Scene 1:Frame 1:VAG42
+               197    Scene 1:Frame 1:com.yahoo.astra.layout.modes.ILayoutMode
+               284    Scene 1:Frame 1:com.yahoo.astra.layout.ILayoutContainer
+               438    Scene 1:Frame 1:fl.events.ComponentEvent
+               424    Scene 1:Frame 1:fl.events.ScrollEvent
+               257    Scene 1:Frame 1:com.yahoo.astra.layout.events.LayoutEvent
+               528    Scene 1:Frame 1:fl.events.DataChangeEvent
+               562    Scene 1:Frame 1:fl.events.ListEvent
+               344    Scene 1:Frame 1:com.yahoo.astra.fl.events.TreeEvent
+              4079    Scene 1:Frame 1:fl.managers.FocusManager
+              1161    Scene 1:Frame 1:com.yahoo.astra.fl.controls.treeClasses.BranchNode
+               568    Scene 1:Frame 1:com.yahoo.astra.fl.controls.treeClasses.LeafNode
+              1808    Scene 1:Frame 1:fl.data.DataProvider
+               245    Scene 1:Frame 1:com.yahoo.astra.layout.modes.IAdvancedLayoutMode
+               402    Scene 1:Frame 1:com.yahoo.astra.fl.controls.treeClasses.RootNode
+               888    Scene 1:Frame 1:com.yahoo.astra.fl.controls.treeClasses.TreeDataProvider
+              1125    Scene 1:Frame 1:com.yahoo.astra.layout.modes.BaseLayoutMode
+              2035    Scene 1:Frame 1:com.yahoo.astra.layout.modes.BorderLayout
+              1660    Scene 1:Frame 1:com.yahoo.astra.layout.modes.BoxLayout
+              4462    Scene 1:Frame 1:fl.core.UIComponent
+              1559    Scene 1:Frame 1:com.yahoo.astra.layout.LayoutContainer
+               191    Scene 1:Frame 1:CheckBox_disabledIcon
+               187    Scene 1:Frame 1:CheckBox_downIcon
+               187    Scene 1:Frame 1:CheckBox_overIcon
+               198    Scene 1:Frame 1:CheckBox_selectedDisabledIcon
+               194    Scene 1:Frame 1:CheckBox_selectedDownIcon
+               194    Scene 1:Frame 1:CheckBox_selectedOverIcon
+               192    Scene 1:Frame 1:CheckBox_selectedUpIcon
+               185    Scene 1:Frame 1:CheckBox_upIcon
+               189    Scene 1:Frame 1:LayoutContainersComponentShim
+               180    Scene 1:Frame 1:List_skin
+               197    Scene 1:Frame 1:ScrollArrowDown_disabledSkin
+               193    Scene 1:Frame 1:ScrollArrowDown_downSkin
+               193    Scene 1:Frame 1:ScrollArrowDown_overSkin
+               191    Scene 1:Frame 1:ScrollArrowDown_upSkin
+               195    Scene 1:Frame 1:ScrollArrowUp_disabledSkin
+               191    Scene 1:Frame 1:ScrollArrowUp_downSkin
+               191    Scene 1:Frame 1:ScrollArrowUp_overSkin
+               190    Scene 1:Frame 1:ScrollArrowUp_upSkin
+               189    Scene 1:Frame 1:ScrollBar_thumbIcon
+               190    Scene 1:Frame 1:ScrollThumb_downSkin
+               190    Scene 1:Frame 1:ScrollThumb_overSkin
+               188    Scene 1:Frame 1:ScrollThumb_upSkin
+               186    Scene 1:Frame 1:ScrollTrack_skin
+               201    Scene 1:Frame 1:TreeCellRenderer_closedBranchIcon
+               198    Scene 1:Frame 1:TreeCellRenderer_disabledSkin
+               194    Scene 1:Frame 1:TreeCellRenderer_downSkin
+               194    Scene 1:Frame 1:TreeCellRenderer_leafIcon
+               200    Scene 1:Frame 1:TreeCellRenderer_openBranchIcon
+               194    Scene 1:Frame 1:TreeCellRenderer_overSkin
+               205    Scene 1:Frame 1:TreeCellRenderer_selectedDisabledSkin
+               201    Scene 1:Frame 1:TreeCellRenderer_selectedDownSkin
+               201    Scene 1:Frame 1:TreeCellRenderer_selectedOverSkin
+               200    Scene 1:Frame 1:TreeCellRenderer_selectedUpSkin
+               192    Scene 1:Frame 1:TreeCellRenderer_upSkin
+               178    Scene 1:Frame 1:TreeComponentShim
+               207    Scene 1:Frame 1:fl.core.ComponentShim
+               183    Scene 1:Frame 1:focusRectSkin
+               890    Scene 1:Frame 1:player_assets_fla.MainTimeline
+               233    Scene 1:Frame 1:rioflashclient2.assets.ControlBarBackground
+               216    Scene 1:Frame 1:rioflashclient2.assets.ControlBg
+               235    Scene 1:Frame 1:rioflashclient2.assets.FullScreenButtonAsset
+               247    Scene 1:Frame 1:rioflashclient2.assets.Header
+               252    Scene 1:Frame 1:rioflashclient2.assets.HorizontalHandleIcon
+               287    Scene 1:Frame 1:rioflashclient2.assets.MessageScreen
+               234    Scene 1:Frame 1:rioflashclient2.assets.NavigationFinishButton
+               232    Scene 1:Frame 1:rioflashclient2.assets.NavigationFirstButton
+               231    Scene 1:Frame 1:rioflashclient2.assets.NavigationNextButton
+               231    Scene 1:Frame 1:rioflashclient2.assets.NavigationPrevButton
+               289    Scene 1:Frame 1:rioflashclient2.assets.PlayOverlay
+               233    Scene 1:Frame 1:rioflashclient2.assets.PlayPauseButtonAsset
+               230    Scene 1:Frame 1:rioflashclient2.assets.PlayStopButtonAsset
+               320    Scene 1:Frame 1:rioflashclient2.assets.ProgressBarAsset
+               249    Scene 1:Frame 1:rioflashclient2.assets.ReconnectItem
+               273    Scene 1:Frame 1:rioflashclient2.assets.Spinner
+               284    Scene 1:Frame 1:rioflashclient2.assets.VolumeButtonAsset
+              1631    Scene 1:Frame 1:fl.controls.Label
+              2948    Scene 1:Frame 1:fl.controls.ScrollBar
+              1655    Scene 1:Frame 1:fl.controls.BaseButton
+              3276    Scene 1:Frame 1:fl.containers.BaseScrollPane
+              2595    Scene 1:Frame 1:fl.controls.LabelButton
+              2813    Scene 1:Frame 1:com.yahoo.astra.fl.containers.layoutClasses.BaseLayoutPane
+              4673    Scene 1:Frame 1:fl.controls.SelectableList
+              1272    Scene 1:Frame 1:fl.controls.CheckBox
+              1844    Scene 1:Frame 1:com.yahoo.astra.fl.controls.treeClasses.TreeCellRenderer
+              1086    Scene 1:Frame 1:fl.controls.listClasses.CellRenderer
+               937    Scene 1:Frame 1:fl.controls.Button
+              1277    Scene 1:Frame 1:com.yahoo.astra.fl.containers.layoutClasses.AdvancedLayoutPane
+              3379    Scene 1:Frame 1:fl.controls.List
+               588    Scene 1:Frame 1:com.yahoo.astra.fl.containers.BorderPane
+               823    Scene 1:Frame 1:com.yahoo.astra.fl.containers.BoxPane
+              1970    Scene 1:Frame 1:com.yahoo.astra.fl.controls.Tree
+               329    Scene 1:Frame 1:com.yahoo.astra.fl.containers.HBoxPane
+               329    Scene 1:Frame 1:com.yahoo.astra.fl.containers.VBoxPane
+
+Bitmap                       Compressed    Original      Compression
+-------------------------    ----------    ----------    -----------
+barra_top                           608        167656    JPEG Quality=80
+back.png                            684          2500    Lossless
+back_over.png                       641          2500    Lossless
+first.png                           676          2500    Lossless
+first_over.png                      640          2500    Lossless
+last.png copy                       677          2500    Lossless
+last_over.png copy                  640          2500    Lossless
+play.png                            684          2500    Lossless
+play_over.png                       640          2500    Lossless
+pegador_size1                       145            64    JPEG Quality=80
+pegador_size2                       145            64    JPEG Quality=80
+pegador_size3                       145            64    JPEG Quality=80
+bot_play                            344          2500    JPEG Quality=80
+play.png copy                       684          2500    Lossless
+pause.png                           674          2500    Lossless
+pause_over.png copy 2               632          2500    Lossless
+bullet.png                          432          1764    Lossless
+nbPlay.png                         1088         45396    Lossless
+fullscreen_close.png                563          2500    Lossless
+fullscreen_close_over.png           579          2500    Lossless
+fullscreen_open.png                 698          2500    Lossless
+fullscreen_open_over.png            682          2500    Lossless
+
+
+
+
