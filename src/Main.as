@@ -44,7 +44,7 @@ package {
   import rioflashclient2.player.SlidePlayer;
   import rioflashclient2.user.VolumeSettings;
 
-  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="800", height="600")]
+  [SWF(backgroundColor="0xFFFFFF", frameRate="30", width="1024", height="768")]
   public class Main extends Sprite {
     public static const DEFAULT_VIDEO_WIDTH:Number = 320;
     public static const DEFAULT_VIDEO_HEIGHT:Number = 240;
@@ -288,7 +288,14 @@ package {
 
     private function onLessonResourcesLoaded(e:LessonEvent):void {
       header.txtHeader.condenseWhite = true;
-      header.txtHeader.htmlText = "<b>Disciplina:</b>" + e.lesson.grad_program + " - <b>Aula:</b> " + e.lesson.course + " - <b>Professor: </b>" + e.lesson.professor;
+      header.txtHeader.htmlText = getFormatedTitle(e.lesson);
+    }
+    
+    private function getFormatedTitle(lesson:Object, limit:Number = 30):String{
+      var program:String = lesson.grad_program.length > limit ? lesson.grad_program.substring(0, limit)+"..." : lesson.grad_program;
+      var course:String = lesson.course.length > limit ? lesson.course.substring(0, limit)+"..." : lesson.course;
+      var professor:String = lesson.professor.length > limit ? lesson.professor.substring(0, limit)+"..." : lesson.professor;
+      return "<b>Disciplina:</b>" + program  + " - <b>Aula:</b> " + course + " - <b>Professor: </b>" + professor;
     }
   }
 }

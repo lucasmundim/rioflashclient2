@@ -178,7 +178,10 @@ package rioflashclient2.configuration {
     }
 
     private function setupBaseRioServerURL():void {
-      var xmlfile:String = rawParameters.xmlfile || 'http://roxo.no-ip.com:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml';
+      //http://edad.rnp.br/rioflashclient_test.php?xmlfile=/cederj/treinamento/parte2/cederj_treinamento_parte2.xml
+      //http://edad.rnp.br/rioflashclient_test.php?xmlfile=/cederj_fisica/a_resistencia_do_ar/a_resistencia_do_ar.xml
+      var xmlfile:String = rawParameters.xmlfile || 'http://edad.rnp.br/redirect.rio?file=/cederj/treinamento/parte2/cederj_treinamento_parte2.xml';
+      //'http://roxo.no-ip.com:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml';
       //xmlfile = "http://roxo.no-ip.com:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml";
       baseRioServerURL = xmlfile.slice(0, xmlfile.lastIndexOf('/') + 1);
       lessonXML = xmlfile.slice(xmlfile.lastIndexOf('/') + 1, xmlfile.length);

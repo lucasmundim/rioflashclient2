@@ -7,7 +7,7 @@ package rioflashclient2.player {
   import flash.events.Event;
   import flash.display.MovieClip;
   import flash.display.Loader;
-
+  import flash.geom.Rectangle;
   import org.osmf.events.TimeEvent;
   import org.osmf.logging.Log;
   import org.osmf.logging.Logger;
@@ -21,7 +21,7 @@ package rioflashclient2.player {
   import rioflashclient2.model.Lesson;
   import rioflashclient2.model.Slide;
   import rioflashclient2.model.Video;
-
+  
   public class SlidePlayer extends MovieClip {
     private var logger:Logger = Log.getLogger('SlidePlayer');
     private var loader:BulkLoader;
@@ -70,7 +70,7 @@ package rioflashclient2.player {
         loader.get("slide_" + i).addEventListener(Event.COMPLETE, onSingleItemLoaded);
       }
       loader.get("slide_0").addEventListener(Event.COMPLETE, onFirstItemLoaded);
-      loader.get("slide_1").addEventListener(Event.COMPLETE, onSecondItemLoaded);
+      if(slides.length > 1)loader.get("slide_1").addEventListener(Event.COMPLETE, onSecondItemLoaded);
       loader.addEventListener(BulkLoader.COMPLETE, onAllItemsLoaded);
       loader.addEventListener(BulkLoader.PROGRESS, onAllProgress);
 
@@ -86,6 +86,7 @@ package rioflashclient2.player {
     public function onFirstItemLoaded(e:Event):void {
       trace("first slide loaded");
       addToContainer(0, true);
+      if(slides.length == 1) lesson.video().play();
     }
 
     public function onSecondItemLoaded(e:Event):void {
@@ -314,6 +315,7 @@ package rioflashclient2.player {
           }
         }
       }
+      this.scrollRect = new Rectangle(this.container.x,this.container.y, this.container.width, this.container.height);
       trace("END resize container");
     }
 

@@ -10,8 +10,8 @@ project_model :model do |m|
   m.language                = 'as3'
   m.compiler_gem_name       = 'sprout-flex4sdk-tool'
   m.background_color        = '#FFFFFF'
-  m.width                   = 800
-  m.height                  = 600
+  m.width                   = 1000
+  m.height                  = 768
   # m.use_fdb               = true
   # m.use_fcsh              = true
   # m.preprocessor          = 'cpp -D__DEBUG=false -P - - | tail -c +3'
@@ -71,7 +71,7 @@ namespace :test do
     t.library_path                          << 'test/lib/flexunit-cilistener-4.1.0.swc'
     t.library_path                          << 'test/lib/flexunit-core-as3-4.1.0.swc'
     t.library_path                          << 'test/lib/flexunit-uilistener-4.1.0.swc'
-    t.default_size                          = '640 400'
+    t.default_size                          = '1024 768'
     t.static_link_runtime_shared_libraries  = true
   end
 end
@@ -108,7 +108,7 @@ ci :ci => ['test:start_server', 'test:create_fixtures_symlink'] do |t|
   t.library_path                          << 'test/lib/flexunit-cilistener-4.1.0.swc'
   t.library_path                          << 'test/lib/flexunit-core-as3-4.1.0.swc'
   t.library_path                          << 'test/lib/flexunit-uilistener-4.1.0.swc'
-  t.default_size                          = '640 400'
+  t.default_size                          = '1024 768'
   t.static_link_runtime_shared_libraries  = true
 end
 
