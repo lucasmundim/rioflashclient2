@@ -300,26 +300,41 @@ package rioflashclient2.player {
     private function resizeContainer():void {
       trace("START resize container");
       var slide:Loader = currentSlide();
-      if (slide) {
-        if (slide.width > slide.height) {
-          this.container.height = (slide.height) * this.width / (slide.width);
-          this.container.width = this.width;
+      var maskWidth:Number;
+      var maskHeight:Number;
 
-          if (measuredHeight < this.container.height) {
-            this.container.width =  (slide.width) * this.height / (slide.height);
-            this.container.height = this.height;
+      if (slide) {
+        if (slide.contentLoaderInfo.width > slide.contentLoaderInfo.height) {
+          slide.width = (this.width * slide.content.width) / slide.contentLoaderInfo.width;
+          slide.scaleY = slide.scaleX;
+          maskWidth = this.width;
+          maskHeight = (this.width * slide.contentLoaderInfo.height) / slide.contentLoaderInfo.width;
+
+          if (measuredHeight < maskHeight) {
+            slide.height = (this.height * slide.content.height) / slide.contentLoaderInfo.height;
+            slide.scaleX = slide.scaleY;
+
+            maskWidth = (this.height * slide.contentLoaderInfo.width) / slide.contentLoaderInfo.height;
+            maskHeight = this.height;
           }
         } else {
-          this.container.width = (slide.width) * this.height / (slide.height);
-          this.container.height = this.height;
+          slide.height = (this.height * slide.content.height) / slide.contentLoaderInfo.height;
+          slide.scaleX = slide.scaleY;
 
-          if (measuredWidth < this.container.width) {
-            this.container.height = (slide.height) * this.width / (slide.width);
-            this.container.width = this.width;
+          maskWidth = (this.height * slide.contentLoaderInfo.width) / slide.contentLoaderInfo.height;
+          maskHeight = this.height;
+
+          if (measuredWidth < maskWidth) {
+            slide.width = (this.width * slide.content.width) / slide.contentLoaderInfo.width;
+            slide.scaleY = slide.scaleX;
+
+            maskWidth = this.width;
+            maskHeight = (this.width * slide.contentLoaderInfo.height) / slide.contentLoaderInfo.width;
           }
         }
       }
-      this.scrollRect = new Rectangle(this.container.x,this.container.y, this.container.width, this.container.height);
+
+      this.scrollRect = new Rectangle(0,0, maskWidth, maskHeight);
       trace("END resize container");
     }
 
