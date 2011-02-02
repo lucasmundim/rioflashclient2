@@ -22,7 +22,7 @@ package rioflashclient2.player {
   import rioflashclient2.model.Lesson;
   import rioflashclient2.model.Slide;
   import rioflashclient2.model.Video;
-  
+
   public class SlidePlayer extends MovieClip {
     private var logger:Logger = Log.getLogger('SlidePlayer');
     private var loader:BulkLoader;
@@ -187,7 +187,7 @@ package rioflashclient2.player {
         var cuePoint:CuePoint = event.marker as CuePoint;
         if (cuePoint.name.indexOf("Slide") != -1) {
           var slideNumber:Number = Number(cuePoint.name.substring(cuePoint.name.indexOf("_") + 1, cuePoint.name.length)) -1;
-          showSlide(slideNumber);
+          showSlide(slideNumber, true);
         }
       }
     }
@@ -200,7 +200,7 @@ package rioflashclient2.player {
       return container.getChildByName("slide_" + currentSlideIndex) as Loader;
     }
 
-    public function showSlide(index:Number):void {
+    public function showSlide(index:Number, ignoreEvent:Boolean=false):void {
       trace("START show slide");
       if (currentSlideIndex != index && !loading) {
         trace("will load slide");
@@ -210,7 +210,7 @@ package rioflashclient2.player {
         if (slideLoader(index)) {
           trace("already loaded");
 
-          addToContainer(index);
+          addToContainer(index, ignoreEvent);
         } else {
           trace("not loaded, loading");
 
@@ -259,7 +259,7 @@ package rioflashclient2.player {
     private function onRequestedSlideLoaded(e:Event):void {
       trace("START requested slide loaded")
       loading = false;
-      addToContainer(requestedIndex);
+      addToContainer(requestedIndex, true);
       if (sync) {
         EventBus.dispatch(new PlayerEvent(PlayerEvent.PLAY));
       }
