@@ -88,9 +88,6 @@ package rioflashclient2.player {
       trace("first slide loaded");
       addToContainer(0, true);
       if(slides.length == 1) lesson.video().play();
-      setTimeout(function():void{
-        resizeContainer();
-      },400);
     }
 
     public function onSecondItemLoaded(e:Event):void {
