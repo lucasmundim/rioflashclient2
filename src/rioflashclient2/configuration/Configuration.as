@@ -183,7 +183,7 @@ package rioflashclient2.configuration {
       var xmlfile:String = rawParameters.xmlfile || 'http://edad.rnp.br/redirect.rio?file=/cederj/treinamento/parte2/cederj_treinamento_parte2.xml';
       //'http://roxo.no-ip.com:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml';
       //xmlfile = "http://roxo.no-ip.com:3001/redirect.rio?file=/ufrj/palestras/hucff/palestra_nelson.xml";
-      xmlfile = "http://roxo.no-ip.com:3001/redirect.rio?file=/aula_ruby.xml";
+      //xmlfile = "http://roxo.no-ip.com:3001/redirect.rio?file=/aula_ruby.xml";
       baseRioServerURL = xmlfile.slice(0, xmlfile.lastIndexOf('/') + 1);
       lessonXML = xmlfile.slice(xmlfile.lastIndexOf('/') + 1, xmlfile.length);
     }
